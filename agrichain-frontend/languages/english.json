@@ -1,0 +1,33 @@
+{
+  "header": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Welcome to AgriChain",
+    "subtitle": "Empowering farmers with blockchain technology for secure and transparent agriculture."
+  },
+  "about": {
+    "title": "About AgriChain",
+    "content": "AgriChain is a blockchain-powered platform designed to revolutionize agriculture. Our mission is to connect farmers, suppliers, and customers in a transparent and secure ecosystem."
+  },
+  "services": {
+    "title": "Our Services",
+    "list": [
+      "Blockchain-based Supply Chain",
+      "Farmer Registration & Authentication",
+      "Smart Contracts for Trading",
+      "Secure Payment System"
+    ]
+  },
+  "footer": {
+    "links": {
+      "home": "Home",
+      "about": "About",
+      "contact": "Contact"
+    },
+    "rights": "© 2025 AgriChain. All Rights Reserved."
+  }
+}

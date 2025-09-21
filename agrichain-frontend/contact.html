@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - AgriChain</title>
+
+  <!-- Font Awesome for social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* Reset & Base */
+    * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+    body { line-height:1.6; background:#f9f9f9; color:#333; }
+
+    /* Header */
+    header {
+      display:flex; justify-content:space-between; align-items:center;
+      background:#e6f2e6; padding:15px 30px; border-radius:0 0 10px 10px; flex-wrap:wrap;
+    }
+    header img { height:50px; }
+    header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
+    nav { flex:1; text-align:center; }
+    nav a { margin:0 12px; text-decoration:none; color:#19692c; font-weight:bold; transition:0.3s; }
+    nav a:hover, nav a.active { color:#0f4d23; }
+    .language-toggle button {
+      margin-left:10px; padding:5px 10px; border:none; cursor:pointer; border-radius:5px;
+      background:#19692c; color:white;
+    }
+    .language-toggle button:hover { background:#0f4d23; }
+
+    /* Hero Section */
+    .hero {
+      background:#dff0d8; text-align:center; padding:60px 20px;
+      border-radius:10px; margin:20px;
+    }
+    .hero h2 { font-size:2.4em; margin-bottom:15px; color:#19692c; }
+    .hero p { font-size:1.2em; }
+
+    /* Contact Section */
+    .contact-section { max-width:1000px; margin:30px auto; padding:20px; }
+    .contact-container {
+      display:flex; flex-wrap:wrap; gap:20px;
+      background:white; padding:25px 20px; border-radius:10px;
+      box-shadow:0 4px 6px rgba(0,0,0,0.1);
+    }
+    .contact-form, .contact-info { flex:1 1 300px; }
+    .contact-form label { display:block; margin:12px 0 6px; font-weight:bold; }
+    .contact-form input, .contact-form textarea {
+      width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; margin-bottom:15px;
+    }
+    .contact-form button {
+      padding:12px 25px; border:none; border-radius:8px;
+      background:#19692c; color:white; font-size:1em; cursor:pointer; transition:0.3s; width:100%;
+    }
+    .contact-form button:hover { background:#0f4d23; }
+    .contact-info h2 { margin-bottom:15px; color:#19692c; }
+    .contact-info p { margin-bottom:10px; }
+    .social-links a { color:#19692c; margin-right:15px; font-size:1.2em; transition:0.3s; }
+    .social-links a:hover { color:#0f4d23; }
+
+    /* Footer */
+    footer {
+      background-color:#19692c; color:white; padding:40px 20px 20px 20px;
+      font-size:14px; line-height:1.5; border-radius:10px 10px 0 0; margin-top:40px;
+    }
+    footer .footer-container {
+      display:flex; flex-wrap:wrap; max-width:1200px; margin:0 auto; justify-content:space-between; gap:20px;
+    }
+    .footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
+    .footer-brand h2 { margin-bottom:10px; color:#a8d5a2; }
+    .footer-links h4, .footer-social h4 { margin-bottom:10px; font-size:16px; color:#a8d5a2; }
+    .footer-links ul { list-style:none; padding-left:0; }
+    .footer-links li { margin-bottom:8px; }
+    .footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:15px; transition:0.3s; font-weight:bold; }
+    .footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
+    .footer-social a i { margin-right:5px; }
+    .footer-bottom { text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.3); padding-top:10px; }
+
+    /* Responsive */
+    @media(max-width:768px) {
+      header h1 { font-size:1.5em; }
+      .hero h2 { font-size:2em; }
+      .footer-container { flex-direction:column; text-align:center; }
+      .footer-social a { margin:5px; display:inline-block; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div style="display:flex; align-items:center;">
+    <img src="E:\Agrichain\images\logo.png" alt="AgriChain Logo">
+    <h1 id="nav-brand">AgriChain</h1>
+  </div>
+  <nav>
+    <a href="E:\Agrichain\index.html" id="nav-home">Home</a>
+    <a href="E:\Agrichain\about.html" id="nav-about">About</a>
+    <a href="E:\Agrichain\farmer\farmer-dashboard.html" id="nav-farmer">Farmer</a>
+    <a href="#" id="nav-buyer">Buyer</a>
+    <a href="#" id="nav-admin">Admin</a>
+    <a href="#" id="nav-transporter">Transporter</a>
+    <a href="E:\Agrichain\insurance\insurance-application.html" id="nav-insurance">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="setLanguage('en')">English</button>
+    <button onclick="setLanguage('ta')">தமிழ்</button>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <h2 id="contact-title">Contact Us</h2>
+  <p id="contact-desc">We are here to answer your queries and provide support. Reach out to us anytime!</p>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section">
+  <div class="contact-container">
+    <!-- Form -->
+    <div class="contact-form">
+      <form id="contact-form">
+        <label id="label-name" for="name">Full Name</label>
+        <input type="text" id="name" required placeholder="Enter your full name">
+
+        <label id="label-email" for="email">Email Address</label>
+        <input type="email" id="email" required placeholder="Enter your email">
+
+        <label id="label-message" for="message">Message</label>
+        <textarea id="message" rows="5" required placeholder="Write your message"></textarea>
+
+        <button type="submit" id="submit-contact">Send Message</button>
+      </form>
+    </div>
+    <!-- Info -->
+    <div class="contact-info">
+      <h2 id="info-title">Get in Touch</h2>
+      <p><i class="fas fa-map-marker-alt"></i> Chennai, Tamil Nadu, India</p>
+      <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+      <p><i class="fas fa-envelope"></i> support@agrichain.com</p>
+      <div class="social-links">
+        <a href="https://facebook.com/YourPage"><i class="fab fa-facebook"></i></a>
+        <a href="https://wa.me/+91 95419 54142"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://twitter.com/YourProfile"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <h2 id="footer-brand-title">AgriChain</h2>
+      <p id="footer-text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a id="footer-home" href="E:\Agrichain\index.html">Home</a></li>
+        <li><a id="footer-about" href="E:\Agrichain\about.html">About</a></li>
+        <li><a id="footer-contact" href="E:\Agrichain\contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-social">
+      <h4>Follow Us</h4>
+      <a href="https://facebook.com/YourPage" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+      <a href="https://wa.me/+91 95419 54142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://twitter.com/YourProfile" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p id="footer-bottom-text">&copy; 2025 AgriChain. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script>
+const contactTranslations = {
+  en: {
+    "nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance","nav-contact":"Contact",
+    "contact-title":"Contact Us","contact-desc":"We are here to answer your queries and provide support. Reach out to us anytime!",
+    "label-name":"Full Name","label-email":"Email Address","label-message":"Message","submit-contact":"Send Message",
+    "info-title":"Get in Touch",
+    "footer-text":"AgriChain – Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
+    "footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-brand-title":"AgriChain","footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
+  },
+  ta: {
+    "nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு","nav-contact":"தொடர்பு",
+    "contact-title":"எங்களை தொடர்பு கொள்ள","contact-desc":"உங்கள் கேள்விகளுக்கு பதில் அளிக்கவும், ஆதரவு வழங்கவும் நாங்கள் உள்ளோம். எங்களை எப்போதும் தொடர்பு கொள்ளுங்கள்!",
+    "label-name":"முழு பெயர்","label-email":"மின்னஞ்சல் முகவரி","label-message":"செய்தி","submit-contact":"செய்தி அனுப்பவும்",
+    "info-title":"எங்களை அணுகவும்",
+    "footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, மற்றும் நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
+    "footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-brand-title":"அக்ரிச்செயின்","footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
+  }
+};
+
+function setLanguage(lang){
+  const translations = contactTranslations[lang];
+  if(!translations) return;
+  for(let id in translations){
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = translations[id];
+  }
+}
+
+document.getElementById("contact-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  alert("✅ Message sent successfully!");
+  document.getElementById("contact-form").reset();
+});
+</script>
+
+</body>
+</html>
