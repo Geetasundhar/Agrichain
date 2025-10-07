@@ -1,6 +1,3 @@
-// farmer.js
-
-// Translations for Farmer Module
 const farmerTranslations = {
     en: {
         "farmer-title": "Farmer Portal",
@@ -34,7 +31,6 @@ const farmerTranslations = {
     }
 };
 
-// Function to switch language
 function setFarmerLanguage(lang){
     const selected = farmerTranslations[lang];
     if(!selected) return;
@@ -43,8 +39,6 @@ function setFarmerLanguage(lang){
         if(el) el.innerHTML = selected[id];
     }
 }
-
-// Optional: Basic form validation
 function validateLoginForm() {
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -54,8 +48,6 @@ function validateLoginForm() {
     }
     return true;
 }
-
-// Optional: Crop form submission handler
 function submitCropForm() {
     const name = document.getElementById("crop-name").value.trim();
     const quantity = document.getElementById("crop-quantity").value.trim();
@@ -67,6 +59,5 @@ function submitCropForm() {
     }
 
     alert("Crop submitted successfully!");
-    // Here you can add code to save data or interact with backend
     return true;
 }

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriChain - Crop Report</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/i18next@23.4.6/dist/umd/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-http-backend@2.2.2/i18nextHttpBackend.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+body { line-height:1.6; background:#f9f9f9; color:#333; }
+header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#e6f2e6;
+    padding:15px 30px;
+    border-radius:0 0 10px 10px;
+    flex-wrap:wrap;
+    position:relative;
+}
+header img { height:50px; }
+header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
+nav {
+    flex:1;
+    text-align:center;
+}
+nav a {
+    margin:0 12px;
+    text-decoration:none;
+    color:#19692c;
+    font-weight:bold;
+    transition:0.3s;
+}
+nav a:hover { color:#0f4d23; }
+.language-toggle button {
+    margin-left:10px;
+    padding:5px 10px;
+    border:none;
+    cursor:pointer;
+    border-radius:5px;
+    background:#19692c;
+    color:white;
+}
+.language-toggle button:hover { background:#0f4d23; }
+.menu-toggle {
+    display:none;
+    font-size:1.5em;
+    cursor:pointer;
+    color:#19692c;
+}
+@media(max-width:768px){
+    nav { 
+        display:none;
+        flex-direction:column;
+        background:#e6f2e6;
+        position:absolute;
+        top:70px;
+        left:0;
+        right:0;
+        padding:10px;
+        border-radius:0 0 10px 10px;
+    }
+    nav.show { display:flex; }
+    .menu-toggle { display:block; }
+}
+.report {
+    text-align:center;
+    padding:80px 20px;
+    margin:20px;
+    background:#dff0d8;
+    border-radius:10px;
+}
+.report h2 { font-size:2.5em; margin-bottom:15px; color:#19692c; }
+.report p { font-size:1.2em; margin-bottom:30px; }
+.report-details {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+    max-width:1200px;
+    margin:0 auto;
+}
+.detail-card {
+    background:white;
+    flex:1 1 300px;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+.detail-card:hover { transform:translateY(-5px); box-shadow:0 8px 12px rgba(0,0,0,0.15); }
+.detail-card h3 { color:#19692c; margin-bottom:10px; }
+.detail-card p { font-size:0.95em; color:#555; margin-bottom:8px; }
+.back-btn { margin-top:30px; }
+.back-btn a {
+    display:inline-block;
+    padding:10px 20px;
+    border-radius:8px;
+    background:#19692c;
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:0.3s;
+}
+.back-btn a:hover { background:#0f4d23; }
+footer {
+    background-color:#19692c;
+    color:white;
+    padding:40px 20px 20px 20px;
+    font-size:14px;
+    line-height:1.5;
+    border-radius:10px 10px 0 0;
+}
+footer .footer-container {
+    display:flex;
+    flex-wrap:wrap;
+    max-width:1200px;
+    margin:0 auto;
+    justify-content:space-between;
+    gap:20px;
+}
+.footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
+.footer-brand h2 { margin-bottom:10px; color:#a8d5a2; }
+.footer-links h4, .footer-social h4 { margin-bottom:10px; font-size:16px; color:#a8d5a2; }
+.footer-links ul { list-style:none; padding-left:0; }
+.footer-links li { margin-bottom:8px; }
+.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:15px; transition:0.3s; font-weight:bold; }
+.footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
+.footer-social a i { margin-right:5px; }
+.footer-bottom { text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.3); padding-top:10px; }
+@media(max-width:768px){
+    header h1 { font-size:1.5em; }
+    .report h2 { font-size:2em; }
+    .report-details { flex-direction:column; align-items:center; }
+    .footer-container { flex-direction:column; text-align:center; }
+    .footer-social a { margin:5px; display:inline-block; }
+}
+</style>
+</head>
+<body>
+<header>
+    <div style="display:flex; align-items:center;">
+        <img src="images\logo.png" alt="AgriChain Logo">
+    </div>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <nav>
+        <a href="../../index.html" data-i18n="nav.home">Home</a>
+        <a href="../../All/about.html" data-i18n="nav.about">About</a>
+        <a href="../../Dashboard/farmer/farmer-dashboard.html" data-i18n="nav.farmer">Farmer</a>
+        <a href="#" data-i18n="nav.buyer">Buyer</a>
+        <a href="#" data-i18n="nav.admin">Admin</a>
+        <a href="#" data-i18n="nav.transporter">Transporter</a>
+        <a href="#" data-i18n="nav.insurance">Insurance</a>
+    </nav>
+    <div class="language-toggle">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('ta')">தமிழ்</button>
+    </div>
+</header>
+<section class="report">
+    <h2 data-i18n="crop.title">🌱 Crop Report</h2>
+    <p data-i18n="crop.text">Detailed insights into crop growth, yield, and harvest performance.</p>
+    <div class="report-details">
+        <div class="detail-card">
+            <h3 data-i18n="growth.title">🌿 Growth Stage</h3>
+            <p data-i18n="growth.text">Current crop stage: <strong>Flowering</strong></p>
+            <p data-i18n="growth.harvest">Expected harvest: <strong>45 days</strong></p>
+        </div>
+        <div class="detail-card">
+            <h3 data-i18n="yield.title">📊 Yield Prediction</h3>
+            <p data-i18n="yield.text">Estimated yield: <strong>1200 kg</strong></p>
+            <p data-i18n="yield.based">Based on soil and water analysis.</p>
+        </div>
+        <div class="detail-card">
+            <h3 data-i18n="harvest.title">🌾 Harvest Summary</h3>
+            <p data-i18n="harvest.last">Last harvest: <strong>950 kg</strong></p>
+            <p data-i18n="harvest.profit">Profit margin: <strong>15%</strong></p>
+        </div>
+    </div>
+    <div class="back-btn">
+      <a href="../../All/reports.html" data-i18n="back">⬅ Back to Reports</a>
+    </div>
+</section>
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <h2>AgriChain</h2>
+      <p data-i18n="footer.text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
+    </div>
+    <div class="footer-links">
+      <h4 data-i18n="footer.quick">Quick Links</h4>
+      <ul>
+        <li><a href="E:\Agrichain\index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="E:\Agrichain\about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="E:\Agrichain\contact.html" data-i18n="footer.contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-social">
+      <h4 data-i18n="footer.follow">Follow Us</h4>
+      <a href="https://facebook.com/YourPage" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a> |
+      <a href="https://wa.me/+919514954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a> |
+      <a href="https://twitter.com/YourProfile" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p data-i18n="footer.bottom">© 2025 AgriChain. All Rights Reserved.</p>
+  </div>
+</footer>
+<script>
+function toggleMenu(){
+    document.querySelector("nav").classList.toggle("show");
+}
+i18next
+  .use(i18nextHttpBackend)
+  .init({
+    lng: "en",
+    fallbackLng: "en",
+    backend: {
+      loadPath: "locales/{{lng}}.json" 
+    }
+  }, function(err, t) {
+    updateContent();
+  });
+function updateContent(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key = el.getAttribute("data-i18n");
+    el.innerHTML = i18next.t(key);
+  });
+}
+function setLanguage(lang){
+  i18next.changeLanguage(lang, updateContent);
+}
+</script>
+
+</body>
+</html>

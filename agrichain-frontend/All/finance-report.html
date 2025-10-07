@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriChain - Finance Report</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/i18next@23.4.7/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+body { background:#f9f9f9; color:#333; line-height:1.6; }
+
+header { display:flex; justify-content:space-between; align-items:center; background:#e6f2e6; padding:15px 30px; border-radius:0 0 10px 10px; flex-wrap:wrap; }
+header img { height:50px; }
+header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
+nav a { margin:0 12px; text-decoration:none; color:#19692c; font-weight:bold; transition:0.3s; }
+nav a:hover { color:#0f4d23; }
+.language-toggle button { margin-left:10px; padding:5px 10px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; }
+.language-toggle button:hover { background:#0f4d23; }
+
+.report { max-width:1000px; margin:50px auto; padding:20px; background:#dff0d8; border-radius:10px; text-align:center; }
+.report h2 { font-size:2em; color:#19692c; margin-bottom:15px; }
+.report p { font-size:1.1em; margin-bottom:30px; }
+
+.report-details { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
+.detail-card { background:white; flex:1 1 280px; padding:25px; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1); transition:0.3s; }
+.detail-card:hover { transform:translateY(-5px); box-shadow:0 8px 12px rgba(0,0,0,0.15); }
+.detail-card h3 { color:#19692c; margin-bottom:10px; }
+.detail-card p { font-size:1em; color:#555; margin-bottom:10px; }
+
+.back-btn { margin-top:30px; }
+.back-btn a { display:inline-block; padding:10px 20px; border-radius:8px; background:#19692c; color:white; text-decoration:none; font-weight:bold; transition:0.3s; }
+.back-btn a:hover { background:#0f4d23; }
+
+footer { background:#19692c; color:white; padding:40px 20px 20px 20px; border-radius:10px 10px 0 0; }
+.footer-container { display:flex; flex-wrap:wrap; max-width:1200px; margin:0 auto; justify-content:space-between; gap:20px; }
+.footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
+.footer-brand h2 { color:#a8d5a2; margin-bottom:10px; }
+.footer-links h4, .footer-social h4 { color:#a8d5a2; margin-bottom:10px; }
+.footer-links ul { list-style:none; padding-left:0; }
+.footer-links li { margin-bottom:8px; }
+.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:15px; font-weight:bold; transition:0.3s; }
+.footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
+.footer-social a i { margin-right:5px; }
+.footer-bottom { text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.3); padding-top:10px; }
+
+@media(max-width:768px){
+  header h1 { font-size:1.5em; }
+  .report-details { flex-direction:column; align-items:center; }
+  .footer-container { flex-direction:column; text-align:center; }
+  .footer-social a { margin:5px; display:inline-block; }
+}
+header img {
+    height: 80px;              
+    width: auto;               
+    border-radius: 15px;       
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+header img:hover {
+    transform: scale(1.2) rotate(-5deg); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+}
+header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;                 
+}
+header h1 {
+    font-size: 2em;
+    color: #19692c;
+    font-weight: bold;
+    white-space: nowrap;      
+    transition: color 0.3s ease;
+}
+
+header h1:hover {
+    color: #0f4d23;            
+}
+
+@media(max-width:768px){
+    header img {
+        height: 60px;          
+    }
+    header h1 {
+        font-size: 1.5em;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; align-items:center;">
+        <img src="../images/logo.png" alt="AgriChain Logo">
+    </div>
+    <nav>
+        <a href="../index.html" id="nav-home" data-i18n="nav-home">Home</a>
+        <a href="../All/about.html" id="nav-about" data-i18n="nav-about">About</a>
+        <a href="../Dashboard/farmer/farmer-dashboard.html" id="nav-farmer" data-i18n="nav-farmer">Farmer</a>
+        <a href="#" id="nav-buyer" data-i18n="nav-buyer">Buyer</a>
+        <a href="#" id="nav-admin" data-i18n="nav-admin">Admin</a>
+        <a href="#" id="nav-transporter" data-i18n="nav-transporter">Transporter</a>
+        <a href="#" id="nav-insurance" data-i18n="nav-insurance">Insurance</a>
+    </nav>
+    <div class="language-toggle">
+        <button onclick="changeLng('en')">English</button>
+        <button onclick="changeLng('ta')">தமிழ்</button>
+    </div>
+</header>
+
+<section class="report">
+    <h2 id="finance-title" data-i18n="finance-title">💰 Finance Report</h2>
+    <p id="finance-text" data-i18n="finance-text">Track income, expenses, and overall profitability of your farming activities.</p>
+
+    <div class="report-details">
+        <div class="detail-card">
+            <h3 id="income-title" data-i18n="income-title">📈 Income</h3>
+            <p id="income-value" data-i18n="income-value">Total Income: <strong>₹1,20,000</strong></p>
+            <p id="income-source" data-i18n="income-source">Main Source: <strong>Wheat Sales</strong></p>
+        </div>
+        <div class="detail-card">
+            <h3 id="expense-title" data-i18n="expense-title">📉 Expenses</h3>
+            <p id="expense-value" data-i18n="expense-value">Total Expenses: <strong>₹65,000</strong></p>
+            <p id="expense-main" data-i18n="expense-main">Major Cost: <strong>Fertilizers</strong></p>
+        </div>
+        <div class="detail-card">
+            <h3 id="profit-title" data-i18n="profit-title">💹 Net Profit</h3>
+            <p id="profit-value" data-i18n="profit-value">Profit: <strong>₹55,000</strong></p>
+            <p id="profit-margin" data-i18n="profit-margin">Profit Margin: <strong>45%</strong></p>
+        </div>
+    </div>
+
+    <div class="back-btn">
+      <a href="../All/reports.html"><i class="fas fa-arrow-left"></i> <span data-i18n="back-btn">Back to Reports</span></a>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-brand">
+            <h2 id="footer-brand-title" data-i18n="footer-brand-title">AgriChain</h2>
+            <p id="footer-text" data-i18n="footer-text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
+        </div>
+        <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="../index.html" id="footer-home" data-i18n="footer-home">Home</a></li>
+                <li><a href="../All/about.html" id="footer-about" data-i18n="footer-about">About</a></li>
+                <li><a href="../All/contact.html" id="footer-contact" data-i18n="footer-contact">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-social">
+            <h4>Follow Us</h4>
+            <a href="https://facebook.com/YourPage" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+            <a href="https://wa.me/+919514954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            <a href="https://twitter.com/YourProfile" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p id="footer-bottom-text" data-i18n="footer-bottom-text">&copy; 2025 AgriChain. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+i18next.init({
+    lng: 'en',
+    debug: true,
+    resources: {
+        en: {
+            translation: {
+                "nav-brand":"AgriChain","nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance",
+                "finance-title":"💰 Finance Report","finance-text":"Track income, expenses, and overall profitability of your farming activities.",
+                "income-title":"📈 Income","income-value":"Total Income: <strong>₹1,20,000</strong>","income-source":"Main Source: <strong>Wheat Sales</strong>",
+                "expense-title":"📉 Expenses","expense-value":"Total Expenses: <strong>₹65,000</strong>","expense-main":"Major Cost: <strong>Fertilizers</strong>",
+                "profit-title":"💹 Net Profit","profit-value":"Profit: <strong>₹55,000</strong>","profit-margin":"Profit Margin: <strong>45%</strong>",
+                "back-btn":"Back to Reports",
+                "footer-brand-title":"AgriChain","footer-text":"Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
+                "footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
+            }
+        },
+        ta: {
+            translation: {
+                "nav-brand":"அக்ரிச்செயின்","nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு",
+                "finance-title":"💰 நிதி அறிக்கை","finance-text":"உங்கள் வேளாண் செயல்பாடுகளின் வருவாய், செலவுகள் மற்றும் மொத்த இலாபத்தை கண்காணிக்கவும்.",
+                "income-title":"📈 வருவாய்","income-value":"மொத்த வருவாய்: <strong>₹1,20,000</strong>","income-source":"முக்கிய மூலாதாரம்: <strong>கோதுமை விற்பனை</strong>",
+                "expense-title":"📉 செலவுகள்","expense-value":"மொத்த செலவுகள்: <strong>₹65,000</strong>","expense-main":"முக்கிய செலவு: <strong>உரங்கள்</strong>",
+                "profit-title":"💹 நிகர இலாபம்","profit-value":"இலாபம்: <strong>₹55,000</strong>","profit-margin":"இலாப விகிதம்: <strong>45%</strong>",
+                "back-btn":"அறிக்கைகளுக்கு திரும்பவும்",
+                "footer-brand-title":"அக்ரிச்செயின்","footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, மற்றும் நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
+                "footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
+            }
+        }
+    }
+}, function(err,t){
+    updateContent();
+});
+
+function updateContent(){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+        el.innerHTML = i18next.t(el.getAttribute('data-i18n'));
+    });
+}
+
+function changeLng(lng){
+    i18next.changeLanguage(lng, updateContent);
+}
+</script>
+
+</body>
+</html>

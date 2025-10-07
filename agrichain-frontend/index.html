@@ -4,18 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgriChain - Home</title>
-
-<!-- Font Awesome for social icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="js/script.js"></script>
-
+<script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-browser-languagedetector@7.2.1/i18nextBrowserLanguageDetector.min.js"></script>
 <style>
-/* Reset & Base */
-* { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-body { line-height:1.6; background:#f9f9f9; color:#333; }
-
-/* Header */
-header {
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+body{line-height:1.6;background:#f9f9f9;color:#333;}
+header{
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -23,207 +18,264 @@ header {
     padding:15px 30px;
     border-radius:0 0 10px 10px;
     flex-wrap:wrap;
+    position:sticky;
+    top:0;
+    z-index:300;
 }
-header img { height:50px; }
-header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
-nav { flex:1; text-align:center; }
-nav a { margin:0 12px; text-decoration:none; color:#19692c; font-weight:bold; transition:0.3s; }
-nav a:hover { color:#0f4d23; }
-.language-toggle button { margin-left:10px; padding:5px 10px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; }
-.language-toggle button:hover { background:#0f4d23; }
-
-/* Hero Section */
-.hero {
-    background:#dff0d8;
-    text-align:center;
-    padding:100px 20px;
-    border-radius:10px;
-    margin:20px;
-}
-.hero h2 { font-size:2.8em; margin-bottom:20px; color:#19692c; }
-.hero p { font-size:1.2em; margin-bottom:30px; }
-.hero button {
-    padding:12px 30px;
-    font-size:1em;
+header img{height:50px;}
+header h1{margin-left:10px;color:#19692c;font-size:1.8em;}
+nav{flex:1;text-align:center;}
+nav a{margin:0 12px;text-decoration:none;color:#19692c;font-weight:bold;transition:0.3s;}
+nav a:hover{color:#0f4d23;}
+.language-toggle button{
+    margin-left:10px;
+    padding:5px 10px;
     border:none;
-    border-radius:8px;
+    cursor:pointer;
+    border-radius:5px;
     background:#19692c;
     color:white;
-    cursor:pointer;
-    transition:0.3s;
 }
-.hero button:hover { background:#0f4d23; }
-
-/* Features */
-.features { display:flex; flex-wrap:wrap; justify-content:space-around; margin:20px auto; max-width:1200px; }
-.feature-box {
-    background:white;
-    flex:1 1 250px;
-    margin:10px;
-    padding:25px 20px;
-    border-radius:10px;
+.language-toggle button:hover{background:#0f4d23;}
+.hero{background:#dff0d8;text-align:center;padding:100px 20px;border-radius:10px;margin:20px;}
+.hero h2{font-size:2.8em;margin-bottom:20px;color:#19692c;}
+.hero p{font-size:1.2em;margin-bottom:30px;}
+.hero button{padding:12px 30px;font-size:1em;border:none;border-radius:8px;background:#19692c;color:white;cursor:pointer;transition:0.3s;}
+.hero button:hover{background:#0f4d23;}
+.features{display:flex;flex-wrap:wrap;justify-content:space-around;margin:20px auto;max-width:1200px;}
+.feature-box{background:white;flex:1 1 250px;margin:10px;padding:25px 20px;border-radius:10px;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,0.1);transition:0.3s;}
+.feature-box:hover{transform:translateY(-5px);box-shadow:0 8px 12px rgba(0,0,0,0.15);}
+.feature-box h3{margin-bottom:12px;color:#19692c;}
+.feature-box p{font-size:0.95em;color:#555;}
+footer{background-color:#19692c;color:white;padding:40px 20px 20px 20px;font-size:14px;line-height:1.5;border-radius:10px 10px 0 0;}
+footer .footer-container{display:flex;flex-wrap:wrap;max-width:1200px;margin:0 auto;justify-content:space-between;gap:20px;}
+.footer-brand,.footer-links,.footer-social{flex:1 1 250px;}
+.footer-brand h2{margin-bottom:10px;color:#a8d5a2;}
+.footer-links h4,.footer-social h4{margin-bottom:10px;font-size:16px;color:#a8d5a2;}
+.footer-links ul{list-style:none;padding-left:0;}
+.footer-links li{margin-bottom:8px;}
+.footer-links a,.footer-social a{color:white;text-decoration:none;margin-right:15px;transition:0.3s;font-weight:bold;}
+.footer-links a:hover,.footer-social a:hover{color:#a8d5a2;}
+.footer-social a i{margin-right:5px;}
+.footer-bottom{text-align:center;margin-top:20px;border-top:1px solid rgba(255,255,255,0.3);padding-top:10px;}
+.weather-top{
+    position:fixed;
+    top:80px;
+    right:20px;
+    background:linear-gradient(145deg,#7aac08,#75ba7e);
+    border-radius:15px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.2);
+    padding:15px;
+    width:220px;
     text-align:center;
-    box-shadow:0 4px 6px rgba(0,0,0,0.1);
-    transition:0.3s;
+    z-index:200;
 }
-.feature-box:hover { transform:translateY(-5px); box-shadow:0 8px 12px rgba(0,0,0,0.15); }
-.feature-box h3 { margin-bottom:12px; color:#19692c; }
-.feature-box p { font-size:0.95em; color:#555; }
+.weather-top .weather-icon{font-size:40px;margin-bottom:10px;color:#19692c;}
+.weather-top h3{margin:5px 0;color:#19692c;font-size:18px;}
+.weather-top p{margin:3px 0;font-size:14px;color:#333;}
+@media(max-width:768px){
+    header h1{font-size:1.5em;}
+    .hero h2{font-size:2em;}
+    .features{flex-direction:column;align-items:center;}
+    .footer-container{flex-direction:column;text-align:center;}
+    .footer-social a{margin:5px;display:inline-block;}
+    .weather-top{position:relative;width:90%;margin:20px auto;top:0;}
+}
+header img {
+    height: 80px;              
+    width: auto;               
+    border-radius: 15px;       
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+}
 
-/* Footer */
-footer {
-    background-color:#19692c;
-    color:white;
-    padding:40px 20px 20px 20px;
-    font-size:14px;
-    line-height:1.5;
-    border-radius:10px 10px 0 0;
+header img:hover {
+    transform: scale(1.2) rotate(-5deg); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
 }
-footer .footer-container {
-    display:flex;
-    flex-wrap:wrap;
-    max-width:1200px;
-    margin:0 auto;
-    justify-content:space-between;
-    gap:20px;
+header .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;                 
 }
-.footer-brand, .footer-links, .footer-social {
-    flex:1 1 250px;
+header h1 {
+    font-size: 2em;
+    color: #19692c;
+    font-weight: bold;
+    white-space: nowrap;      
+    transition: color 0.3s ease;
 }
-.footer-brand h2 { margin-bottom:10px; color:#a8d5a2; }
-.footer-links h4, .footer-social h4 { margin-bottom:10px; font-size:16px; color:#a8d5a2; }
-.footer-links ul { list-style:none; padding-left:0; }
-.footer-links li { margin-bottom:8px; }
-.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:15px; transition:0.3s; font-weight:bold; }
-.footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
-.footer-social a i { margin-right:5px; }
-.footer-bottom { text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.3); padding-top:10px; }
 
-/* Responsive */
-@media(max-width:768px) {
-    header h1 { font-size:1.5em; }
-    .hero h2 { font-size:2em; }
-    .features { flex-direction:column; align-items:center; }
-    .footer-container { flex-direction:column; text-align:center; }
-    .footer-social a { margin:5px; display:inline-block; }
+header h1:hover {
+    color: #0f4d23;            
 }
+
+@media(max-width:768px){
+    header img {
+        height: 60px;          
+    }
+    header h1 {
+        font-size: 1.5em;
+    }
+}
+
 </style>
 </head>
 <body>
-
-<!-- Header -->
 <header>
-    <div style="display:flex; align-items:center;">
-        <img src="E:\Agrichain\images\logo.png" alt="AgriChain Logo">
-        <h1 id="nav-brand">AgriChain</h1>
+    <div style="display:flex;align-items:center;">
+        <img src="images/logo.png" alt="AgriChain Logo">
     </div>
     <nav>
-        <a href="E:\Agrichain\index.html" id="nav-home">Home</a>
-        <a href="E:\Agrichain\about.html" id="nav-about">About</a>
-        <a href="E:\Agrichain\farmer\farmer-dashboard.html" id="nav-farmer">Farmer</a>
-        <a href="#" id="nav-buyer">Buyer</a>
-        <a href="#" id="nav-admin">Admin</a>
-        <a href="#" id="nav-transporter">Transporter</a>
-        <a href="#" id="nav-insurance">Insurance</a>
+        <a href="index.html" data-i18n="nav-home">Home</a>
+        <a href="All/about.html" data-i18n="nav-about">About</a>
+        <a href="Dashboard/farmer/farmer-dashboard.html" data-i18n="nav-farmer">Farmer</a>
+        <a href="Dashboard/buyer/buyer-dashboard.html" data-i18n="nav-buyer">Buyer</a>
+        <a href="Dashboard/admin/admin-dashboard.html" data-i18n="nav-admin">Admin</a>
+        <a href="Dashboard/transporter/transporter-dashboard.html" data-i18n="nav-transporter">Transporter</a>
+        <a href="Dashboard/insurance/insurance-dashboard.html" data-i18n="nav-insurance">Insurance</a>
     </nav>
     <div class="language-toggle">
-        <button onclick="setLanguage('en')">English</button>
-        <button onclick="setLanguage('ta')">தமிழ்</button>
+        <button onclick="changeLng('en')">English</button>
+        <button onclick="changeLng('ta')">தமிழ்</button>
     </div>
 </header>
-
-<!-- Hero Section -->
-<div class="hero">
-    <h2 id="hero-title">Welcome to AgriChain</h2>
-    <p id="hero-text">Empowering farmers, ensuring transparency, and connecting directly with buyers using blockchain technology.</p>
-    <a href="E:\Agrichain\farmer\farmer-login.html"><button id="hero-button">Get Started</button></a>
+<div class="weather-top">
+    <div class="weather-icon"><i class="fas fa-cloud-sun"></i></div>
+    <h3 id="city">Loading...</h3>
+    <p id="temp"></p>
+    <p id="condition"></p>
+    <p id="humidity"></p>
+    <p id="wind"></p>
 </div>
-
-<!-- Features Section -->
+<div class="hero">
+    <h2 data-i18n="hero-title">Welcome to AgriChain</h2>
+    <p data-i18n="hero-text">Empowering farmers, ensuring transparency, and connecting directly with buyers using blockchain technology.</p>
+    <a href="All/signup.html"><button data-i18n="hero-button">Get Started</button></a>
+</div>
 <div class="features">
     <div class="feature-box">
-        <h3 id="feature-title1">Direct Marketplace</h3>
-        <p id="feature-text1">Farmers can sell crops directly to buyers without middlemen.</p>
+        <h3 data-i18n="feature-title1">Direct Marketplace</h3>
+        <p data-i18n="feature-text1">Farmers can sell crops directly to buyers without middlemen.</p>
     </div>
     <div class="feature-box">
-        <h3 id="feature-title2">Crop Traceability</h3>
-        <p id="feature-text2">Track every stage of your crops using blockchain and QR codes.</p>
+        <h3 data-i18n="feature-title2">Crop Traceability</h3>
+        <p data-i18n="feature-text2">Track every stage of your crops using blockchain and QR codes.</p>
     </div>
     <div class="feature-box">
-        <h3 id="feature-title3">Smart Insurance</h3>
-        <p id="feature-text3">Automatic crop insurance claims based on verified weather and crop data.</p>
+        <h3 data-i18n="feature-title3">Smart Insurance</h3>
+        <p data-i18n="feature-text3">Automatic crop insurance claims based on verified weather and crop data.</p>
     </div>
 </div>
-
-<!-- Footer -->
 <footer>
   <div class="footer-container">
     <div class="footer-brand">
-      <h2 id="footer-brand-title">AgriChain</h2>
-      <p id="footer-text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
+      <h2 data-i18n="footer-brand-title">AgriChain</h2>
+      <p data-i18n="footer-text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
     </div>
     <div class="footer-links">
       <h4>Quick Links</h4>
       <ul>
-        <li><a id="footer-home" href="E:\Agrichain\index.html">Home</a></li>
-        <li><a id="footer-about" href="E:\Agrichain\about.html">About</a></li>
-        <li><a id="footer-contact" href="E:\Agrichain\contact.html">Contact</a></li>
+        <li><a href="index.html" data-i18n="footer-home">Home</a></li>
+        <li><a href="All/about.html" data-i18n="footer-about">About</a></li>
+        <li><a href="All/contact.html" data-i18n="footer-contact">Contact</a></li>
       </ul>
     </div>
     <div class="footer-social">
       <h4>Follow Us</h4>
       <a href="https://facebook.com/YourPage" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a> |
-      <a href="https://wa.me/+91 95149 54142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a> |
+      <a href="https://wa.me/+919514954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a> |
       <a href="https://twitter.com/YourProfile" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <p id="footer-bottom-text">&copy; 2025 AgriChain. All Rights Reserved.</p>
+    <p data-i18n="footer-bottom-text">© 2025 AgriChain. All Rights Reserved.</p>
   </div>
 </footer>
 
 <script>
-const indexTranslations = {
-    en: {
-        "nav-home":"Home", "nav-about":"About", "nav-farmer":"Farmer",
-        "nav-buyer":"Buyer", "nav-admin":"Admin", "nav-transporter":"Transporter",
-        "nav-insurance":"Insurance",
-        "hero-title":"Welcome to AgriChain",
-        "hero-text":"Empowering farmers, ensuring transparency, and connecting directly with buyers using blockchain technology.",
-        "hero-button":"Get Started",
-        "feature-title1":"Direct Marketplace", "feature-text1":"Farmers can sell crops directly to buyers without middlemen.",
-        "feature-title2":"Crop Traceability", "feature-text2":"Track every stage of your crops using blockchain and QR codes.",
-        "feature-title3":"Smart Insurance", "feature-text3":"Automatic crop insurance claims based on verified weather and crop data.",
-        "footer-text":"AgriChain – Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
-        "footer-home":"Home", "footer-about":"About", "footer-contact":"Contact", "footer-farmer":"Farmer Login",
-        "footer-brand-title":"AgriChain",
-        "footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
-    },
-    ta: {
-        "nav-home":"முகப்பு", "nav-about":"பற்றி", "nav-farmer":"விவசாயி",
-        "nav-buyer":"வாங்குபவர்", "nav-admin":"நிர்வாகி", "nav-transporter":"போக்குவரத்து",
-        "nav-insurance":"காப்பீடு",
-        "hero-title":"அக்ரிச்செயினுக்கு வரவேற்கிறோம்",
-        "hero-text":"விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, மற்றும் நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
-        "hero-button":"தொடக்கம் செய்க",
-        "feature-title1":"நேரடி சந்தை", "feature-text1":"விவசாயிகள் இடைநிலையாளர் இல்லாமல் நேரடியாக வாடிக்கையாளர்களுக்கு பயிர்களை விற்கலாம்.",
-        "feature-title2":"பயிர் பின்வட்டத்தன்மை", "feature-text2":"உங்கள் பயிர்களின் ஒவ்வொரு கட்டத்தையும் பிளாக்செயின் மற்றும் QR குறியீடுகள் மூலம் கண்காணிக்கவும்.",
-        "feature-title3":"ஸ்மார்ட் காப்பீடு", "feature-text3":"சரிபார்க்கப்பட்ட வானிலை மற்றும் பயிர் தரவுகளின் அடிப்படையில் தானாக பயிர் காப்பீட்டு வாதங்கள்.",
-        "footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
-        "footer-home":"முகப்பு", "footer-about":"பற்றி", "footer-contact":"தொடர்பு", "footer-farmer":"விவசாயி உள்நுழை",
-        "footer-brand-title":"அக்ரிச்செயின்",
-        "footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
-    }
+const API_KEY = "b0718e57705642b1b31163720253108";
+const resources = {
+  en:{translation:{
+    "nav-brand":"AgriChain","nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer",
+    "nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance",
+    "hero-title":"Welcome to AgriChain","hero-text":"Empowering farmers, ensuring transparency, and connecting directly with buyers using blockchain technology.","hero-button":"Get Started",
+    "feature-title1":"Direct Marketplace","feature-text1":"Farmers can sell crops directly to buyers without middlemen.",
+    "feature-title2":"Crop Traceability","feature-text2":"Track every stage of your crops using blockchain and QR codes.",
+    "feature-title3":"Smart Insurance","feature-text3":"Automatic crop insurance claims based on verified weather and crop data.",
+    "footer-text":"AgriChain – Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
+    "footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-brand-title":"AgriChain",
+    "footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
+  }},
+  ta:{translation:{
+    "nav-brand":"அக்ரிச்செயின்","nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்",
+    "nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு",
+    "hero-title":"அக்ரிச்செயினுக்கு வரவேற்கிறோம்","hero-text":"விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, மற்றும் நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.","hero-button":"தொடக்கம் செய்க",
+    "feature-title1":"நேரடி சந்தை","feature-text1":"விவசாயிகள் இடைநிலையாளர் இல்லாமல் நேரடியாக வாடிக்கையாளர்களுக்கு பயிர்களை விற்கலாம்。",
+    "feature-title2":"பயிர் பின்வட்டத்தன்மை","feature-text2":"உங்கள் பயிர்களின் ஒவ்வொரு கட்டத்தையும் பிளாக்செயின் மற்றும் QR குறியீடுகள் மூலம் கண்காணிக்கவும்。",
+    "feature-title3":"ஸ்மார்ட் காப்பீடு","feature-text3":"சரிபார்க்கப்பட்ட வானிலை மற்றும் பயிர் தரவின் அடிப்படையில் தானாக பயிர் காப்பீட்டு வாதங்கள்。",
+    "footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
+    "footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-brand-title":"அக்ரிச்செயின்",
+    "footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
+  }}
 };
-
-function setLanguage(lang){
-    const translations = indexTranslations[lang];
-    if(!translations) return;
-    for(let id in translations){
-        const el = document.getElementById(id);
-        if(el) el.innerHTML = translations[id];
-    }
+i18next.use(i18nextBrowserLanguageDetector).init({resources,fallbackLng:'en'},function(err,t){
+  document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=i18next.t(el.getAttribute('data-i18n')));
+});
+function changeLng(lang){
+  i18next.changeLanguage(lang,()=>{
+    document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=i18next.t(el.getAttribute('data-i18n')));
+    getLocationWeather();
+  });
 }
+const weatherLabels = {
+  en: {temp:"🌡 Temperature", condition:"☁ Condition", humidity:"💧 Humidity", wind:"💨 Wind"},
+  ta: {temp:"🌡 வெப்பநிலை", condition:"☁ நிலை", humidity:"💧 ஈரப்பதம்", wind:"💨 காற்று வேகம்"}
+};
+const tamilConditions = {
+  "Sunny":"வெயிலான","Clear":"வானம் தெளிவானது","Partly cloudy":"பகுதியளவு மேகமூட்டம்",
+  "Cloudy":"மேகமூட்டம்","Overcast":"முழுவதும் மேகமூட்டம்","Mist":"மூடுபனி",
+  "Patchy rain possible":"சில இடங்களில் மழை வாய்ப்பு","Light rain":"லேசான மழை",
+  "Moderate rain":"மிதமான மழை","Heavy rain":"கடுமையான மழை","Thunderstorm":"இடி மின்னல்",
+  "Fog":"மூடுபனி","Snow":"பனிப்பொழிவு"
+};
+const tamilLocations = {"Chennai":"சென்னை","Coimbatore":"கோயம்புத்தூர்","Madurai":"மதுரை","Tiruchirappalli":"திருச்சிராப்பள்ளி","Tamil Nadu":"தமிழ்நாடு","Karnataka":"கர்நாடகா","Kerala":"கேரளம்"};
+
+function updateWeatherUI(data){
+  const labels = weatherLabels[i18next.language] || weatherLabels.en;
+  let cityName = data.location.name;
+  let regionName = data.location.region;
+  if(i18next.language==="ta"){
+    cityName = tamilLocations[cityName] || cityName;
+    regionName = tamilLocations[regionName] || regionName;
+  }
+  const conditionText = i18next.language==="ta" ? tamilConditions[data.current.condition.text] || data.current.condition.text : data.current.condition.text;
+
+  document.getElementById("city").textContent = `${cityName}, ${regionName}`;
+  document.getElementById("temp").textContent = `${labels.temp}: ${data.current.temp_c}°C`;
+  document.getElementById("condition").textContent = `${labels.condition}: ${conditionText}`;
+  document.getElementById("humidity").textContent = `${labels.humidity}: ${data.current.humidity}%`;
+  document.getElementById("wind").textContent = `${labels.wind}: ${data.current.wind_kph} km/h`;
+}
+
+function fetchWeather(lat, lon){
+  fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${lat},${lon}&aqi=no`)
+    .then(res => res.json())
+    .then(data => updateWeatherUI(data))
+    .catch(err => {document.getElementById("city").textContent="⚠ Weather data not available"; console.error(err);});
+}
+
+function getLocationWeather(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      pos => fetchWeather(pos.coords.latitude,pos.coords.longitude),
+      () => fetchWeather("Chennai","Chennai")
+    );
+  } else fetchWeather("Chennai","Chennai");
+}
+i18next.on('languageChanged',()=>getLocationWeather());
+getLocationWeather();
 </script>
 
 </body>

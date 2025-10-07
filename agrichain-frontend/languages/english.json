@@ -3,7 +3,12 @@
     "home": "Home",
     "about": "About",
     "services": "Services",
-    "contact": "Contact"
+    "contact": "Contact",
+    "farmer": "Farmer",
+    "buyer": "Buyer",
+    "admin": "Admin",
+    "transporter": "Transporter",
+    "insurance": "Insurance"
   },
   "hero": {
     "title": "Welcome to AgriChain",
@@ -22,12 +27,24 @@
       "Secure Payment System"
     ]
   },
+  "insurance": {
+    "title": "Apply for Crop Insurance",
+    "description": "Protect your crops from unexpected losses by applying for insurance with AgriChain.",
+    "form": {
+      "crop": "Crop Name",
+      "area": "Cultivated Area (acres)",
+      "loss": "Expected Loss ($)",
+      "apply": "Apply"
+    }
+  },
   "footer": {
     "links": {
       "home": "Home",
       "about": "About",
       "contact": "Contact"
     },
+    "brand": "AgriChain",
+    "text": "Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
     "rights": "© 2025 AgriChain. All Rights Reserved."
   }
 }
