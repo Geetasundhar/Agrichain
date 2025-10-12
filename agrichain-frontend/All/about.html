@@ -4,253 +4,198 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgriChain - About</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://unpkg.com/i18next@23.4.7/i18next.min.js"></script>
+
+<!-- FONT & ICONS -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Noto+Sans+Tamil:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- I18NEXT -->
+<script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
 <script src="https://unpkg.com/i18next-browser-languagedetector@7.0.1/i18nextBrowserLanguageDetector.min.js"></script>
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-body { line-height:1.6; background:#f9f9f9; color:#333; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+body {
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('../images/about.jpg') no-repeat center center/cover;
+  color:#333; display:flex; flex-direction:column; min-height:100vh;
+}
+
+/* HEADER */
 header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#e6f2e6;
-    padding:15px 30px;
-    border-radius:0 0 10px 10px;
-    flex-wrap:wrap;
+  position: fixed; top:0; left:0; width:100%; z-index:1000;
+  background: rgba(4,59,4,0.95); display:flex; justify-content:space-between; align-items:center;
+  padding:12px 30px; border-radius:0 0 12px 12px; box-shadow:0 4px 10px rgba(0,0,0,0.3);
 }
-header img { height:50px; }
-header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
-nav { flex:1; text-align:center; }
-nav a { margin:0 12px; text-decoration:none; color:#19692c; font-weight:bold; transition:0.3s; }
-nav a:hover, nav a.active { color:#0f4d23; text-decoration:none }
-.language-toggle button { margin-left:10px; padding:5px 10px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; }
-.language-toggle button:hover { background:#0f4d23; }
+header img { height:60px; border-radius:10px; transition:0.3s; }
+header img:hover{ transform:scale(1.1);}
+nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em; }
+nav a:hover { color:#ffeaa7; transform:scale(1.1);}
+.language-toggle { display:flex; gap:8px; }
+.language-toggle button {
+  background:#19692c; color:white; border:none; border-radius:6px; padding:6px 12px;
+  cursor:pointer; font-family:'Noto Sans Tamil',sans-serif; transition:0.3s;
+}
+.language-toggle button:hover{ background:#0f4d23; transform:scale(1.1); }
+
+/* MAIN CONTENT */
+main { flex:1; display:flex; justify-content:center; align-items:flex-start; padding:80px 10px 80px; }
 .about-container {
-    max-width:1000px;
-    margin:40px auto;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 4px 8px rgba(0,0,0,0.1);
+  width:90%; max-width:1000px; background:rgba(255,255,255,0.95);
+  padding:40px 30px; border-radius:16px; text-align:center; box-shadow:0 6px 15px rgba(0,0,0,0.25);
 }
-.about-container h2 { color:#19692c; margin-bottom:20px; text-align:center; }
-.about-container p { font-size:1.1em; margin-bottom:15px; color:#555; }
-.mission-cards {
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-    justify-content:center;
-    margin-top:30px;
-}
-.mission-card {
-    flex:1 1 250px;
-    background:#dff0d8;
-    padding:20px;
-    border-radius:10px;
-    text-align:center;
-    box-shadow:0 4px 6px rgba(0,0,0,0.1);
-    transition:0.3s;
-}
-.mission-card:hover { transform:translateY(-5px); box-shadow:0 8px 12px rgba(0,0,0,0.15); }
-.mission-card i { font-size:2.5em; color:#19692c; margin-bottom:15px; }
-.mission-card h3 { color:#19692c; margin-bottom:10px; }
-.mission-card p { font-size:0.95em; color:#555; }
+.about-container h2 { color:#19692c; font-size:2em; font-weight:bold; margin-bottom:15px; font-family:'Noto Sans Tamil',sans-serif; }
+.about-container p { text-align:justify; font-size:1.05em; line-height:1.7; font-family:'Noto Sans Tamil',sans-serif; }
 
-footer {
-    background-color:#19692c;
-    color:white;
-    padding:40px 20px 20px 20px;
-    font-size:14px;
-    line-height:1.5;
-    border-radius:10px 10px 0 0;
+/* ROTATING TAGLINE */
+.rotating-tagline-container { position:relative; width:320px; height:320px; margin:40px auto; }
+.center-name {
+  position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) scale(0.5);
+  font-size:2.8em; font-weight:bold; color:#19692c; text-shadow:0 0 12px rgba(56,142,60,0.7);
+  opacity:0; animation:showName 2s ease forwards; animation-delay:10s;
+  font-family:'Noto Sans Tamil',sans-serif; z-index:10;
 }
-footer .footer-container {
-    display:flex;
-    flex-wrap:wrap;
-    max-width:1200px;
-    margin:0 auto;
-    justify-content:space-between;
-    gap:20px;
+.rotating-tagline span {
+  position:absolute; top:50%; left:50%; width:120px; height:120px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border-radius:50%; background:linear-gradient(135deg,#f1f8e9,#dcedc8);
+  color:#2e7d32; font-weight:bold; text-align:center; transform-origin:-160px center;
+  animation:rotateCircle 10s ease-in-out forwards; font-family:'Noto Sans Tamil',sans-serif;
 }
-.footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
-.footer-brand h2 { margin-bottom:10px; color:#a8d5a2; }
-.footer-links h4, .footer-social h4 { margin-bottom:10px; font-size:16px; color:#a8d5a2; }
-.footer-links ul { list-style:none; padding-left:0; }
-.footer-links li { margin-bottom:8px; }
-.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:15px; transition:0.3s; font-weight:bold; }
-.footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
-.footer-social a i { margin-right:5px; }
-.footer-bottom { text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.3); padding-top:10px; }
-
-@media(max-width:768px) {
-    header h1 { font-size:1.5em; }
-    .about-container { padding:20px; margin:20px; }
-    .footer-container { flex-direction:column; text-align:center; }
-    .footer-social a { margin:5px; display:inline-block; }
-    .mission-cards { flex-direction:column; align-items:center; }
-    .language-toggle { width:100%; text-align:center; margin-top:15px; }
-    .language-toggle button { margin:5px; }
+.rotating-tagline span i { font-size:36px; margin-bottom:8px; color:#19692c; }
+.rotating-tagline span:nth-child(1){ --i:0deg; }
+.rotating-tagline span:nth-child(2){ --i:120deg; }
+.rotating-tagline span:nth-child(3){ --i:240deg; }
+@keyframes rotateCircle {
+  0%{ transform:rotate(var(--i)) translateX(150px) rotate(calc(-1*var(--i))); opacity:1; }
+  80%{ transform:rotate(calc(var(--i)+360deg)) translateX(150px) rotate(calc(-1*var(--i)-360deg)); opacity:1; }
+  100%{ transform:translate(-50%,-50%) scale(0); opacity:0;}
 }
-header img {
-    height: 80px;              
-    width: auto;               
-    border-radius: 15px;       
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
+@keyframes showName {
+  0%{opacity:0; transform:translate(-50%,-50%) scale(0.5);}
+  100%{opacity:1; transform:translate(-50%,-50%) scale(1);}
 }
 
-header img:hover {
-    transform: scale(1.2) rotate(-5deg); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+/* MISSION CARDS */
+.mission-cards{ display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin-top:100px;}
+.mission-card{
+  flex:1 1 300px; background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+  border-radius:14px; padding:25px; text-align:center; box-shadow:0 5px 12px rgba(0,0,0,0.15);
+  transition:transform 0.3s, box-shadow 0.3s;
 }
-header .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;                 
-}
-header h1 {
-    font-size: 2em;
-    color: #19692c;
-    font-weight: bold;
-    white-space: nowrap;      
-    transition: color 0.3s ease;
-}
+.mission-card:hover{ transform:translateY(-8px) scale(1.03); box-shadow:0 10px 20px rgba(0,0,0,0.25);}
+.mission-card i{ font-size:2.5em; color:#19692c; margin-bottom:12px;}
+.mission-card h3{ color:#19692c; margin-bottom:10px; font-family:'Noto Sans Tamil',sans-serif;}
 
-header h1:hover {
-    color: #0f4d23;            
+/* FOOTER */
+footer{
+  background:#19692c; color:white; text-align:center; padding:40px 20px 25px; border-radius:12px 12px 0 0; width:100%;
 }
+.footer-container{ display:flex; flex-wrap:wrap; justify-content:space-between; max-width:1200px; margin:0 auto; gap:25px;}
+.footer-section{ flex:1; min-width:220px;}
+.footer-section h4{ color:#ffeaa7; margin-bottom:12px; font-family:'Noto Sans Tamil',sans-serif;}
+.footer-section a{ color:white; text-decoration:none; display:block; margin-bottom:8px; transition:0.3s;}
+.footer-section a:hover{ color:#ffeaa7;}
+.footer-bottom{ border-top:1px solid rgba(255,255,255,0.3); margin-top:20px; padding-top:10px; font-size:0.9em;}
 
+/* RESPONSIVE */
 @media(max-width:768px){
-    header img {
-        height: 60px;          
-    }
-    header h1 {
-        font-size: 1.5em;
-    }
+  header{ flex-direction:column; gap:10px;}
+  nav{ flex-direction:column; gap:10px;}
+  .about-container{ width:95%; padding:25px;}
+  .mission-cards{ flex-direction:column; align-items:center;}
 }
-
 </style>
 </head>
-<body>
 
+<body>
 <header>
-  <div style="display:flex; align-items:center;">
-    <img src="../images/logo.png" alt="AgriChain Logo">
-  </div>
-  <nav>
-    <a href="../index.html" id="nav-home" data-i18n="nav-home">Home</a>
-    <a href="../All/about.html" id="nav-about" data-i18n="nav-about">About</a>
-    <a href="../Dashboard/farmer/farmer-dashboard.html" id="nav-farmer" data-i18n="nav-farmer">Farmer</a>
-    <a href="#" id="nav-buyer" data-i18n="nav-buyer">Buyer</a>
-    <a href="#" id="nav-admin" data-i18n="nav-admin">Admin</a>
-    <a href="#" id="nav-transporter" data-i18n="nav-transporter">Transporter</a>
-    <a href="#" id="nav-insurance" data-i18n="nav-insurance">Insurance</a>
-  </nav>
-  <div class="language-toggle">
-    <button onclick="changeLng('en')">English</button>
-    <button onclick="changeLng('ta')">தமிழ்</button>
-  </div>
+<img src="../images/logo.png" alt="AgriChain Logo">
+<nav>
+<a href="../index.html" data-i18n="nav-home">Home</a>
+<a href="about.html" class="active" data-i18n="nav-about">About</a>
+<a href="signup.html" data-i18n="nav-farmer">Farmer</a>
+<a href="" data-i18n="nav-buyer">Buyer</a>
+<a href="#" data-i18n="nav-admin">Admin</a>
+<a href="#" data-i18n="nav-transporter">Transporter</a>
+<a href="#" data-i18n="nav-insurance">Insurance</a>
+</nav>
+<div class="language-toggle">
+<button onclick="changeLng('en')">English</button>
+<button onclick="changeLng('ta')">தமிழ்</button>
+</div>
 </header>
 
+<main>
 <div class="about-container">
-  <h2 id="about-title" data-i18n="about-title">About AgriChain</h2>
-  <p id="about-text1" data-i18n="about-text1">AgriChain is a blockchain-based platform designed to empower farmers, ensure transparency, and streamline the agricultural supply chain.</p>
-  <p id="about-text2" data-i18n="about-text2">Our platform integrates a direct marketplace for farmers, blockchain-based crop traceability, and automated smart insurance to protect farmers against risks.</p>
-  <p id="about-text3" data-i18n="about-text3">By removing middlemen, providing authentic traceability, and automating insurance claims, AgriChain ensures that farmers earn more, consumers trust their food, and the agricultural ecosystem becomes more efficient.</p>
+<h2 data-i18n="about-title">About AgriChain</h2>
+<p data-i18n="about-text1">AgriChain is a blockchain-based platform designed to empower farmers, ensure transparency, and streamline the agricultural supply chain.</p>
+<p data-i18n="about-text2">Our platform integrates a direct marketplace for farmers, blockchain-based crop traceability, and automated smart insurance to protect farmers against risks.</p>
+<p data-i18n="about-text3">By removing middlemen and automating insurance claims, AgriChain ensures that farmers earn more and consumers trust their food.</p>
 
-  <div class="mission-cards">
-    <div class="mission-card">
-      <i class="fas fa-hand-holding-seedling"></i>
-      <h3 data-i18n="mission1-title">Empower Farmers</h3>
-      <p data-i18n="mission1-text">Providing tools and direct market access to help farmers earn more.</p>
-    </div>
-    <div class="mission-card">
-      <i class="fas fa-shield-alt"></i>
-      <h3 data-i18n="mission2-title">Secure & Transparent</h3>
-      <p data-i18n="mission2-text">Blockchain-based traceability ensures trust and authenticity.</p>
-    </div>
-    <div class="mission-card">
-      <i class="fas fa-umbrella"></i>
-      <h3 data-i18n="mission3-title">Smart Insurance</h3>
-      <p data-i18n="mission3-text">Automated claims protect farmers against crop risks and losses.</p>
-    </div>
-  </div>
+<div class="rotating-tagline-container">
+<div class="center-name" data-i18n="center-name">AgriChain</div>
+<div class="rotating-tagline">
+<span><i class="fa-solid fa-seedling"></i><div data-i18n="tag1">Empower Farmer</div></span>
+<span><i class="fa-solid fa-truck-fast"></i><div data-i18n="tag2">Secure Transport</div></span>
+<span><i class="fa-solid fa-hand-holding-heart"></i><div data-i18n="tag3">Smart Insurance</div></span>
+</div>
 </div>
 
+<div class="mission-cards">
+<div class="mission-card">
+<i class="fa-solid fa-seedling"></i>
+<h3 data-i18n="mission1-title">Empower Farmers</h3>
+<p data-i18n="mission1-text">Providing tools and direct market access to help farmers earn more.</p>
+</div>
+<div class="mission-card">
+<i class="fa-solid fa-truck-fast"></i>
+<h3 data-i18n="mission2-title">Secure & Transparent</h3>
+<p data-i18n="mission2-text">Blockchain-based traceability ensures trust and authenticity.</p>
+</div>
+<div class="mission-card">
+<i class="fa-solid fa-hand-holding-heart"></i>
+<h3 data-i18n="mission3-title">Smart Insurance</h3>
+<p data-i18n="mission3-text">Automated claims protect farmers against crop risks and losses.</p>
+</div>
+</div>
+</div>
+</main>
+
 <footer>
-  <div class="footer-container">
-    <div class="footer-brand">
-      <h2 id="footer-brand-title" data-i18n="footer-brand-title">AgriChain</h2>
-      <p id="footer-text" data-i18n="footer-text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
-    </div>
-    <div class="footer-links">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="../index.html" id="footer-home" data-i18n="footer-home">Home</a></li>
-        <li><a href="../All/about.html" id="footer-about" data-i18n="footer-about">About</a></li>
-        <li><a href="../All/contact.html" id="footer-contact" data-i18n="footer-contact">Contact</a></li>
-      </ul>
-    </div>
-    <div class="footer-social">
-      <h4>Follow Us</h4>
-      <a href="https://facebook.com/YourPage" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a> |
-      <a href="https://wa.me/+919541954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a> |
-      <a href="https://twitter.com/YourProfile" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p id="footer-bottom-text" data-i18n="footer-bottom-text">&copy; 2025 AgriChain. All Rights Reserved.</p>
-  </div>
+<div class="footer-container">
+<div class="footer-section">
+<h4 data-i18n="footer-brand-title">AgriChain</h4>
+<p data-i18n="footer-text">Empowering farmers and ensuring transparency through blockchain technology.</p>
+</div>
+<div class="footer-section">
+<h4>Quick Links</h4>
+<a href="index.html" data-i18n="footer-home">Home</a>
+<a href="about.html" data-i18n="footer-about">About</a>
+<a href="contact.html" data-i18n="footer-contact">Contact</a>
+</div>
+<div class="footer-section">
+<h4>Follow Us</h4>
+<a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+<a href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+<a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+</div>
+</div>
+<div class="footer-bottom">
+<p data-i18n="footer-bottom-text">© 2025 AgriChain. All Rights Reserved.</p>
+</div>
 </footer>
 
 <script>
 i18next.use(i18nextBrowserLanguageDetector).init({
-    debug:true,
-    fallbackLng:'en',
-    resources:{
-        en:{ translation:{
-            "nav-brand":"AgriChain","nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance",
-            "about-title":"About AgriChain","about-text1":"AgriChain is a blockchain-based platform designed to empower farmers, ensure transparency, and streamline the agricultural supply chain.",
-            "about-text2":"Our platform integrates a direct marketplace for farmers, blockchain-based crop traceability, and automated smart insurance to protect farmers against risks.",
-            "about-text3":"By removing middlemen, providing authentic traceability, and automating insurance claims, AgriChain ensures that farmers earn more, consumers trust their food, and the agricultural ecosystem becomes more efficient.",
-            "mission1-title":"Empower Farmers","mission1-text":"Providing tools and direct market access to help farmers earn more.",
-            "mission2-title":"Secure & Transparent","mission2-text":"Blockchain-based traceability ensures trust and authenticity.",
-            "mission3-title":"Smart Insurance","mission3-text":"Automated claims protect farmers against crop risks and losses.",
-            "footer-brand-title":"AgriChain","footer-text":"Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
-            "footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
-        }},
-        ta:{ translation:{
-            "nav-brand":"அக்ரிச்செயின்","nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு",
-            "about-title":"அக்ரிச்செயின் பற்றி",
-            "about-text1":"அக்ரிச்செயின் என்பது விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது மற்றும் விவசாய வழங்கல் சங்கிலியை சீரமைக்க வடிவமைக்கப்பட்ட பிளாக்செயின் அடிப்படையிலான ஒரு தளம் ஆகும்.",
-            "about-text2":"எங்கள் தளம் விவசாயிகளுக்கான நேரடி சந்தை, பிளாக்செயின் அடிப்படையிலான பயிர் பின்வட்டத்தன்மை மற்றும் விவசாயிகளை ஆபத்துகளிலிருந்து பாதுகாக்க தானாக செயற்கை காப்பீட்டையும் ஒருங்கிணைக்கிறது.",
-            "about-text3":"இடைநிலையாளர்களை நீக்குவதன் மூலம், அசல் பின்வட்டத்தன்மையை வழங்குவதன் மூலம், மற்றும் காப்பீட்டு வாதங்களை தானாகச் செயல்படுத்துவதன் மூலம், அக்ரிச்செயின் விவசாயிகள் அதிகமாக சம்பாதிக்கிறார்கள், வாடிக்கையாளர்கள் உணவை நம்புகிறார்கள் மற்றும் விவசாய சூழல் மிகவும் திறம்படமாகிறது.",
-            "mission1-title":"விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும்","mission1-text":"சாதனங்கள் மற்றும் நேரடி சந்தை அணுகல் மூலம் விவசாயிகள் அதிக சம்பாதிக்க உதவும்.",
-            "mission2-title":"பாதுகாப்பான மற்றும் தெளிவான","mission2-text":"பிளாக்செயின் அடிப்படையிலான பின்வட்டத்தன்மை நம்பிக்கையும் அசல் தரத்தையும் உறுதி செய்கிறது.",
-            "mission3-title":"ஸ்மார்ட் காப்பீடு","mission3-text":"தானாகவே வாதங்கள் செயல்பட்டு விவசாயிகளை பயிர் ஆபத்துகளிலிருந்து பாதுகாக்கிறது.",
-            "footer-brand-title":"அக்ரிச்செயின்","footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
-            "footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
-        }}
-    }
-}, function(err,t){ updateContent(); });
+fallbackLng:'en',
+resources:{en:{translation:{
+"nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance",
+"about-title":"About AgriChain","about-text1":"AgriChain is a blockchain-based platform designed to empower farmers, ensure transparency, and streamline the agricultural supply chain.","about-text2":"Our platform integrates a direct marketplace for farmers, blockchain-based crop traceability, and automated smart insurance to protect farmers against risks.","about-text3":"By removing middlemen and automating insurance claims, AgriChain ensures that farmers earn more and consumers trust their food.","tag1":"Empower Farmer","tag2":"Secure Transport","tag3":"Smart Insurance","center-name":"AgriChain","mission1-title":"Empower Farmers","mission1-text":"Providing tools and direct market access to help farmers earn more.","mission2-title":"Secure & Transparent","mission2-text":"Blockchain-based traceability ensures trust and authenticity.","mission3-title":"Smart Insurance","mission3-text":"Automated claims protect farmers against crop risks and losses.","footer-brand-title":"AgriChain","footer-text":"Empowering farmers and ensuring transparency through blockchain technology.","footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."}},ta:{translation:{"nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு","about-title":"அக்ரிச்செயின் பற்றி","about-text1":"அக்ரிச்செயின் என்பது விவசாயிகளை சக்திவாய்ந்தவர்களாக மாற்றி, தெளிவுத்தன்மையை உறுதி செய்து, விவசாய வழங்கல் சங்கிலியை மேம்படுத்தும் பிளாக்செயின் தளம் ஆகும்.","about-text2":"இந்த தளம் விவசாயிகளுக்கான நேரடி சந்தை, பிளாக்செயின் அடிப்படையிலான பயிர் பின்வழித்தன்மை, மற்றும் தானியக்கமான காப்பீட்டை ஒருங்கிணைக்கிறது.","about-text3":"இடைநிலையாளர்களை நீக்கி, காப்பீட்டு கோரிக்கைகளை தானாகச் செயல்படுத்துவதன் மூலம் விவசாயிகள் அதிகம் சம்பாதிக்கலாம்.","tag1":"விவசாயிகளை ஊக்குவிக்கவும்","tag2":"பாதுகாப்பான போக்குவரத்து","tag3":"ஸ்மார்ட் காப்பீடு","center-name":"விவசாயசங்கிலி","mission1-title":"விவசாயிகளை ஊக்குவிக்கவும்","mission1-text":"விவசாயிகள் அதிகம் சம்பாதிக்க கருவிகள் மற்றும் நேரடி சந்தை அணுகலை வழங்குகிறது.","mission2-title":"பாதுகாப்பான மற்றும் தெளிவான","mission2-text":"பிளாக்செயின் பின்வழித்தன்மை நம்பிக்கையையும் நம்பகத்தன்மையையும் உறுதி செய்கிறது.","mission3-title":"ஸ்மார்ட் காப்பீடு","mission3-text":"தானாக செயல்படும் காப்பீடு விவசாயிகளை பயிர் அபாயங்களில் இருந்து பாதுகாக்கிறது.","footer-brand-title":"அக்ரிச்செயின்","footer-text":"அக்ரிச்செயின் – விவசாயிகளை ஊக்குவித்து தெளிவை உறுதி செய்கிறது.","footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."}}}
+},()=>updateContent());
 
-function updateContent(){
-    document.querySelectorAll('[data-i18n]').forEach(el=>{
-        el.innerHTML = i18next.t(el.getAttribute('data-i18n'));
-    });
-}
-
-function changeLng(lng){
-    i18next.changeLanguage(lng, updateContent);
-}
-
-document.querySelectorAll('nav a').forEach(a=>{
-    if(a.href === location.href) a.classList.add('active');
-});
+function updateContent(){ document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=i18next.t(el.getAttribute('data-i18n')));}
+function changeLng(lng){ i18next.changeLanguage(lng, updateContent);}
 </script>
-
 </body>
 </html>
