@@ -8,20 +8,21 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
 body { line-height:1.6; background:#f9f9f9; color:#333; }
-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#e6f2e6;
-    padding:15px 20px;
-    border-radius:0 0 10px 10px;
-    flex-wrap:wrap;
+header{
+  background: rgba(25,105,44,0.95);
+  padding:15px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:white;
+  flex-wrap:wrap;
+  transition: all 0.3s ease;
 }
 header img { height:50px; }
 header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
-nav { flex:1; text-align:center; }
-nav a { margin:0 12px; text-decoration:none; color:#19692c; font-weight:bold; transition:0.3s; font-size:14px; }
-nav a:hover, nav a.active { color:#0f4d23; }
+nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; transition: all 0.3s ease;}
+nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em; }
+nav a:hover { color:#ffeaa7; transform:scale(1.1);}
 .language-toggle { display:flex; gap:10px; margin-top:10px; }
 .language-toggle button { padding:6px 12px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; font-size:14px; }
 .language-toggle button:hover { background:#0f4d23; }
@@ -50,6 +51,27 @@ nav a:hover, nav a.active { color:#0f4d23; }
 .card p { font-size:0.95em; margin-bottom:12px; }
 .card a { display:inline-block; padding:8px 15px; border-radius:6px; background:#19692c; color:white; text-decoration:none; font-size:0.95em; font-weight:bold; }
 .card a:hover { background:#0f4d23; }
+.profile-icon {
+    position:absolute;
+    top:150px; /* moved down */
+    right:50px;
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid #19692c;
+    cursor:pointer;
+    transition:transform 0.3s ease;
+}
+.profile-icon img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+.profile-icon:hover{
+    transform:scale(1.1);
+}
+
 footer {
     background-color:#19692c;
     color:white;
@@ -149,6 +171,9 @@ header h1:hover {
 <section class="hero">
     <h2 data-i18n="dashboard.title">Farmer Dashboard</h2>
     <p data-i18n="dashboard.desc">Manage your crops, sales, insurance, and activities all in one place.</p>
+     <div class="profile-icon" onclick="goToProfile()">
+        <img src="../../images/farmer-profile.jpg" alt="Farmer Photo">
+    </div>
 </section>
 
 <section class="dashboard">
@@ -249,6 +274,9 @@ function updateContent(){
     el.innerHTML = i18next.t(key);
     if(el.tagName === "TITLE") el.textContent = i18next.t(key);
   });
+}
+function goToProfile(){
+    window.location.href = "farmer-profile.html";
 }
 
 function changeLang(lang){
