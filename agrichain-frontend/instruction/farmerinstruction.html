@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriChain - Farmer Instructions</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-browser-languagedetector@7.2.1/i18nextBrowserLanguageDetector.min.js"></script>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+  
+  body{
+    background: url('../images/farmer.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Header */
+  header{
+    background: rgba(25,105,44,0.95);
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+    flex-wrap:wrap;
+  }
+  header img{height:60px;border-radius:10px;}
+  /* NAVBAR */
+nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em; }
+nav a:hover { color:#ffeaa7; transform:scale(1.1);}
+.language-toggle button{
+    margin-left:10px;
+    padding:6px 12px;
+    border:none;
+    border-radius:6px;
+    background:#fefdfa;
+    color:#19692c;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  /* Title */
+  .title{text-align:center;margin:20px;color:#123b1a;font-size:2rem;}
+
+  /* Sections */
+  .section{
+    width:90%;
+    margin:20px auto;
+    padding:20px;
+    background: rgba(255,255,255,0.95);
+    border-radius:12px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.3);
+    animation:fadeInUp 1.2s ease;
+  }
+  .section h2{color:#19692c;margin-bottom:10px;}
+  .section p{margin-bottom:10px;color:#333;font-size:1rem;line-height:1.6;}
+  .section ul{padding-left:20px;}
+  .section li{margin-bottom:8px;color:#333;font-size:1rem;}
+
+  /* Steps */
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;margin-top:15px;
+  }
+  .step{
+    background:#f1f9f1;
+    border-left:5px solid #19692c;
+    padding:15px;
+    border-radius:8px;
+    transition:0.3s;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  }
+  .step:hover{
+    background:#dff1df;
+    transform:scale(1.03);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  }
+
+  /* Map */
+  .map-container{
+    width:100%;
+    height:400px;
+    margin-top:15px;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 6px 15px rgba(0,0,0,0.2);
+  }
+  iframe{width:100%;height:100%;border:none;}
+
+  /* Footer */
+  footer{
+    background: rgba(25,105,44,0.95);
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:auto;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp{
+    from{opacity:0;transform:translateY(30px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* Responsive */
+  @media(max-width:600px){
+    .steps{grid-template-columns:1fr;}
+    header{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="../images/logo.png" alt="AgriChain Logo">
+ <nav>
+    <a href="../index.html" class="active" data-i18n="nav-home">Home</a>
+    <a href="../All/about.html" data-i18n="nav-about">About</a>
+    <a href="../instruction/farmerinstruction.html" data-i18n="nav-farmer">Farmer</a>
+    <a href="../instruction/buyerinstruction.html" data-i18n="nav-buyer">Buyer</a>
+    <a href="../instruction/admininstruction.html" data-i18n="nav-admin">Admin</a>
+    <a href="../instruction/trnsportinstruction.html" data-i18n="nav-transporter">Transporter</a>
+    <a href="../instruction/insuranceinstruction.html" data-i18n="nav-insurance">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLng('en')">English</button>
+    <button onclick="changeLng('ta')">தமிழ்</button>
+  </div>
+</header>
+
+<h2 class="title" data-i18n="instructions-title"></h2>
+
+<div class="section">
+  <h2 data-i18n="why-title"></h2>
+  <p data-i18n="why-desc"></p>
+</div>
+
+<div class="section">
+  <h2 data-i18n="benefits-title"></h2>
+  <ul>
+    <li data-i18n="benefit1"></li>
+    <li data-i18n="benefit2"></li>
+    <li data-i18n="benefit3"></li>
+    <li data-i18n="benefit4"></li>
+    <li data-i18n="benefit5"></li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 data-i18n="howto-title"></h2>
+  <div class="steps">
+    <div class="step" data-i18n="step1"></div>
+    <div class="step" data-i18n="step2"></div>
+    <div class="step" data-i18n="step3"></div>
+    <div class="step" data-i18n="step4"></div>
+    <div class="step" data-i18n="step5"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 data-i18n="nearby-title"></h2>
+  <p data-i18n="nearby-desc"></p>
+  <div class="steps">
+    <div class="step" data-i18n="nearby1"></div>
+    <div class="step" data-i18n="nearby2"></div>
+    <div class="step" data-i18n="nearby3"></div>
+  </div>
+  <div class="map-container">
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31094.021181285152!2d80.0726!3d13.0485!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5261c4f257e9cd%3A0x5f3c021a3d94c857!2sPoonamallee%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1695898888888"
+      allowfullscreen=""
+      loading="lazy">
+    </iframe>
+  </div>
+</div>
+
+<footer>
+  <p data-i18n="footer-text"></p>
+</footer>
+
+<script>
+const resources = {
+  en: {
+    translation: {
+      "nav-home":"Home","nav-about":"About","nav-contact":"Contact",
+      "instructions-title":"Farmer Instructions",
+      "why-title":"Why Use This Website?","why-desc":"AgriChain helps farmers sell crops directly, get fair prices, connect with buyers, transporters, and insurance services, and access nearby farming-related services with real-time information.",
+      "benefits-title":"Benefits",
+      "benefit1":"💰 Direct selling – more profit without middlemen.",
+      "benefit2":"🗺 Access nearby services like market, transport, insurance.",
+      "benefit3":"☀ Weather updates for safe farming decisions.",
+      "benefit4":"🖥 Simple, user-friendly design for all farmers.",
+      "benefit5":"🌐 Available in English & Tamil.",
+      "howto-title":"How to Use",
+      "step1":"👉 Step 1: Sign up as a farmer with your details.",
+      "step2":"👉 Step 2: Login using your farmer ID and password.",
+      "step3":"👉 Step 3: Add your crop details (name, quantity, price).",
+      "step4":"👉 Step 4: Buyers will view and contact you directly.",
+      "step5":"👉 Step 5: Use transport, insurance, and nearby services when needed.",
+      "nearby-title":"Nearby Services",
+      "nearby-desc":"You can find nearby markets, transport offices, and insurance providers to support your farming needs. Use the map below to locate them.",
+      "nearby1":"🛒 Nearby Market: Farmers can check markets close to their village.",
+      "nearby2":"🚚 Transport: Find transporters for safe delivery.",
+      "nearby3":"🛡 Insurance: Protect crops from damage or loss.",
+      "footer-text":"© 2025 AgriChain. All Rights Reserved.",
+      "nav-home":"Home","nav-about":"About","nav-contact":"Contact","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-transporter":"Transporter","nav-admin":"Admin","nav-insurance":"Insurance",
+
+    }
+  },
+  ta: {
+    translation: {
+      "nav-home":"முகப்பு","nav-about":"பற்றி","nav-contact":"தொடர்பு",
+      "instructions-title":"விவசாயி வழிமுறைகள்",
+      "why-title":"ஏன் இந்த வலைத்தளம்?","why-desc":"விவசாயசங்கிலி விவசாயிகள் நேரடியாக பயிர்களை விற்க, நியாயமான விலை பெற, வாங்குபவர்கள், போக்குவரத்து மற்றும் காப்பீட்டு சேவைகளுடன் இணைய மற்றும் அருகிலுள்ள சேவைகளை நேரடி தகவலுடன் பயன்படுத்த உதவுகிறது.",
+      "benefits-title":"நன்மைகள்",
+      "benefit1":"💰 நேரடி விற்பனை – நடுவிலாளர்கள் இல்லாமல் அதிக லாபம்.",
+      "benefit2":"🗺 சந்தை, போக்குவரத்து, காப்பீடு போன்ற அருகிலுள்ள சேவைகள்.",
+      "benefit3":"☀ பாதுகாப்பான விவசாய முடிவுகளுக்கான வானிலை புதுப்பிப்புகள்.",
+      "benefit4":"🖥 அனைத்து விவசாயிகளுக்கும் எளிய மற்றும் பயனர் நட்பு வடிவமைப்பு.",
+      "benefit5":"🌐 ஆங்கிலம் & தமிழில் கிடைக்கிறது.",
+      "howto-title":"எப்படி பயன்படுத்துவது",
+      "step1":"👉 படி 1: விவசாயியாக உங்கள் விவரங்களுடன் பதிவு செய்யவும்.",
+      "step2":"👉 படி 2: உங்கள் விவசாயி ஐடி மற்றும் கடவுச்சொல்லைப் பயன்படுத்தி உள்நுழையவும்.",
+      "step3":"👉 படி 3: உங்கள் பயிர் விவரங்களைச் சேர்க்கவும் (பெயர், அளவு, விலை).",
+      "step4":"👉 படி 4: வாங்குபவர்கள் அதை பார்வையிட்டு நேரடியாக தொடர்பு கொள்வார்கள்.",
+      "step5":"👉 படி 5: தேவையானபோது போக்குவரத்து, காப்பீடு மற்றும் அருகிலுள்ள சேவைகளைப் பயன்படுத்தவும்.",
+      "nearby-title":"அருகிலுள்ள சேவைகள்",
+      "nearby-desc":"உங்கள் விவசாய தேவைகளுக்காக அருகிலுள்ள சந்தைகள், போக்குவரத்து அலுவலகங்கள் மற்றும் காப்பீட்டு வழங்குநர்களைக் கண்டறியலாம். அவற்றைக் காண்பதற்கு கீழே உள்ள வரைபடத்தைப் பயன்படுத்தவும்.",
+      "nearby1":"🛒 அருகிலுள்ள சந்தை: விவசாயிகள் தங்களின் கிராமத்திற்கு அருகிலுள்ள சந்தைகளில் பயிர்களை சரிபார்க்கலாம்.",
+      "nearby2":"🚚 போக்குவரத்து: உங்கள் பயிர்களை பாதுகாப்பாக கொண்டு செல்ல போக்குவரத்தைப் பெறவும்.",
+      "nearby3":"🛡 காப்பீடு: சேதம் அல்லது இழப்பிலிருந்து பயிர்களைப் பாதுகாக்க அருகிலுள்ள காப்பீட்டு முகவர்களைப் பெறவும்.",
+      "footer-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை.",
+      "nav-home":"முகப்பு","nav-about":"பற்றி","nav-contact":"தொடர்பு","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-transporter":"போக்குவரத்து","nav-admin":"நிர்வாகி","nav-insurance":"காப்பீடு",
+
+    }
+  }
+};
+
+document.addEventListener("DOMContentLoaded", function(){
+  i18next.use(i18nextBrowserLanguageDetector)
+         .init({ resources, fallbackLng: 'en' }, updateTexts);
+  
+  window.changeLng = function(lang) {
+    i18next.changeLanguage(lang, updateTexts);
+  }
+
+  function updateTexts() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const translation = i18next.t(key);
+      if(el.tagName === "A") {
+        el.textContent = translation;  // Fix navbar translation
+      } else {
+        el.innerHTML = translation;
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>

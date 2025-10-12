@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriChain - Transport Module</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-browser-languagedetector@7.2.1/i18nextBrowserLanguageDetector.min.js"></script>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+  body{
+    background:url('../images/transport.jpg') no-repeat center center fixed;
+    background-size:cover;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  header{
+    background:rgba(25,105,44,0.95);
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+    flex-wrap:wrap;
+  }
+  header img{height:60px;border-radius:10px;}
+  nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+  nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em; }
+  nav a:hover { color:#ffeaa7; transform:scale(1.1);}
+  .language-toggle button{
+    margin-left:10px;
+    padding:6px 12px;
+    border:none;
+    border-radius:6px;
+    background:#ffeaa7;
+    color:#19692c;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  .title{text-align:center;margin:20px;color:#19692c;font-size:2rem;}
+
+  .section{
+    width:90%;
+    margin:20px auto;
+    padding:20px;
+    background:rgba(255,255,255,0.95);
+    border-radius:12px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.3);
+    animation:fadeInUp 1s ease;
+  }
+  .section h2{color:#19692c;margin-bottom:10px;}
+  .section p{margin-bottom:10px;color:#333;font-size:1rem;line-height:1.6;}
+
+  /* Flip Cards */
+  .flip-container{
+    perspective:1000px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    margin-top:20px;
+  }
+  .flip-card{
+    background:#f1f9f1;
+    border-radius:12px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+    perspective:1000px;
+    cursor:pointer;
+    transition:transform 0.3s;
+  }
+  .flip-card:hover{transform:scale(1.05);}
+  .flip-card-inner{
+    position:relative;
+    width:100%;
+    height:250px;
+    text-align:center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    border-radius:12px;
+  }
+  .flip-card:hover .flip-card-inner{transform: rotateY(180deg);}
+  .flip-card-front, .flip-card-back{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:1rem;
+    text-align:center;
+  }
+  .flip-card-front{background:#dff1df;color:#19692c;font-weight:bold;}
+  
+  .flip-card-back {
+    background:#19692c;
+    color:white;
+    transform:rotateY(180deg);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:0; /* Remove padding for image */
+  }
+
+  .flip-card-back img {
+    width:100%;
+    height:100%;
+    object-fit:cover; /* Fit inside without cutting */
+    border-radius:12px;
+  }
+
+  /* Slideshow */
+  .slideshow-container{
+    width:100%;
+    max-width:800px;
+    margin:20px auto;
+    position:relative;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 6px 15px rgba(0,0,0,0.25);
+  }
+  .slides{
+    display:none;
+    width:100%;
+    height:400px;
+    object-fit:cover;
+    border-radius:12px;
+  }
+  .prev, .next{
+    cursor:pointer;
+    position:absolute;
+    top:50%;
+    width:auto;
+    margin-top:-22px;
+    padding:16px;
+    color:white;
+    font-weight:bold;
+    font-size:18px;
+    border-radius:0 3px 3px 0;
+    user-select:none;
+    background:rgba(0,0,0,0.3);
+    transition:0.3s;
+  }
+  .next{right:0;border-radius:3px 0 0 3px;}
+  .prev:hover, .next:hover{background:rgba(0,0,0,0.6);}
+
+  /* Map iframe */
+  .map-container{
+    width:100%;
+    height:400px;
+    margin-top:20px;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 6px 15px rgba(0,0,0,0.2);
+  }
+  .map-container iframe{width:100%;height:100%;border:none;}
+
+  /* Tracking dashboard */
+  .tracking-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-top:15px;
+  }
+  .tracking-card{
+    flex:1 1 250px;
+    padding:15px;
+    background:#f1f9f1;
+    border-left:5px solid #19692c;
+    border-radius:8px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+  }
+  .tracking-card h3{color:#19692c;margin-bottom:10px;}
+  .tracking-card p{color:#333;}
+
+  footer{
+    background:rgba(25,105,44,0.95);
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:auto;
+  }
+
+  @keyframes fadeInUp{
+    from{opacity:0;transform:translateY(30px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  @media(max-width:600px){
+    .flip-container{grid-template-columns:1fr;}
+    .tracking-container{flex-direction:column;}
+    header{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="../images/logo.png" alt="AgriChain Logo">
+  <nav>
+    <a href="../index.html" class="active" data-i18n="nav-home">Home</a>
+    <a href="../All/about.html" data-i18n="nav-about">About</a>
+    <a href="../instruction/farmerinstruction.html" data-i18n="nav-farmer">Farmer</a>
+    <a href="../instruction/buyerinstruction.html" data-i18n="nav-buyer">Buyer</a>
+    <a href="../instruction/admininstruction.html" data-i18n="nav-admin">Admin</a>
+    <a href="../instruction/trnsportinstruction.html" data-i18n="nav-transporter">Transporter</a>
+    <a href="../instruction/insuranceinstruction.html" data-i18n="nav-insurance">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLng('en')">English</button>
+    <button onclick="changeLng('ta')">தமிழ்</button>
+  </div>
+</header>
+
+<h2 class="title" data-i18n="title">Transport Services</h2>
+
+<div class="section">
+  <h2 data-i18n="services-title">Available Transport Options</h2>
+  <div class="flip-container">
+    <div class="flip-card">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">🚚 Truck Services</div>
+        <div class="flip-card-back"><img src="../images/truck.jpg" alt="Truck"></div>
+      </div>
+    </div>
+    <div class="flip-card" >
+      <div class="flip-card-inner">
+        <div class="flip-card-front">🏍 Two-Wheeler Delivery</div>
+        <div class="flip-card-back"><img src="../images/two.jpg" alt="Two-Wheeler"></div>
+      </div>
+    </div>
+    <div class="flip-card" >
+      <div class="flip-card-inner">
+        <div class="flip-card-front">📦 Warehousing</div>
+        <div class="flip-card-back"><img src="../images/ware.jpg" alt="Warehouse"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 data-i18n="slideshow-title">Transport Gallery</h2>
+  <div class="slideshow-container">
+    <img class="slides" src="../images/transport.jpg">
+    <img class="slides" src="../images/trans.jpg">
+    <img class="slides" src="../images/cycle.jpg">
+    <a class="prev" onclick="plusSlides(-1)">❮</a>
+    <a class="next" onclick="plusSlides(1)">❯</a>
+  </div>
+</div>
+
+<div class="section">
+  <h2 data-i18n="map-title">Nearby Transport Hubs</h2>
+  <p data-i18n="map-desc">Click the cards above to open the corresponding transport locations in Google Maps.</p>
+  <div class="map-container" id="map-frame">
+    <iframe src="https://www.google.com/maps?q=Poonamallee,+Tamil+Nadu&output=embed"></iframe>
+  </div>
+</div>
+
+<div class="section">
+  <h2 data-i18n="tracking-title">Tracking Dashboard</h2>
+  <div class="tracking-container">
+    <div class="tracking-card">
+      <h3>Truck #101</h3>
+      <p>Status: On Route</p>
+      <p>Current Location: Poonamallee</p>
+      <p>ETA: 3 hours</p>
+    </div>
+    <div class="tracking-card">
+      <h3>Two-Wheeler #27</h3>
+      <p>Status: Delivered</p>
+      <p>Location: Guindy</p>
+      <p>Delivery Time: 11:30 AM</p>
+    </div>
+    <div class="tracking-card">
+      <h3>Warehouse #5</h3>
+      <p>Status: Stock Available</p>
+      <p>Location: Ambattur</p>
+      <p>Capacity: 75%</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p data-i18n="footer-text">© 2025 AgriChain. All Rights Reserved.</p>
+</footer>
+
+<script>
+  const resources = {
+    en:{translation:{
+      "nav-home":"Home","nav-about":"About","nav-contact":"Contact",
+      "nav-farmer":"Farmer","nav-buyer":"Buyer","nav-transporter":"Transporter","nav-admin":"Admin","nav-insurance":"Insurance",
+      "title":"Transport Services",
+      "services-title":"Available Transport Options",
+      "slideshow-title":"Transport Gallery",
+      "map-title":"Nearby Transport Hubs",
+      "map-desc":"Click the cards above to open the corresponding transport locations in Google Maps.",
+      "tracking-title":"Tracking Dashboard",
+      "footer-text":"© 2025 AgriChain. All Rights Reserved."
+    }},
+    ta:{translation:{
+      "nav-home":"முகப்பு","nav-about":"பற்றி","nav-contact":"தொடர்பு",
+      "nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-transporter":"போக்குவரத்து","nav-admin":"நிர்வாகி","nav-insurance":"காப்பீடு",
+      "title":"போக்குவரத்து சேவைகள்",
+      "services-title":"கிடைக்கும் போக்குவரத்து விருப்பங்கள்",
+      "slideshow-title":"போக்குவரத்து புகைப்படங்கள்",
+      "map-title":"அருகிலுள்ள போக்குவரத்து மையங்கள்",
+      "map-desc":"மேலே உள்ள கார்ட்களை கிளிக் செய்து Google Maps இல் தொடர்புடைய இடங்களை பார்க்கவும்.",
+      "tracking-title":"காணிக்கை டாஷ்போர்டு",
+      "footer-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
+    }}
+  };
+
+  i18next.use(i18nextBrowserLanguageDetector)
+         .init({resources,fallbackLng:'en'},()=>updateTexts());
+
+  function changeLng(lang){
+    i18next.changeLanguage(lang,()=>updateTexts());
+  }
+
+  function updateTexts(){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const translation = i18next.t(key);
+      if(el.tagName === "A"){ el.textContent = translation; } 
+      else { el.innerHTML = translation; }
+    });
+  }
+
+  // Slideshow
+  let slideIndex=0;
+  showSlides(slideIndex);
+  function plusSlides(n){showSlides(slideIndex+=n);}
+  function showSlides(n){
+    const slides=document.getElementsByClassName("slides");
+    if(n>=slides.length) slideIndex=0;
+    if(n<0) slideIndex=slides.length-1;
+    for(let i=0;i<slides.length;i++){slides[i].style.display="none";}
+    slides[slideIndex].style.display="block";
+  }
+  setInterval(()=>{plusSlides(1);},5000);
+
+  // Clickable cards open Google Maps
+  function openMap(url){ window.open(url,'_blank'); }
+</script>
+
+</body>
+</html>

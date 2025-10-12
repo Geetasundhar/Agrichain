@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriChain - Buyer Instructions</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-browser-languagedetector@7.2.1/i18nextBrowserLanguageDetector.min.js"></script>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+  
+  body{
+    background:url('../images/buyer.jpg') 
+               no-repeat center center fixed;
+    background-size:cover;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Header */
+  header{
+    background:rgba(25,105,44,0.95);
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:white;
+    flex-wrap:wrap;
+  }
+  header img{height:60px;border-radius:10px;}
+  nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em; }
+nav a:hover { color:#ffeaa7; transform:scale(1.1);}
+ .language-toggle button{
+    margin-left:10px;
+    padding:6px 12px;
+    border:none;
+    border-radius:6px;
+    background:#f0efec;
+    color:#19692c;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  /* Title */
+  .title{text-align:center;margin:20px;color:#19692c;font-size:2rem;}
+
+  /* Sections */
+  .section{
+    width:90%;
+    margin:20px auto;
+    padding:20px;
+    background:rgba(255,255,255,0.94);
+    border-radius:12px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.3);
+    animation:fadeInUp 1.2s ease;
+  }
+  .section h2{color:#19692c;margin-bottom:10px;}
+  .section p{margin-bottom:10px;color:#333;font-size:1rem;line-height:1.6;}
+  .section ul{list-style:✅;padding-left:20px;}
+  .section li{margin-bottom:8px;color:#333;font-size:1rem;}
+
+  /* Steps */
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;margin-top:15px;
+  }
+  .step{
+    background:#f1f9f1;
+    border-left:5px solid #19692c;
+    padding:15px;
+    border-radius:8px;
+    transition:0.3s;
+    box-shadow:0 3px 8px rgba(0,0,0,0.15);
+  }
+  .step:hover{
+    background:#dff1df;
+    transform:scale(1.03);
+    box-shadow:0 6px 15px rgba(0,0,0,0.25);
+  }
+
+  /* Footer */
+  footer{
+    background:rgba(25,105,44,0.95);
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:auto;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp{
+    from{opacity:0;transform:translateY(30px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* Responsive */
+  @media(max-width:600px){
+    .steps{grid-template-columns:1fr;}
+    header{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="../images/logo.png" alt="AgriChain Logo">
+  <nav>
+    <a href="../index.html" class="active" data-i18n="nav-home">Home</a>
+    <a href="../All/about.html" data-i18n="nav-about">About</a>
+    <a href="../instruction/farmerinstruction.html" data-i18n="nav-farmer">Farmer</a>
+    <a href="../instruction/buyerinstruction.html" data-i18n="nav-buyer">Buyer</a>
+    <a href="../instruction/admininstruction.html" data-i18n="nav-admin">Admin</a>
+    <a href="../instruction/trnsportinstruction.html" data-i18n="nav-transporter">Transporter</a>
+    <a href="../instruction/insuranceinstruction.html" data-i18n="nav-insurance">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLng('en')">English</button>
+    <button onclick="changeLng('ta')">தமிழ்</button>
+  </div>
+</header>
+
+<h2 class="title" data-i18n="instructions-title">Buyer Instructions</h2>
+
+<!-- Why use -->
+<div class="section">
+  <h2 data-i18n="why-title">Why Use This Website?</h2>
+  <p data-i18n="why-desc">AgriChain allows buyers to connect directly with farmers to purchase fresh crops at fair prices, reducing middlemen costs and ensuring transparency in agricultural trade.</p>
+</div>
+
+<!-- Benefits -->
+<div class="section">
+  <h2 data-i18n="benefits-title">Benefits</h2>
+  <ul>
+    <li data-i18n="benefit1">🛒 Direct purchase from farmers at fair prices.</li>
+    <li data-i18n="benefit2">📦 Transparent system for quality crop details.</li>
+    <li data-i18n="benefit3">🚚 Access transport and insurance support.</li>
+    <li data-i18n="benefit4">💬 Direct communication with farmers.</li>
+    <li data-i18n="benefit5">🌐 Multilingual interface (English & Tamil).</li>
+  </ul>
+</div>
+
+<!-- How to use -->
+<div class="section">
+  <h2 data-i18n="howto-title">How to Use</h2>
+  <div class="steps">
+    <div class="step" data-i18n="step1">👉 Step 1: Register as a buyer with your details.</div>
+    <div class="step" data-i18n="step2">👉 Step 2: Login using your buyer ID and password.</div>
+    <div class="step" data-i18n="step3">👉 Step 3: Search for crops based on category, location, or price.</div>
+    <div class="step" data-i18n="step4">👉 Step 4: Contact farmers directly to discuss and finalize the deal.</div>
+    <div class="step" data-i18n="step5">👉 Step 5: Use AgriChain’s transport and insurance services for delivery and protection.</div>
+  </div>
+</div>
+
+<!-- Support -->
+<div class="section">
+  <h2 data-i18n="support-title">Support Services</h2>
+  <p data-i18n="support-desc">Buyers can also access support for logistics, payments, and insurance to make purchasing easier and safer.</p>
+  <div class="steps">
+    <div class="step" data-i18n="support1">📞 Customer Support – Assistance for any queries.</div>
+    <div class="step" data-i18n="support2">💳 Secure Payments – Safe transaction options.</div>
+    <div class="step" data-i18n="support3">🚚 Delivery Tracking – Monitor transport in real time.</div>
+  </div>
+</div>
+
+<footer>
+  <p data-i18n="footer-text">© 2025 AgriChain. All Rights Reserved.</p>
+</footer>
+
+<script>
+  const resources = {
+    en:{translation:{
+      "nav-home":"Home","nav-about":"About","nav-contact":"Contact",
+      "instructions-title":"Buyer Instructions",
+      "why-title":"Why Use This Website?",
+      "why-desc":"AgriChain allows buyers to connect directly with farmers to purchase fresh crops at fair prices, reducing middlemen costs and ensuring transparency in agricultural trade.",
+      "benefits-title":"Benefits",
+      "benefit1":"🛒 Direct purchase from farmers at fair prices.",
+      "benefit2":"📦 Transparent system for quality crop details.",
+      "benefit3":"🚚 Access transport and insurance support.",
+      "benefit4":"💬 Direct communication with farmers.",
+      "benefit5":"🌐 Multilingual interface (English & Tamil).",
+      "howto-title":"How to Use",
+      "step1":"👉 Step 1: Register as a buyer with your details.",
+      "step2":"👉 Step 2: Login using your buyer ID and password.",
+      "step3":"👉 Step 3: Search for crops based on category, location, or price.",
+      "step4":"👉 Step 4: Contact farmers directly to discuss and finalize the deal.",
+      "step5":"👉 Step 5: Use AgriChain’s transport and insurance services for delivery and protection.",
+      "support-title":"Support Services",
+      "support-desc":"Buyers can also access support for logistics, payments, and insurance to make purchasing easier and safer.",
+      "support1":"📞 Customer Support – Assistance for any queries.",
+      "support2":"💳 Secure Payments – Safe transaction options.",
+      "support3":"🚚 Delivery Tracking – Monitor transport in real time.",
+      "footer-text":"© 2025 AgriChain. All Rights Reserved.",
+        "nav-home":"Home","nav-about":"About","nav-contact":"Contact","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-transporter":"Transporter","nav-admin":"Admin","nav-insurance":"Insurance",
+
+    }},
+    ta:{translation:{
+      "nav-home":"முகப்பு","nav-about":"பற்றி","nav-contact":"தொடர்பு",
+      "instructions-title":"வாங்குபவர் வழிமுறைகள்",
+      "why-title":"ஏன் இந்த வலைத்தளம்?",
+      "why-desc":"விவசாயசங்கிலி வாங்குபவர்கள் விவசாயிகளுடன் நேரடியாக இணைந்து புதிய பயிர்களை நியாயமான விலையில் வாங்க உதவுகிறது, நடுவிலாளர்களின் செலவுகளை குறைத்து வெளிப்படைத்தன்மையை உறுதிப்படுத்துகிறது.",
+      "benefits-title":"நன்மைகள்",
+      "benefit1":"🛒 விவசாயிகளிடமிருந்து நேரடி வாங்குதல் – நியாயமான விலை.",
+      "benefit2":"📦 தரமான பயிர் விவரங்களுக்கான வெளிப்படையான அமைப்பு.",
+      "benefit3":"🚚 போக்குவரத்து மற்றும் காப்பீட்டு ஆதரவைப் பெறலாம்.",
+      "benefit4":"💬 விவசாயிகளுடன் நேரடி தொடர்பு கொள்ளலாம்.",
+      "benefit5":"🌐 ஆங்கிலம் மற்றும் தமிழில் கிடைக்கிறது.",
+      "howto-title":"எப்படி பயன்படுத்துவது",
+      "step1":"👉 படி 1: வாங்குபவராக உங்கள் விவரங்களுடன் பதிவு செய்யவும்.",
+      "step2":"👉 படி 2: உங்கள் வாங்குபவர் ஐடி மற்றும் கடவுச்சொல்லைப் பயன்படுத்தி உள்நுழையவும்.",
+      "step3":"👉 படி 3: பிரிவு, இடம் அல்லது விலைக்கு ஏற்ப பயிர்களைத் தேடவும்.",
+      "step4":"👉 படி 4: விவசாயிகளுடன் நேரடியாக தொடர்பு கொண்டு ஒப்பந்தத்தை முடிக்கவும்.",
+      "step5":"👉 படி 5: போக்குவரத்து மற்றும் காப்பீட்டு சேவைகளைப் பயன்படுத்தி பாதுகாப்பான விநியோகத்தை உறுதிப்படுத்தவும்.",
+      "support-title":"ஆதரவு சேவைகள்",
+      "support-desc":"வாங்குபவர்கள் போக்குவரத்து, கட்டணம் மற்றும் காப்பீட்டிற்கான ஆதரவையும் எளிதாகப் பெறலாம்.",
+      "support1":"📞 வாடிக்கையாளர் ஆதரவு – எந்தவொரு கேள்விக்கும் உதவி.",
+      "support2":"💳 பாதுகாப்பான கட்டணங்கள் – நம்பகமான பரிவர்த்தனைகள்.",
+      "support3":"🚚 விநியோக கண்காணிப்பு – நேரடி போக்குவரத்து கண்காணிப்பு.",
+      "footer-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை.",
+      "nav-home":"முகப்பு","nav-about":"பற்றி","nav-contact":"தொடர்பு","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-transporter":"போக்குவரத்து","nav-admin":"நிர்வாகி","nav-insurance":"காப்பீடு",
+
+    }}
+  };
+
+  i18next.use(i18nextBrowserLanguageDetector).init({resources,fallbackLng:'en'},()=>updateTexts());
+  function changeLng(lang){i18next.changeLanguage(lang,()=>updateTexts());}
+  function updateTexts(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=i18next.t(el.getAttribute('data-i18n'));});}
+</script>
+
+</body>
+</html>
