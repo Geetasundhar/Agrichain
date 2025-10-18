@@ -3,242 +3,258 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgriChain - Sales</title>
+<title>AgriChain - Recent Crop History</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
 <script src="https://unpkg.com/i18next-browser-languagedetector@7.2.1/i18nextBrowserLanguageDetector.min.js"></script>
+
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-body { line-height:1.6; background:#f9f9f9; color:#333; }
-header { display:flex; justify-content:space-between; align-items:center; background:#e6f2e6; padding:15px 30px; border-radius:0 0 10px 10px; flex-wrap:wrap; }
-header img { height:50px; }
-header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
-nav { flex:1; text-align:center; }
-nav a { margin:0 12px; text-decoration:none; color:#19692c; font-weight:bold; transition:0.3s; }
-nav a:hover { color:#0f4d23; }
-.language-toggle button { margin-left:10px; padding:5px 10px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; }
-.language-toggle button:hover { background:#0f4d23; }
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',Arial,sans-serif;scroll-behavior:smooth;}
+body{
+  background:url("../images/sales.jpg") no-repeat center center/cover;
+  color:#333;min-height:30vh;
+  transition:background 1s ease-in-out;
+  padding-top:200px;
+}
+header{
+  position:fixed;top:0;left:0;width:100%;
+  background:rgba(25,105,44,0.95);
+  color:white;display:flex;justify-content:space-between;align-items:center;
+  padding:15px 25px;flex-wrap:wrap;
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
+  border-radius:0 0 15px 15px;
+  z-index:1000;
+  transition:all 0.4s ease;
+}
+header img{
+  height:65px;border-radius:10px;cursor:pointer;
+  transition:transform 0.3s ease;
+}
+header img:hover{transform:scale(1.1);}
+nav{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;}
+nav a{
+  text-decoration:none;color:#f3f7f4;font-weight:600;font-size:1.05em;
+  transition:color 0.3s,transform 0.3s;
+}
+nav a:hover{color:#ffeaa7;transform:scale(1.1);}
+.language-toggle button{
+  margin-left:10px;padding:6px 12px;border:none;cursor:pointer;
+  border-radius:5px;background:#f7f6f5;color:#0f4d23;font-weight:bold;
+  transition:0.3s;
+}
+.language-toggle button:hover{background:#fbfbfa;transform:scale(1.05);}
 
-.hero { background:#dff0d8; text-align:center; padding:60px 20px; border-radius:10px; margin:20px; }
-.hero h2 { font-size:2.4em; margin-bottom:15px; color:#19692c; }
-.hero p { font-size:1.1em; margin-bottom:20px; }
+.hero{
+  background:rgba(255,255,255,0.9);
+  text-align:center;padding:60px 20px;
+  border-radius:15px;margin:20px auto;
+  max-width:900px;
+  box-shadow:0 6px 12px rgba(0,0,0,0.15);
+  animation:fadeInUp 1.2s ease forwards;
+}
+.hero h2{
+  font-size:2.3em;margin-bottom:15px;color:#19692c;
+}
+.hero p{font-size:1.1em;color:#333;}
 
-.sales-section { max-width:800px; background:white; margin:20px auto; padding:30px; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
-.sales-section h3 { margin-bottom:20px; color:#19692c; }
-.sales-section label { display:block; margin:10px 0 5px; font-weight:bold; }
-.sales-section input { width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:5px; }
-.sales-section button { padding:12px 20px; background:#19692c; color:white; border:none; border-radius:5px; cursor:pointer; transition:0.3s; width:100%; }
-.sales-section button:hover { background:#0f4d23; }
+.sales-records{
+  max-width:900px;background:rgba(255,255,255,0.95);
+  margin:30px auto;padding:30px;
+  border-radius:15px;box-shadow:0 4px 8px rgba(0,0,0,0.1);
+  transition:transform 0.4s,box-shadow 0.4s;
+  animation:fadeInUp 1.5s ease forwards;
+}
+.sales-records:hover{transform:translateY(-5px);box-shadow:0 8px 14px rgba(0,0,0,0.2);}
+.sales-records h3{text-align:center;color:#19692c;margin-bottom:20px;font-size:1.8em;}
 
-.sales-records { max-width:800px; margin:20px auto; }
-.sales-records table { width:100%; border-collapse:collapse; }
-.sales-records th, .sales-records td { padding:12px; border:1px solid #ccc; text-align:left; }
-.sales-records th { background:#19692c; color:white; }
-.sales-records td { background:white; }
+.sales-records table{
+  width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;
+}
+.sales-records th,.sales-records td{
+  padding:12px;border:1px solid #ddd;text-align:left;
+}
+.sales-records th{
+  background:#19692c;color:white;font-weight:bold;text-align:center;
+}
+.sales-records tr:nth-child(even){background:#f9f9f9;}
+.sales-records tr:hover{background:#e8f5e9;transition:0.3s;}
 
-footer { background-color:#19692c; color:white; padding:40px 20px 20px 20px; font-size:14px; line-height:1.5; border-radius:10px 10px 0 0; }
-footer .footer-container { display:flex; flex-wrap:wrap; max-width:1200px; margin:0 auto; justify-content:space-between; gap:20px; }
-.footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
-.footer-brand h2 { margin-bottom:10px; color:#a8d5a2; }
-.footer-links h4, .footer-social h4 { margin-bottom:10px; font-size:16px; color:#a8d5a2; }
-.footer-links ul { list-style:none; padding-left:0; }
-.footer-links li { margin-bottom:8px; }
-.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:15px; transition:0.3s; font-weight:bold; }
-.footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
-.footer-social a i { margin-right:5px; }
-.footer-bottom { text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.3); padding-top:10px; }
+.loading{text-align:center;font-size:1.1em;color:#19692c;margin-top:20px;}
+.error{text-align:center;color:red;margin-top:20px;}
+
+footer{
+  background:rgba(25,105,44,0.95);color:white;
+  padding:40px 20px 20px;border-radius:15px 15px 0 0;
+  backdrop-filter:blur(6px);margin-top:50px;
+}
+footer .footer-container{
+  display:flex;flex-wrap:wrap;max-width:1200px;margin:0 auto;
+  justify-content:space-between;gap:20px;
+}
+.footer-brand,.footer-links,.footer-social{flex:1 1 250px;}
+.footer-brand h2{margin-bottom:10px;color:#a8d5a2;}
+.footer-links h4,.footer-social h4{margin-bottom:10px;font-size:16px;color:#a8d5a2;}
+.footer-links ul{list-style:none;padding-left:0;}
+.footer-links li{margin-bottom:8px;}
+.footer-links a,.footer-social a{
+  color:white;text-decoration:none;margin-right:15px;
+  transition:0.3s;font-weight:bold;
+}
+.footer-links a:hover,.footer-social a:hover{color:#a8d5a2;transform:translateY(-2px);}
+.footer-social a i{margin-right:5px;}
+.footer-bottom{text-align:center;margin-top:20px;border-top:1px solid rgba(255,255,255,0.3);padding-top:10px;}
+
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(50px);}
+  to{opacity:1;transform:translateY(0);}
+}
 
 @media(max-width:768px){
-  header h1 { font-size:1.5em; }
-  .hero h2 { font-size:2em; }
-  .sales-section { padding:20px; }
-  .footer-container { flex-direction:column; text-align:center; }
-  .sales-records table, .sales-records th, .sales-records td { font-size:0.9em; }
+  nav{flex-direction:column;}
+  .hero h2{font-size:1.9em;}
+  .sales-records{padding:20px;}
+  .sales-records th,.sales-records td{font-size:0.9em;}
+  .footer-container{flex-direction:column;text-align:center;}
 }
-@media(max-width:480px){
-  header img { height:40px; }
-  .hero h2 { font-size:1.6em; }
-  .hero p { font-size:1em; }
-  .sales-section h3 { font-size:1.2em; }
-}
-header img {
-    height: 80px;              
-    width: auto;               
-    border-radius: 15px;       
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-}
-
-header img:hover {
-    transform: scale(1.2) rotate(-5deg); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
-}
-header .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;                 
-}
-header h1 {
-    font-size: 2em;
-    color: #19692c;
-    font-weight: bold;
-    white-space: nowrap;      
-    transition: color 0.3s ease;
-}
-
-header h1:hover {
-    color: #0f4d23;            
-}
-
-@media(max-width:768px){
-    header img {
-        height: 60px;          
-    }
-    header h1 {
-        font-size: 1.5em;
-    }
-}
-
 </style>
 </head>
+
 <body>
 <header>
-    <div style="display:flex; align-items:center;">
-        <img src="../images/logo.png" alt="AgriChain Logo">
-    </div>
-    <nav>
-        <a href="../index.html" data-i18n="nav-home">Home</a>
-        <a href="../All/about.html" data-i18n="nav-about">About</a>
-        <a href="../Dashboard/farmer/farmer-dashboard.html" data-i18n="nav-farmer">Farmer</a>
-        <a href="#" data-i18n="nav-buyer">Buyer</a>
-        <a href="#" data-i18n="nav-admin">Admin</a>
-        <a href="#" data-i18n="nav-transporter">Transporter</a>
-        <a href="../Dashboard/insurance/insurance-dashboard.html" data-i18n="nav-insurance">Insurance</a>
-    </nav>
-    <div class="language-toggle">
-        <button onclick="changeLng('en')">English</button>
-        <button onclick="changeLng('ta')">தமிழ்</button>
-    </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="../images/logo.png" alt="AgriChain Logo">
+  </div>
+  <nav>
+     <a href="../index.html" data-i18n="nav-home">Home</a>
+    <a href="../All/about.html" data-i18n="nav-about">About</a>
+    <a href="../Dashboard/farmer/farmer-dashboard.html" data-i18n="nav-farmer">Farmer</a>
+    <a href="#" data-i18n="nav-buyer">Buyer</a>
+    <a href="#" data-i18n="nav-admin">Admin</a>
+    <a href="#" data-i18n="nav-transporter">Transporter</a>
+    <a href="../Dashboard/insurance/insurance-dashboard.html" data-i18n="nav-insurance">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLng('en')">English</button>
+    <button onclick="changeLng('ta')">தமிழ்</button>
+  </div>
 </header>
 
-<div class="hero">
-    <h2 data-i18n="sales-title"><i class="fas fa-hand-holding-usd"></i> Sales Management</h2>
-    <p data-i18n="sales-text">Easily record and track your sales transactions.</p>
-</div>
+<section class="hero">
+  <h2 data-i18n="sales-title"><i class="fas fa-hand-holding-seedling"></i> Recent Crop History</h2>
+  <p data-i18n="sales-text">View all the crops you’ve recently added and sold.</p>
+</section>
 
-<div class="sales-section">
-    <h3 data-i18n="sales-form-title">Record a New Sale</h3>
-    <form id="sales-form">
-        <label data-i18n="label-product" for="product">Product Name</label>
-        <input type="text" id="product" required>
-
-        <label data-i18n="label-quantity" for="quantity">Quantity (kg)</label>
-        <input type="number" id="quantity" required>
-
-        <label data-i18n="label-price" for="price">Price per Unit ($)</label>
-        <input type="number" id="price" required>
-
-        <label data-i18n="label-buyer" for="buyer">Buyer Name</label>
-        <input type="text" id="buyer" required>
-
-        <button type="submit" data-i18n="sales-submit">Record Sale</button>
-    </form>
-</div>
-
-<div class="sales-records">
-    <table>
-        <thead>
-            <tr>
-                <th data-i18n="table-product">Product</th>
-                <th data-i18n="table-quantity">Quantity (kg)</th>
-                <th data-i18n="table-price">Price per Unit</th>
-                <th data-i18n="table-buyer">Buyer</th>
-            </tr>
-        </thead>
-        <tbody id="sales-tbody">
-        </tbody>
-    </table>
-</div>
+<section class="sales-records">
+  <h3 data-i18n="sales-history">🌾 Farmer Crop History</h3>
+  <div id="status" class="loading" data-i18n="loading">Loading recent crops...</div>
+  <table id="cropTable" style="display:none;">
+    <thead>
+      <tr>
+        <th data-i18n="crop-name">Crop Name</th>
+        <th data-i18n="crop-category">Category</th>
+        <th data-i18n="crop-quantity">Quantity (kg)</th>
+        <th data-i18n="crop-price">Price (₹)</th>
+        <th data-i18n="crop-date">Date</th>
+      </tr>
+    </thead>
+    <tbody id="cropBody"></tbody>
+  </table>
+</section>
 
 <footer>
   <div class="footer-container">
     <div class="footer-brand">
-      <h2 data-i18n="footer-brand-title">AgriChain</h2>
-      <p data-i18n="footer-text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
+      <h2>AgriChain</h2>
+      <p data-i18n="footer-about">Empowering farmers, ensuring transparency, and connecting directly with buyers through smart technology.</p>
     </div>
     <div class="footer-links">
-      <h4>Quick Links</h4>
+      <h4 data-i18n="footer-links">Quick Links</h4>
       <ul>
-        <li><a href="../index.html" data-i18n="footer-home">Home</a></li>
-        <li><a href="../All/about.html" data-i18n="footer-about">About</a></li>
-        <li><a href="../All/contact.html" data-i18n="footer-contact">Contact</a></li>
-      </ul>
+        <li><a href="../../index.html" data-i18n="nav-home">Home</a></li>
+        <li><a href="../../All/about.html" data-i18n="nav-about">About</a></li>
+        <li><a href="../../All/contact.html" data-i18n="footer-contact">Contact</a></li>
+       </ul>
     </div>
     <div class="footer-social">
-      <h4>Follow Us</h4>
-      <a href="https://facebook.com/YourPage" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a> |
-      <a href="https://wa.me/919514954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a> |
-      <a href="https://twitter.com/YourProfile" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+      <h4 data-i18n="footer-follow">Follow Us</h4>
+      <a href="#"><i class="fab fa-facebook-f"></i> Facebook</a> |
+      <a href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a> |
+      <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <p data-i18n="footer-bottom-text">&copy; 2025 AgriChain. All Rights Reserved.</p>
+    <p>&copy; 2025 AgriChain. All Rights Reserved.</p>
   </div>
 </footer>
 
 <script>
+// 🌾 Language setup
 const resources = {
-  en: { translation: {
-    "nav-brand":"AgriChain","nav-home":"Home","nav-about":"About","nav-farmer":"Farmer",
-    "nav-buyer":"Buyer","nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance",
-    "sales-title":"Sales Management","sales-text":"Easily record and track your sales transactions.",
-    "sales-form-title":"Record a New Sale",
-    "label-product":"Product Name","label-quantity":"Quantity (kg)","label-price":"Price per Unit ($)","label-buyer":"Buyer Name",
-    "sales-submit":"Record Sale",
-    "table-product":"Product","table-quantity":"Quantity (kg)","table-price":"Price per Unit","table-buyer":"Buyer",
-    "footer-text":"AgriChain – Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
-    "footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-brand-title":"AgriChain",
-    "footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
+  en:{translation:{
+    "nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer",
+    "nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance",
+    "sales-title":"Recent Crop History","sales-text":"View all the crops you’ve recently added and sold.",
+    "sales-history":"🌾 Farmer Crop History",
+    "crop-name":"Crop Name","crop-category":"Category","crop-quantity":"Quantity (kg)",
+    "crop-price":"Price (₹)","crop-date":"Date","loading":"Loading recent crops...",
+    "footer-about":"Empowering farmers, ensuring transparency, and connecting directly with buyers through smart technology.",
+    "footer-links":"Quick Links","footer-contact":"Contact","footer-follow":"Follow Us"
   }},
-  ta: { translation: {
-    "nav-brand":"அக்ரிச்செயின்","nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி",
-    "nav-buyer":"வாங்குபவர்","nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு",
-    "sales-title":"விற்பனை மேலாண்மை","sales-text":"உங்கள் விற்பனை பரிவர்த்தனைகளை எளிதில் பதிவு செய்து கண்காணிக்கவும்.",
-    "sales-form-title":"புதிய விற்பனை பதிவு செய்யவும்",
-    "label-product":"பொருளின் பெயர்","label-quantity":"அளவு (கிலோ)","label-price":"ஒரு அலகிற்கு விலை (₹)","label-buyer":"வாங்குபவர் பெயர்",
-    "sales-submit":"விற்பனையை பதிவு செய்க",
-    "table-product":"பொருள்","table-quantity":"அளவு (கிலோ)","table-price":"ஒரு அலகிற்கு விலை","table-buyer":"வாங்குபவர்",
-    "footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
-    "footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-brand-title":"அக்ரிச்செயின்",
-    "footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
+  ta:{translation:{
+    "nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்",
+    "nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு",
+    "sales-title":"சமீபத்திய பயிர் வரலாறு","sales-text":"நீங்கள் சமீபத்தில் சேர்த்த மற்றும் விற்ற பயிர்களைப் பார்க்கவும்.",
+    "sales-history":"🌾 விவசாயியின் பயிர் வரலாறு",
+    "crop-name":"பயிர் பெயர்","crop-category":"வகை","crop-quantity":"அளவு (கிலோ)",
+    "crop-price":"விலை (₹)","crop-date":"தேதி","loading":"சமீபத்திய பயிர்களை ஏற்றுகிறது...",
+    "footer-about":"விவசாயிகளை வலுப்படுத்தி, வெளிப்படைத்தன்மையை உறுதி செய்து, வாங்குபவர்களுடன் நேரடி இணைப்பை ஏற்படுத்துகிறது.",
+    "footer-links":"விரைவான இணைப்புகள்","footer-contact":"தொடர்பு","footer-follow":"எங்களை பின்தொடரவும்"
   }}
 };
 
-i18next.use(i18nextBrowserLanguageDetector).init({ resources, fallbackLng:'en' }, updateContent);
-
-function updateContent() {
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    el.innerHTML = i18next.t(el.getAttribute('data-i18n'));
+i18next.use(i18nextBrowserLanguageDetector).init({resources,fallbackLng:'en'},updateContent);
+function updateContent(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    el.innerHTML=i18next.t(el.getAttribute('data-i18n'));
   });
 }
+function changeLng(lang){i18next.changeLanguage(lang,updateContent);}
 
-function changeLng(lang) { i18next.changeLanguage(lang, updateContent); }
-document.getElementById('sales-form').addEventListener('submit', function(e){
-  e.preventDefault();
-  const product = document.getElementById('product').value;
-  const quantity = document.getElementById('quantity').value;
-  const price = document.getElementById('price').value;
-  const buyer = document.getElementById('buyer').value;
+// Fetch crops from REST API
+const API_URL="http://localhost:3000/api/farmer/crops";
 
-  const tbody = document.getElementById('sales-tbody');
-  const row = document.createElement('tr');
-  row.innerHTML = `<td>${product}</td><td>${quantity}</td><td>${price}</td><td>${buyer}</td>`;
-  tbody.appendChild(row);
+async function loadCrops(){
+  const status=document.getElementById("status");
+  const table=document.getElementById("cropTable");
+  const body=document.getElementById("cropBody");
 
-  this.reset();
-});
+  try{
+    const res=await fetch(API_URL);
+    if(!res.ok) throw new Error("Failed to load crops");
+    const crops=await res.json();
+
+    if(!crops.length){status.textContent=i18next.t("no-crops") || "No crop history found.";return;}
+
+    status.style.display="none";
+    table.style.display="table";
+
+    crops.forEach(crop=>{
+      const row=document.createElement("tr");
+      row.innerHTML=`
+        <td>${crop.cropName||'-'}</td>
+        <td>${crop.category||'-'}</td>
+        <td>${crop.quantity||'-'}</td>
+        <td>${crop.price||'-'}</td>
+        <td>${crop.date||'-'}</td>`;
+      body.appendChild(row);
+    });
+  }catch(err){
+    console.error(err);
+    status.textContent="⚠️ "+(i18next.t("error") || "Unable to fetch crop history. Please try again later.");
+    status.className="error";
+  }
+}
+loadCrops();
 </script>
-
 </body>
 </html>
