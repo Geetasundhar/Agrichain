@@ -253,7 +253,8 @@ const resources = {
       "footer.brand": "AgriChain", "footer.text": "Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
       "footer.linksTitle": "Quick Links", "footer.home": "Home", "footer.about": "About", "footer.contact": "Contact",
       "footer.socialTitle": "Follow Us", "footer.bottom": "© 2025 AgriChain. All Rights Reserved.",
-      "form.networkError": "Network error, please try again."
+      "form.networkError": "Network error, please try again.",
+      "footer.socialTitle": "Follow Us", "footer.bottom": "© 2025 AgriChain. All Rights Reserved."
     }
   },
   ta: {
@@ -331,6 +332,23 @@ document.getElementById("add-crop-form").addEventListener("submit", async e => {
     }
   };
 });
+      "footer.socialTitle": "எங்களை பின்தொடரவும்", "footer.bottom": "© 2025 அக்ரிச்செயின். அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.";
+
+i18next.init({
+  lng: "en",
+  debug: false,
+  resources
+}, function(err, t){
+  updateContent();
+});
+function changeLang(lang){
+  i18next.changeLanguage(lang, () => updateContent());
+}
+function updateContent(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    el.innerText = i18next.t(el.getAttribute("data-i18n"));
+  });
+}
 </script>
 </body>
 </html>
