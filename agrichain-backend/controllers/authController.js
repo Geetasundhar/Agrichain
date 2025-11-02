@@ -5,33 +5,65 @@ const jwt = require("jsonwebtoken");
 // Signup Controller
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const {
+      name,
+      age,
+      gender,
+      phone,
+      email,
+      farm_name,
+      farm_address,
+      farm_size,
+      crop_type,
+      username,
+      password,
+    } = req.body;
 
-    // check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" });
+    // Check for required fields
+    if (!name || !email || !password || !username) {
+      return res.status(400).json({ message: "Please fill all required fields" });
     }
 
-    // hash password
+    // Check if email or username already exists
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email or username already registered" });
+    }
+
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // save new user
-    const newUser = new User({ name, email, password: hashedPassword });
+    // Create new user
+    const newUser = new User({
+      name,
+      age,
+      gender,
+      phone,
+      email,
+      farm_name,
+      farm_address,
+      farm_size,
+      crop_type,
+      username,
+      password: hashedPassword,
+    });
+
     await newUser.save();
 
-    // generate JWT
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    // Generate JWT
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: "Farmer registered successfully",
       userId: newUser._id,
       token,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Signup Error:", err);
+    res.status(500).json({ message: "Server error during signup" });
   }
 };
 
@@ -40,28 +72,31 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
+    // Find user
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Compare password
+    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // Generate JWT
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.status(200).json({
       message: "Login successful",
       userId: user._id,
       token,
+      username: user.username,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Login Error:", err);
+    res.status(500).json({ message: "Server error during login" });
   }
 };

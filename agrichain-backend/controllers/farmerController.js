@@ -1,67 +1,54 @@
 import Crop from "../models/Crop.js";
-import QRCode from "qrcode";
 
-// ✅ Add new crop
+// Add new crop
 export const addCrop = async (req, res) => {
   try {
-    const { cropName, cropType, quantityKg, pricePerKg, location, images } = req.body;
+    const { farmerId, name, type, quantity, price, location, image } = req.body;
 
-    // Check required fields
-    if (!cropName || !cropType || !quantityKg || !pricePerKg || !location) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!farmerId || !name || !type || !quantity || !price || !location || !image) {
+      return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Get farmer ID from JWT middleware
-    const farmerId = req.user.id;
+    // Generate a simple QR code string (can later integrate QR code lib)
+    const qrCodeText = `Crop-${Date.now()}`;
 
-    // Create new crop document
-    const newCrop = new Crop({
+    const newCrop = await Crop.create({
       farmerId,
-      cropName,
-      cropType,
-      quantityKg,
-      pricePerKg,
+      cropName: name,
+      cropType: type,
+      quantityKg: quantity,
+      pricePerKg: price,
       location,
-      images: images || [],
+      images: [image], // store Base64
+      qrCode: qrCodeText,
     });
 
-    // 🧠 Generate QR Code with Crop URL
-    const cropUrl = `http://10.137.179.186:5000/farmer/crops/${newCrop._id.toString()}`;
-    const qrCode = await QRCode.toDataURL(cropUrl);
-
-    newCrop.qrCode = qrCode;
-    newCrop.blockchainTx = "BLOCKCHAIN_TX_HASH_PLACEHOLDER";
-
-    // Save crop to database
-    await newCrop.save();
-
-    res.status(201).json({
-      message: "Crop added successfully",
-      crop: newCrop,
-    });
-  } catch (error) {
-    console.error("Add Crop Error:", error.message);
-    res.status(500).json({ message: "Server error" });
+    res.status(201).json({ crop: newCrop });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// ✅ Get all crops
+// Get all crops
 export const getAllCrops = async (req, res) => {
   try {
-    const crops = await Crop.find();
-    res.status(200).json(crops);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching crops", error: error.message });
+    const crops = await Crop.find().populate("farmerId", "name email");
+    res.json(crops);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// ✅ Get single crop by ID (used when QR is scanned)
+// Get crop by ID
 export const getCropById = async (req, res) => {
   try {
-    const crop = await Crop.findById(req.params.id);
-    if (!crop) return res.status(404).json({ message: "Crop not found" });
-    res.status(200).json(crop);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching crop", error: error.message });
+    const crop = await Crop.findById(req.params.id).populate("farmerId", "name email");
+    if (!crop) return res.status(404).json({ error: "Crop not found" });
+    res.json(crop);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 };
