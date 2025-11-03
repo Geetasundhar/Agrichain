@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Farmer Profile - AgriChain</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* 🌿 Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: url("../../images/farm-bg.jpg") no-repeat center center/cover;
+  color: #333;
+  overflow-x: hidden;
+  min-height: 100vh;
+  transition: background 1s ease-in-out;
+}
+
+/* 🌾 Header */
+header {
+  background: rgba(25, 105, 44, 0.95);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  flex-wrap: wrap;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 12px 12px;
+  animation: slideDown 0.8s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+header img {
+  height: 55px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+header img:hover {
+  transform: scale(1.1);
+}
+
+nav {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: #f3f7f4;
+  font-weight: 600;
+  transition: color 0.3s, transform 0.3s;
+}
+
+nav a:hover {
+  color: #ffeaa7;
+  transform: scale(1.1);
+}
+
+.language-toggle {
+  display: flex;
+  gap: 10px;
+}
+
+.language-toggle button {
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  color: #0f4d23;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.language-toggle button:hover {
+  background: #e6e6e3;
+  transform: scale(1.05);
+}
+
+/* 🌱 Profile Section */
+.profile-section {
+  max-width: 980px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 1.2s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-section h2 {
+  color: #19692c;
+  font-size: 2.2em;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 25px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 🌸 Profile Card */
+.container { max-width: 950px; margin: auto; padding: 15px; }
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+}
+
+.avatar {
+  text-align: center;
+}
+
+.avatar img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid white;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease;
+}
+
+.avatar img:hover { transform: scale(1.05); }
+
+.profile-name { font-size: 22px; color: #19692c; margin-top: 8px; }
+.muted { color: #555; font-size: 13px; }
+
+.info-list { margin-top: 12px; }
+.info-item {
+  background: #f4f9f4;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+.info-item:hover { background: #e8f5e9; }
+
+/* 🧾 Form Styling */
+label {
+  display: block;
+  font-size: 14px;
+  color: #19692c;
+  margin-bottom: 4px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: white;
+  font-size: 14px;
+  transition: border 0.3s;
+}
+
+input:focus, textarea:focus {
+  border-color: #27ae60;
+  box-shadow: 0 0 5px #b9f6ca;
+}
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.btn.primary {
+  background: #19692c;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.btn.primary:hover { background: #145a26; transform: scale(1.05); }
+
+.btn.ghost {
+  background: transparent;
+  border: 2px solid #19692c;
+  color: #19692c;
+}
+.btn.ghost:hover { background: #19692c; color: white; transform: scale(1.05); }
+
+.actions { display: flex; gap: 10px; margin-top: 20px; }
+
+/* 🌿 Footer */
+footer {
+  background: rgba(25, 105, 44, 0.95);
+  color: white;
+  padding: 40px 20px;
+  border-radius: 20px 20px 0 0;
+  margin-top: 60px;
+  backdrop-filter: blur(6px);
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 30px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.footer-column h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #ffeaa7;
+}
+
+.footer-column ul {
+  list-style: none;
+}
+
+.footer-column ul li {
+  margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-column ul li a:hover {
+  color: #a8d5a2;
+}
+
+.social-icons a {
+  color: white;
+  margin-right: 12px;
+  font-size: 20px;
+  transition: 0.3s;
+}
+
+.social-icons a:hover {
+  color: #ffeaa7;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 25px;
+  border-top: 1px solid #fff3;
+  padding-top: 15px;
+  font-size: 14px;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .profile-section { margin: 20px; padding: 20px; }
+  .avatar img { width: 120px; height: 120px; }
+  header { flex-direction: column; gap: 10px; text-align: center; }
+  nav { flex-direction: column; gap: 10px; }
+  .footer-container { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="../../images/logo.png" alt="AgriChain Logo">
+  </div>
+  <nav>
+    <a href="../../index.html" data-i18n="nav.home">Home</a>
+    <a href="../../All/about.html" data-i18n="nav.about">About</a>
+    <a href="farmer-dashboard.html" data-i18n="nav.farmer">Farmer</a>
+    <a href="#" data-i18n="nav.buyer">Buyer</a>
+    <a href="#" data-i18n="nav.admin">Admin</a>
+    <a href="#" data-i18n="nav.transporter">Transporter</a>
+    <a href="insurance-application.html" data-i18n="nav.insurance">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLang('en')">English</button>
+    <button onclick="changeLang('ta')">தமிழ்</button>
+  </div>
+</header>
+
+<section class="profile-section">
+  <h2 data-i18n="profile.title">Farmer Profile</h2>
+  <div class="container">
+    <div class="card grid">
+      <div class="avatar">
+        <img id="photoPreview" src="../../images/farmer-profile.jpg" alt="Farmer photo">
+        <p class="muted" id="displayLocation"></p>
+        <div class="info-list">
+          <div class="info-item"><b>Land:</b> <span id="displayLand"></span></div>
+          <div class="info-item"><b>Email:</b> <span id="displayEmail"></span></div>
+          <div class="info-item"><b>Phone:</b> <span id="displayPhone"></span></div>
+          <div class="info-item"><b>Age:</b> <span id="displayAge"></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="profile.info">Profile Information</h3>
+        <div class="row">
+          <div style="flex:1;">
+            <label data-i18n="fullName">Full Name</label>
+            <input id="fullName" type="text" placeholder="Enter full name">
+          </div>
+          <div style="flex:1;">
+            <label data-i18n="phone">Phone</label>
+            <input id="phone" type="tel" placeholder="Enter phone">
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px;">
+          <div style="flex:1;">
+            <label data-i18n="email">Email</label>
+            <input id="email" type="email" placeholder="Enter email">
+          </div>
+          <div style="flex:1;">
+            <label data-i18n="age">Age</label>
+            <input id="age" type="text" placeholder="Enter age">
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <label data-i18n="location">Location</label>
+          <input id="location" type="text" placeholder="Enter location">
+        </div>
+        <div style="margin-top:12px;">
+          <label data-i18n="land">Land (acres)</label>
+          <input id="land" type="text" placeholder="Enter land size">
+        </div>
+        <div style="margin-top:12px;">
+          <label data-i18n="crops">Crops</label>
+          <input id="crops" type="text" placeholder="Enter crops grown">
+        </div>
+        <div style="margin-top:12px;">
+          <label data-i18n="photo">Photo</label>
+          <input id="photo" type="file" accept="image/*">
+        </div>
+        <div class="actions">
+          <button class="btn ghost" id="editBtn">Edit</button>
+          <button class="btn primary" id="saveBtn" data-i18n="save">Save</button>
+          <button class="btn ghost" id="resetBtn" data-i18n="reset">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-container">
+    <div class="footer-column">
+      <h3 data-i18n="footer.about">About AgriChain</h3>
+      <p data-i18n="footer.desc">AgriChain connects farmers, buyers, and transporters through a transparent and smart agricultural network.</p>
+    </div>
+    <div class="footer-column">
+      <h3 data-i18n="footer.quick">Quick Links</h3>
+      <ul>
+        <li><a href="../../index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="../../All/about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="farmer-dashboard.html" data-i18n="nav.farmer">Farmer</a></li>
+        <li><a href="#" data-i18n="nav.buyer">Buyer</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h3 data-i18n="footer.contact">Contact</h3>
+      <p><i class="fa-solid fa-envelope"></i> info@agrichain.com</p>
+      <p><i class="fa-solid fa-phone"></i> +91 98765 43210</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 AgriChain. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/i18next@23.7.6/dist/umd/i18next.min.js"></script>
+<script>
+// 🌐 Language support
+const resources = {
+  en: {
+    translation: {
+      title: "Farmer Profile - AgriChain",
+      nav: { home: "Home", about: "About", farmer: "Farmer", buyer: "Buyer", admin: "Admin", transporter: "Transporter", insurance: "Insurance" },
+      profile: { title: "Farmer Profile", info: "Profile Information" },
+      fullName: "Full Name", phone: "Phone", email: "Email", age: "Age", location: "Location", land: "Land (acres)", crops: "Crops", photo: "Photo", save: "Save", reset: "Reset",
+      footer: { about: "About AgriChain", desc: "AgriChain connects farmers, buyers, and transporters through a transparent and smart agricultural network.", quick: "Quick Links", contact: "Contact" }
+    }
+  },
+  ta: {
+    translation: {
+      title: "விவசாயி சுயவிவரம் - அக்ரிச்செயின்",
+      nav: { home: "முகப்பு", about: "பற்றி", farmer: "விவசாயி", buyer: "வாங்குபவர்", admin: "நிர்வாகி", transporter: "போக்குவரத்து", insurance: "காப்பீடு" },
+      profile: { title: "விவசாயி சுயவிவரம்", info: "சுயவிவர தகவல்" },
+      fullName: "முழு பெயர்", phone: "தொலைபேசி", email: "மின்னஞ்சல்", age: "வயது", location: "இடம்", land: "மண்ணின் அளவு (எக்கர்)", crops: "பயிர்கள்", photo: "புகைப்படம்", save: "சேமிக்க", reset: "மீட்டமைக்க",
+      footer: { about: "அக்ரிச்செயின் பற்றி", desc: "அக்ரிச்செயின் விவசாயிகள், வாங்குபவர்கள் மற்றும் போக்குவரத்து வலைப்பின்னல்களை இணைக்கிறது.", quick: "மிகவும் விரைவு இணைப்புகள்", contact: "தொடர்பு" }
+    }
+  }
+};
+
+i18next.init({ lng: "en", resources }, updateContent);
+function updateContent() {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const keys = el.getAttribute("data-i18n").split(".");
+    el.innerHTML = i18next.t(keys.join("."));
+  });
+}
+function changeLang(lang) { i18next.changeLanguage(lang, updateContent); }
+
+// 🌿 Fetch Profile
+async function loadProfile() {
+  try {
+    const farmerId = localStorage.getItem("farmerId") || 1;
+    const res = await fetch(`http://localhost:3000/api/farmer/profile/${farmerId}`);
+    const data = await res.json();
+    document.getElementById("displayName").textContent = data.name;
+    document.getElementById("displayLocation").textContent = data.location;
+    document.getElementById("displayEmail").textContent = data.email;
+    document.getElementById("displayPhone").textContent = data.phone;
+    document.getElementById("displayLand").textContent = data.land;
+    document.getElementById("displayAge").textContent = data.age;
+
+    document.getElementById("fullName").value = data.name;
+    document.getElementById("phone").value = data.phone;
+    document.getElementById("email").value = data.email;
+    document.getElementById("age").value = data.age;
+    document.getElementById("location").value = data.location;
+    document.getElementById("land").value = data.land;
+    document.getElementById("crops").value = data.crops;
+    if (data.photo) document.getElementById("photoPreview").src = data.photo;
+    setReadOnly(true);
+  } catch (err) { console.error("Error loading profile:", err); }
+}
+
+function setReadOnly(isReadOnly) {
+  document.querySelectorAll("#fullName, #phone, #email, #age, #location, #land, #crops, #photo")
+    .forEach(input => input.disabled = isReadOnly);
+  document.getElementById("saveBtn").disabled = isReadOnly;
+}
+
+let editMode = false;
+document.getElementById("editBtn").addEventListener("click", () => {
+  editMode = !editMode;
+  setReadOnly(!editMode);
+  document.getElementById("editBtn").textContent = editMode ? "Cancel Edit" : "Edit";
+});
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  const farmerId = localStorage.getItem("farmerId") || 1;
+  const updatedData = {
+    name: document.getElementById("fullName").value,
+    phone: document.getElementById("phone").value,
+    email: document.getElementById("email").value,
+    age: document.getElementById("age").value,
+    location: document.getElementById("location").value,
+    land: document.getElementById("land").value,
+    crops: document.getElementById("crops").value
+  };
+  try {
+    await fetch(`http://localhost:3000/api/farmer/profile/${farmerId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData)
+    });
+    alert("Profile updated successfully!");
+    loadProfile();
+    editMode = false;
+    setReadOnly(true);
+  } catch (err) { console.error("Error updating profile:", err); }
+});
+
+document.getElementById("resetBtn").addEventListener("click", loadProfile);
+
+document.getElementById("photo").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (file) document.getElementById("photoPreview").src = URL.createObjectURL(file);
+});
+
+loadProfile();
+</script>
+</body>
+</html>
