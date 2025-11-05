@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buyer Profile - AgriChain</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://unpkg.com/i18next@22.4.9/i18next.min.js"></script>
+<script src="https://unpkg.com/i18next-browser-languagedetector@7.2.1/i18nextBrowserLanguageDetector.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+html, body{height:100%;overflow-x:hidden;}
+
+body{
+  background:linear-gradient(rgba(168,224,99,0.5),rgba(86,171,47,0.5)),
+  url('../../images/signup.jpg') no-repeat center top;
+  background-size:cover;
+  display:flex;flex-direction:column;
+}
+
+/* Header */
+header{
+  background:rgba(25,105,44,0.95);
+  padding:15px 20px;
+  display:flex;justify-content:space-between;align-items:center;
+  color:white;flex-wrap:wrap;
+}
+header img{height:60px;border-radius:10px;}
+nav{display:flex;gap:20px;}
+nav a{text-decoration:none;color:#f3f7f4;font-weight:600;transition:.3s;}
+nav a:hover{color:#ffeaa7;transform:scale(1.1);}
+
+.language-toggle button{
+  padding:6px 12px;border:none;border-radius:6px;background:#fff;color:#19692c;
+  font-weight:bold;cursor:pointer;margin-left:5px;
+}
+.language-toggle button:hover{background:#19692c;color:white;}
+
+/* Profile Section */
+.profile-container{
+  width:90%;max-width:500px;margin:40px auto;
+  background:rgba(255,255,255,0.95);
+  padding:30px;border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.3);
+}
+h2{text-align:center;color:#19692c;font-size:2rem;margin-bottom:15px;font-weight:bold;}
+
+.profile-item{
+  display:flex;align-items:center;margin-bottom:15px;
+  padding:10px;border:1px solid #ccc;border-radius:10px;background:#fff;
+}
+.profile-item i{font-size:20px;color:#19692c;margin-right:12px;}
+label{font-weight:bold;color:#19692c;}
+.value{margin-left:auto;color:#333;font-weight:600;}
+
+/* Button */
+.btn{
+  width:100%;padding:12px;background:#27ae60;color:white;border:none;border-radius:10px;
+  font-size:18px;font-weight:bold;margin-top:20px;cursor:pointer;
+}
+.btn:hover{background:#19692c;}
+
+/* Footer */
+footer{
+  background:#19692c;color:white;text-align:center;padding:12px;font-weight:bold;margin-top:auto;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="../../images/logo.png">
+  <nav>
+    <a href="../../index.html" data-i18n="nav-home">Home</a>
+    <a href="../buyer/buyer_dashboard.html" data-i18n="nav-dashboard">Dashboard</a>
+    <a href="#" data-i18n="nav-profile">Profile</a>
+    <a href="../buyer/buyer-login.html" data-i18n="nav-logout">Logout</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLng('en')">EN</button>
+    <button onclick="changeLng('ta')">TA</button>
+  </div>
+</header>
+
+<div class="profile-container">
+  <h2 data-i18n="profile-title">Buyer Profile</h2>
+
+  <div class="profile-item"><i class="fa fa-user"></i><label data-i18n="label-name">Full Name:</label><span class="value" id="buyerName"></span></div>
+  <div class="profile-item"><i class="fa fa-briefcase"></i><label data-i18n="label-business">Business:</label><span class="value" id="businessName"></span></div>
+  <div class="profile-item"><i class="fa fa-map-marker-alt"></i><label data-i18n="label-district">District:</label><span class="value" id="district"></span></div>
+  <div class="profile-item"><i class="fa fa-phone"></i><label data-i18n="label-phone">Phone:</label><span class="value" id="phone"></span></div>
+  <div class="profile-item"><i class="fa fa-envelope"></i><label data-i18n="label-email">Email:</label><span class="value" id="email"></span></div>
+  <div class="profile-item"><i class="fa fa-user-circle"></i><label data-i18n="label-username">Username:</label><span class="value" id="username"></span></div>
+
+  <button class="btn" onclick="window.location.href='buyer-edit.html'" data-i18n="btn-edit">Edit Profile</button>
+</div>
+
+<footer>
+  © 2025 AgriChain. All Rights Reserved.
+</footer>
+
+<script>
+/* ✅ Language Texts */
+const resources={
+  en:{translation:{
+    "nav-home":"Home","nav-dashboard":"Dashboard","nav-profile":"Profile","nav-logout":"Logout",
+    "profile-title":"Buyer Profile",
+    "label-name":"Full Name","label-business":"Business Name","label-district":"District","label-phone":"Phone","label-email":"Email","label-username":"Username",
+    "btn-edit":"Edit Profile"
+  }},
+  ta:{translation:{
+    "nav-home":"முகப்பு","nav-dashboard":"டாஷ்போர்டு","nav-profile":"சுயவிவரம்","nav-logout":"வெளியேறு",
+    "profile-title":"வாங்குபவர் சுயவிவரம்",
+    "label-name":"முழு பெயர்","label-business":"வணிகத்தின் பெயர்","label-district":"மாவட்டம்","label-phone":"தொலைபேசி","label-email":"மின்னஞ்சல்","label-username":"பயனர் பெயர்",
+    "btn-edit":"திருத்தவும்"
+  }}
+};
+
+i18next.use(i18nextBrowserLanguageDetector).init({resources,fallbackLng:"en"},()=>updateTexts());
+function changeLng(l){i18next.changeLanguage(l,updateTexts);}
+function updateTexts(){document.querySelectorAll("[data-i18n]").forEach(el=>el.innerHTML=i18next.t(el.getAttribute("data-i18n")));}
+
+/* ✅ Fetch Buyer Profile From Backend */
+async function loadBuyerProfile() {
+  const buyerId = localStorage.getItem("buyerId");
+
+  if (!buyerId) {
+    alert("Please login first");
+    window.location.href = "../buyer/buyer-login.html";
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3000/api/buyer/${buyerId}`);
+    const buyer = await res.json();
+
+    document.getElementById("buyerName").textContent = buyer.name;
+    document.getElementById("businessName").textContent = buyer.businessName;
+    document.getElementById("district").textContent = buyer.district;
+    document.getElementById("phone").textContent = buyer.phone;
+    document.getElementById("email").textContent = buyer.email;
+    document.getElementById("username").textContent = buyer.username;
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to load profile");
+  }
+}
+
+loadBuyerProfile();
+</script>
+
+</body>
+</html>
