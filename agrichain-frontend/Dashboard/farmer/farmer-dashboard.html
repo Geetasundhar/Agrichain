@@ -6,6 +6,7 @@
 <title data-i18n="title">Farmer Dashboard - AgriChain</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+/* ===== Existing Styles (unchanged) ===== */
 * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
 body { line-height:1.6; background:#f9f9f9; color:#333; }
 header{
@@ -53,7 +54,7 @@ nav a:hover { color:#ffeaa7; transform:scale(1.1);}
 .card a:hover { background:#0f4d23; }
 .profile-icon {
     position:absolute;
-    top:150px; /* moved down */
+    top:150px; 
     right:50px;
     width:80px;
     height:80px;
@@ -71,7 +72,6 @@ nav a:hover { color:#ffeaa7; transform:scale(1.1);}
 .profile-icon:hover{
     transform:scale(1.1);
 }
-
 footer {
     background-color:#19692c;
     color:white;
@@ -115,7 +115,6 @@ header img {
     transition: transform 0.4s ease, box-shadow 0.4s ease;
     cursor: pointer;
 }
-
 header img:hover {
     transform: scale(1.2) rotate(-5deg); 
     box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
@@ -132,11 +131,9 @@ header h1 {
     white-space: nowrap;      
     transition: color 0.3s ease;
 }
-
 header h1:hover {
     color: #0f4d23;            
 }
-
 @media(max-width:768px){
     header img {
         height: 60px;          
@@ -145,7 +142,6 @@ header h1:hover {
         font-size: 1.5em;
     }
 }
-
 </style>
 </head>
 <body>
@@ -169,10 +165,10 @@ header h1:hover {
 </header>
 
 <section class="hero">
-    <h2 data-i18n="dashboard.title">Farmer Dashboard</h2>
+    <h2 id="welcomeText">Farmer Dashboard</h2>
     <p data-i18n="dashboard.desc">Manage your crops, sales, insurance, and activities all in one place.</p>
      <div class="profile-icon" onclick="goToProfile()">
-        <img src="../../images/farmer-profile.jpg" alt="Farmer Photo">
+        <img src="../../images/profile.jpg" alt="Farmer Photo" id="dashboardProfilePhoto">
     </div>
 </section>
 
@@ -220,7 +216,7 @@ header h1:hover {
     <div class="footer-social">
       <h4>Follow Us</h4>
       <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
-      <a href="https://wa.me/+9195419 54142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://wa.me/+919541954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
     </div>
   </div>
@@ -268,6 +264,20 @@ i18next.init({ lng:"en", debug:false, resources }, function(){
   updateContent();
 });
 
+// ===== Fetch farmer data from localStorage =====
+function loadFarmerProfile(){
+    const profileImg = localStorage.getItem("farmerProfileImage");
+    const farmerName = localStorage.getItem("farmerName");
+
+    if(profileImg){
+        document.getElementById("dashboardProfilePhoto").src = profileImg;
+    }
+    if(farmerName){
+        document.getElementById("welcomeText").textContent = `Welcome, ${farmerName}`;
+    }
+}
+
+// ===== Update i18n content =====
 function updateContent(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key = el.getAttribute('data-i18n');
@@ -275,13 +285,19 @@ function updateContent(){
     if(el.tagName === "TITLE") el.textContent = i18next.t(key);
   });
 }
+
+// ===== Profile redirect =====
 function goToProfile(){
     window.location.href = "farmer-profile.html";
 }
 
+// ===== Language toggle =====
 function changeLang(lang){
   i18next.changeLanguage(lang, updateContent);
 }
+
+// ===== Load profile on page load =====
+window.onload = loadFarmerProfile;
 </script>
 </body>
 </html>
