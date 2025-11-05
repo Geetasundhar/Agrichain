@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">Buyer Dashboard - AgriChain</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ===== Existing Styles (same header/footer) ===== */
+* { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
+body { line-height:1.6; background:#f9f9f9; color:#333; background: 
+    linear-gradient(rgba(168,224,99,0.5), rgba(86,171,47,0.5)),
+    url('../../images/buyer_dashboard.jpg') no-repeat center top;}
+header{ background: rgba(25,105,44,0.95); padding:15px 20px; display:flex; justify-content:space-between; align-items:center; color:white; flex-wrap:wrap; transition: all 0.3s ease; }
+header img { height:80px; border-radius:15px; box-shadow:0 6px 12px rgba(0,0,0,0.3); transition:transform 0.4s ease, box-shadow 0.4s ease; cursor:pointer;}
+header img:hover { transform:scale(1.2) rotate(-5deg); box-shadow:0 10px 20px rgba(0,0,0,0.5);}
+header h1 { margin-left:10px; color:#19692c; font-size:1.8em; font-weight:bold;}
+nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center;}
+nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em;}
+nav a:hover { color:#ffeaa7; transform:scale(1.1);}
+.language-toggle { display:flex; gap:10px; margin-top:10px;}
+.language-toggle button { padding:6px 12px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; font-size:14px;}
+.language-toggle button:hover { background:#0f4d23; }
+
+/* Hero Section */
+.hero { background:#dff0d8; text-align:center; padding:50px 20px; border-radius:10px; margin:20px; position:relative; }
+.hero h2 { font-size:2.2em; margin-bottom:10px; color:#19692c; }
+.hero p { font-size:1.1em; }
+
+/* Dashboard Cards */
+.dashboard {
+    max-width:1200px;
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+    gap:20px;
+    padding:0 20px;
+}
+.card {
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+    text-align:center;
+    transition:0.3s;
+}
+.card:hover { transform:translateY(-5px); box-shadow:0 6px 12px rgba(0,0,0,0.15);}
+.card i { font-size:2em; color:#19692c; margin-bottom:10px;}
+.card h3 { margin-bottom:8px; color:#0f4d23; font-size:1.2em;}
+.card p { font-size:0.95em; margin-bottom:12px;}
+.card a { display:inline-block; padding:8px 15px; border-radius:6px; background:#19692c; color:white; text-decoration:none; font-size:0.95em; font-weight:bold;}
+.card a:hover { background:#0f4d23; }
+
+/* Profile Icon */
+.profile-icon {
+    position:absolute;
+    top:30px; right:30px;
+    width:80px; height:80px;
+    border-radius:50%;
+    overflow:hidden;
+    border:2px solid #19692c;
+    cursor:pointer;
+    transition:transform 0.3s ease;
+}
+.profile-icon img { width:100%; height:100%; object-fit:cover;}
+.profile-icon:hover { transform:scale(1.1);}
+
+/* Footer same as before */
+footer {
+    background-color:#19692c;
+    color:white;
+    padding:30px 20px;
+    font-size:13px;
+    line-height:1.4;
+    border-radius:10px 10px 0 0;
+    margin-top:40px;
+}
+footer .footer-container {
+    display:flex;
+    flex-wrap:wrap;
+    max-width:1200px;
+    margin:0 auto;
+    justify-content:space-between;
+    gap:15px;
+}
+.footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
+.footer-brand h2 { margin-bottom:8px; color:#a8d5a2; font-size:1.2em; }
+.footer-links h4, .footer-social h4 { margin-bottom:8px; font-size:14px; color:#a8d5a2; }
+.footer-links ul { list-style:none; padding:0; }
+.footer-links li { margin-bottom:5px; }
+.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:10px; font-weight:bold; font-size:13px; }
+.footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
+.footer-social a i { margin-right:5px; }
+.footer-bottom { text-align:center; margin-top:15px; border-top:1px solid rgba(255,255,255,0.3); padding-top:8px; }
+
+@media(max-width:768px){
+    header { flex-direction:column; align-items:flex-start; }
+    nav { text-align:left; margin-top:10px; }
+    nav a { display:inline-block; margin:5px 8px; font-size:13px; }
+    .hero h2 { font-size:1.6em; }
+    .hero p { font-size:0.95em; }
+    .footer-container { flex-direction:column; text-align:center; }
+    .footer-social a { display:inline-block; margin:5px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../../images/logo.png" alt="AgriChain Logo">
+    </div>
+    <nav>
+        <a href="../../index.html" data-i18n="nav.home">Home</a>
+        <a href="../../All/about.html" data-i18n="nav.about">About</a>
+        <a href="../farmer/farmer-dashboard.html" data-i18n="nav.farmer">Farmer</a>
+        <a href="buyer-dashboard.html" data-i18n="nav.buyer" class="active">Buyer</a>
+        <a href="#" data-i18n="nav.admin">Admin</a>
+        <a href="#" data-i18n="nav.transporter">Transporter</a>
+        <a href="../../All/insurance.html" data-i18n="nav.insurance">Insurance</a>
+    </nav>
+    <div class="language-toggle">
+        <button onclick="changeLang('en')">English</button>
+        <button onclick="changeLang('ta')">தமிழ்</button>
+    </div>
+</header>
+
+<section class="hero">
+    <h2 id="welcomeText" data-i18n="dashboard.title">Buyer Dashboard</h2>
+    <p data-i18n="dashboard.desc">Manage your purchases, transport requests, and profile here.</p>
+    <div class="profile-icon" onclick="goToProfile()">
+        <img src="../../images/profile.jpg" alt="Buyer Photo" id="dashboardProfilePhoto">
+    </div>
+</section>
+
+<section class="dashboard">
+    <!-- Card 1: Buy Crops -->
+    <div class="card">
+        <i class="fas fa-shopping-basket"></i>
+        <h3 data-i18n="dashboard.buy.title">Buy Crops</h3>
+        <p data-i18n="dashboard.buy.desc">Explore available crops from farmers.</p>
+        <a href="viewcrops.html" data-i18n="dashboard.go">Go</a>
+    </div>
+    <!-- Card 2: My Orders -->
+    <div class="card">
+        <i class="fas fa-box"></i>
+        <h3 data-i18n="dashboard.orders.title">My Orders</h3>
+        <p data-i18n="dashboard.orders.desc">Track your crop purchase orders.</p>
+        <a href="my-orders.html" data-i18n="dashboard.go">Go</a>
+    </div>
+    <!-- Card 3: Transport Request -->
+    <div class="card">
+        <i class="fas fa-truck"></i>
+        <h3 data-i18n="dashboard.transport.title">Transport Request</h3>
+        <p data-i18n="dashboard.transport.desc">Request transport for purchased crops.</p>
+        <a href="transport-request.html" data-i18n="dashboard.go">Go</a>
+    </div>
+    <!-- Card 4: Profile -->
+    <div class="card">
+        <i class="fas fa-user"></i>
+        <h3 data-i18n="dashboard.profile.title">Profile</h3>
+        <p data-i18n="dashboard.profile.desc">View and update your profile details.</p>
+        <a href="buyer-profile.html" data-i18n="dashboard.go">Go</a>
+    </div>
+</section>
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <h2 data-i18n="brand">AgriChain</h2>
+      <p data-i18n="footer.text">Empowering agriculture through transparency and direct farmer-buyer connection.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="../../index.html" data-i18n="nav.home">Home</a></li>
+        <li><a href="../../All/about.html" data-i18n="nav.about">About</a></li>
+        <li><a href="../../All/contact.html" data-i18n="nav.contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-social">
+      <h4>Follow Us</h4>
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+      <a href="https://wa.me/+919541954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p data-i18n="footer.bottom">© 2025 AgriChain. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/i18next@23.7.6/dist/umd/i18next.min.js"></script>
+<script>
+const resources = {
+  en: { translation: {
+    title:"Buyer Dashboard - AgriChain",
+    brand:"AgriChain",
+    nav:{home:"Home", about:"About", farmer:"Farmer", buyer:"Buyer", admin:"Admin", transporter:"Transporter", insurance:"Insurance", contact:"Contact"},
+    dashboard:{
+      title:"Buyer Dashboard",
+      desc:"Manage your purchases, transport requests, and profile here.",
+      buy:{title:"Buy Crops", desc:"Explore available crops from farmers."},
+      orders:{title:"My Orders", desc:"Track your crop purchase orders."},
+      transport:{title:"Transport Request", desc:"Request transport for purchased crops."},
+      profile:{title:"Profile", desc:"View and update your profile details."},
+      go:"Go"
+    },
+    footer:{text:"Empowering agriculture through transparency and direct farmer-buyer connection.", bottom:"© 2025 AgriChain. All Rights Reserved."}
+  }},
+  ta: { translation: {
+    title:"வாங்குபவர் டாஷ்போர்டு - அக்ரிச்செயின்",
+    brand:"அக்ரிச்செயின்",
+    nav:{home:"முகப்பு", about:"பற்றி", farmer:"விவசாயி", buyer:"வாங்குபவர்", admin:"நிர்வாகி", transporter:"போக்குவரத்து", insurance:"காப்பீடு", contact:"தொடர்பு"},
+    dashboard:{
+      title:"வாங்குபவர் டாஷ்போர்டு",
+      desc:"உங்கள் கொள்முதல், போக்குவரத்து கோரிக்கைகள் மற்றும் சுயவிவரத்தை நிர்வகிக்கவும்.",
+      buy:{title:"பயிர்கள் வாங்க", desc:"விவசாயிகளிடமிருந்து கிடைக்கும் பயிர்களை ஆராயுங்கள்."},
+      orders:{title:"என் ஆர்டர்கள்", desc:"உங்கள் பயிர் ஆர்டர்களை கண்காணிக்கவும்."},
+      transport:{title:"போக்குவரத்து கோரிக்கை", desc:"வாங்கிய பயிர்களுக்கு போக்குவரத்தை கோருங்கள்."},
+      profile:{title:"சுயவிவரம்", desc:"உங்கள் சுயவிவரத்தைப் பார்வையிட்டு புதுப்பிக்கவும்."},
+      go:"செல்ல"
+    },
+    footer:{text:"அக்ரிச்செயின் – விவசாயம் மற்றும் வாங்குபவர்களை நேரடியாக இணைக்கும் நம்பகமான தளம்.", bottom:"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."}
+  }}
+};
+
+i18next.init({ lng:"en", debug:false, resources }, function(){
+  updateContent();
+});
+
+function updateContent(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    el.innerHTML = i18next.t(key);
+    if(el.tagName === "TITLE") el.textContent = i18next.t(key);
+  });
+}
+
+function goToProfile(){
+    window.location.href = "buyer-profile.html";
+}
+
+function changeLang(lang){
+  i18next.changeLanguage(lang, updateContent);
+}
+
+window.onload = async function () {
+  const token = localStorage.getItem("token");
+  const buyerId = localStorage.getItem("buyer_id");
+
+  if (!token || !buyerId) {
+      alert("Please login first");
+      window.location.href = "../buyer/buyer-login.html";
+      return;
+  }
+
+  try {
+      const res = await fetch(`http://localhost:5000/api/buyer/profile/${buyerId}`, {
+          method: "GET",
+          headers: {
+              "Authorization": `Bearer ${token}`
+          }
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+          const buyer = data.buyer;
+
+          document.getElementById("welcomeText").textContent = `Welcome, ${buyer.name}`;
+
+          if (buyer.profile_image) {
+              // If your backend gives image URL
+              document.getElementById("dashboardProfilePhoto").src = buyer.profile_image;
+          }
+      } else {
+          alert("Unable to load profile. Login again.");
+          window.location.href = "../buyer/buyer-login.html";
+      }
+
+  } catch (err) {
+      console.error(err);
+      alert("Server error. Try again later.");
+  }
+};
+</script>
+
+</body>
+</html>
