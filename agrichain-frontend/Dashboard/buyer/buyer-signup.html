@@ -10,45 +10,69 @@
 <script src="https://unpkg.com/i18next-browser-languagedetector@7.2.1/i18nextBrowserLanguageDetector.min.js"></script>
 
 <style>
-/* (same styling as your provided signup page) */
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
 html,body{height:100%;overflow-x:hidden;scroll-behavior:smooth;}
 body{
   background:linear-gradient(rgba(168,224,99,0.5),rgba(86,171,47,0.5)), url('../../images/buyer_signup.jpg') no-repeat center top;
-  background-size:100% auto; display:flex; flex-direction:column;
+  background-size:100% auto;
+  display:flex; flex-direction:column;
 }
-header{background:rgba(25,105,44,0.95);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;color:#fff;}
+header{
+  background:rgba(25,105,44,0.95);padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;color:#fff;
+}
 header img{height:60px;border-radius:10px;}
-nav{display:flex;gap:20px;}
-nav a{text-decoration:none;color:#f3f7f4;font-weight:600;}
-.language-toggle button{margin-left:10px;padding:6px 12px;border:none;border-radius:6px;background:#f5f4f3;color:#19692c;font-weight:bold;cursor:pointer;}
+nav a{text-decoration:none;color:#f3f7f4;font-weight:600;margin:0 10px;}
+.language-toggle button{
+  margin-left:10px;padding:6px 12px;border:none;border-radius:6px;background:#f5f4f3;color:#19692c;font-weight:bold;cursor:pointer;
+}
 .title{text-align:center;margin:25px 0;color:#19692c;font-size:2.4rem;}
+
 main{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:20px 0;}
-.section{width:90%;max-width:500px;padding:35px;background:rgba(255,255,255,0.95);border-radius:20px;box-shadow:0 10px 30px rgba(13,13,13,0.25);}
-.form-group{position:relative;margin-bottom:20px;}
-.form-group i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#222;}
-.section input,.section select{width:100%;padding:14px 12px 14px 38px;border:2px solid #0a0909;border-radius:10px;background:transparent;}
-.section label{position:absolute;top:14px;left:38px;background:white;padding:0 5px;color:#131212;font-weight:bold;pointer-events:none;}
-.section input:focus{border-color:#27ae60;box-shadow:0 0 12px rgba(39,174,96,0.4);}
-.password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#999;}
-.section button{width:100%;padding:14px;background:#27ae60;border:none;border-radius:10px;color:#fff;font-size:18px;cursor:pointer;}
+.section{
+  width:90%;max-width:500px;padding:35px;background:rgba(255,255,255,0.95);
+  border-radius:20px;box-shadow:0 10px 30px rgba(13,13,13,0.25);
+}
+.form-group{position:relative;margin-bottom:25px;}
+.form-group i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#333;}
+.section input,.section select{
+  width:100%;padding:14px 12px 14px 38px;border:2px solid #0a0909;
+  border-radius:10px;background:transparent;font-size:15px;
+}
+.section select{color:#555;}
+.section input:focus,.section select:focus{border-color:#27ae60;box-shadow:0 0 12px rgba(39,174,96,0.4);}
+.section label{
+  position:absolute;top:-10px;left:45px;background:white;padding:0 5px;
+  color:#131212;font-weight:bold;font-size:14px;
+}
+.password-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  cursor:pointer;color:#999;
+}
+.section button{
+  width:100%;padding:14px;background:#27ae60;border:none;border-radius:10px;
+  color:#fff;font-size:18px;cursor:pointer;font-weight:bold;
+}
 .login-link{text-align:center;margin-top:15px;font-size:16px;}
-footer{background:rgba(25,105,44,0.95);color:#fff;text-align:center;padding:15px;font-weight:bold;}
+footer{
+  background:rgba(25,105,44,0.95);color:#fff;text-align:center;padding:15px;font-weight:bold;
+}
 </style>
 </head>
+
 <body>
 
 <header>
   <img src="../../images/logo.png" alt="AgriChain Logo">
   <nav>
-     <a href="../../index.html" data-i18n="nav-home">Home</a>
+    <a href="../../index.html" data-i18n="nav-home">Home</a>
     <a href="../../All/about.html" data-i18n="nav-about">About</a>
     <a href="../../instruction/farmerinstruction.html" data-i18n="nav-farmer">Farmer</a>
     <a href="../../instruction/buyerinstruction.html" data-i18n="nav-buyer">Buyer</a>
     <a href="../../instruction/admininstruction.html" data-i18n="nav-admin">Admin</a>
     <a href="../../instruction/trnsportinstruction.html" data-i18n="nav-transporter">Transporter</a>
     <a href="../../instruction/insuranceinstruction.html" data-i18n="nav-insurance">Insurance</a>
-    </nav>
+  </nav>
+
   <div class="language-toggle">
     <button onclick="changeLng('en')">English</button>
     <button onclick="changeLng('ta')">தமிழ்</button>
@@ -60,51 +84,52 @@ footer{background:rgba(25,105,44,0.95);color:#fff;text-align:center;padding:15px
 <main>
   <div class="section">
     <form id="signupForm" onsubmit="return signup(event)">
+
       <div class="form-group">
-        <input type="text" id="buyer_name" name="buyer_name" required placeholder=" ">
         <label for="buyer_name" data-i18n="label-name">Full Name</label>
+        <input type="text" id="buyer_name" required>
         <i class="fa fa-user"></i>
       </div>
 
       <div class="form-group">
-        <input type="text" id="business_name" name="business_name" required placeholder=" ">
         <label for="business_name" data-i18n="label-business">Business Name</label>
+        <input type="text" id="business_name" required>
         <i class="fa fa-briefcase"></i>
       </div>
 
       <div class="form-group">
-        <select id="district" name="district" required>
-          <option value="" disabled selected></option>
+        <label for="district" data-i18n="label-district">District</label>
+        <select id="district" required>
+          <option value="" selected disabled>Select District</option>
           <option>Chennai</option>
           <option>Kanchipuram</option>
           <option>Madurai</option>
           <option>Thiruvallur</option>
         </select>
-        <label for="district" data-i18n="label-district">District</label>
         <i class="fa fa-map-marker-alt"></i>
       </div>
 
       <div class="form-group">
-        <input type="tel" id="phone" name="phone" required placeholder=" ">
         <label for="phone" data-i18n="label-phone">Phone Number</label>
+        <input type="tel" id="phone" required>
         <i class="fa fa-phone"></i>
       </div>
 
       <div class="form-group">
-        <input type="email" id="email" name="email" required placeholder=" ">
         <label for="email" data-i18n="label-email">Email</label>
+        <input type="email" id="email" required>
         <i class="fa fa-envelope"></i>
       </div>
 
       <div class="form-group">
-        <input type="text" id="username" name="username" required placeholder=" ">
         <label for="username" data-i18n="label-username">Username</label>
+        <input type="text" id="username" required>
         <i class="fa fa-user-circle"></i>
       </div>
 
-      <div class="form-group" style="margin-bottom:12px;">
-        <input type="password" id="password" name="password" required placeholder=" ">
+      <div class="form-group">
         <label for="password" data-i18n="label-password">Password</label>
+        <input type="password" id="password" required>
         <i class="fa fa-lock"></i>
         <span class="password-toggle" onclick="togglePassword()"><i class="fa fa-eye"></i></span>
       </div>
@@ -124,21 +149,23 @@ footer{background:rgba(25,105,44,0.95);color:#fff;text-align:center;padding:15px
 </footer>
 
 <script>
-/* i18n resources (English & Tamil) */
+/* I18N Texts */
 const resources = {
   en: { translation: {
-   "nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-transporter":"Transporter","nav-admin":"Admin","nav-insurance":"Insurance",
+   "nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer",
+   "nav-transporter":"Transporter","nav-admin":"Admin","nav-insurance":"Insurance",
    "signup-title":"AgroMart",
-    "label-name":"Full Name","label-business":"Business Name","label-district":"District",
-    "label-phone":"Phone Number","label-email":"Email","label-username":"Username","label-password":"Password",
-    "btn-signup":"Signup","already-registered":"Already Registered?","login-link":"Login","footer-text":"© 2025 AgriChain. All Rights Reserved."
+   "label-name":"Full Name","label-business":"Business Name","label-district":"District",
+   "label-phone":"Phone Number","label-email":"Email","label-username":"Username","label-password":"Password",
+   "btn-signup":"Signup","already-registered":"Already Registered?","login-link":"Login","footer-text":"© 2025 AgriChain. All Rights Reserved."
   }},
   ta: { translation: {
-     "nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-transporter":"போக்குவரத்து","nav-admin":"நிர்வாகி","nav-insurance":"காப்பீடு",
-     "signup-title":"அக்ரோமார்ட்",
-    "label-name":"முழு பெயர்","label-business":"வணிகத்தின் பெயர்","label-district":"மாவட்டம்",
-    "label-phone":"தொலைபேசி எண்","label-email":"மின்னஞ்சல்","label-username":"பயனர் பெயர்","label-password":"கடவுச்சொல்",
-    "btn-signup":"பதிவு செய்ய","already-registered":"ஏற்கனவே பதிவு செய்துள்ளீர்களா?","login-link":"உள்நுழையவும்","footer-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
+   "nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்",
+   "nav-transporter":"போக்குவரத்து","nav-admin":"நிர்வாகி","nav-insurance":"காப்பீடு",
+   "signup-title":"அக்ரோமார்ட்",
+   "label-name":"முழு பெயர்","label-business":"வணிகத்தின் பெயர்","label-district":"மாவட்டம்",
+   "label-phone":"தொலைபேசி எண்","label-email":"மின்னஞ்சல்","label-username":"பயனர் பெயர்","label-password":"கடவுச்சொல்",
+   "btn-signup":"பதிவு செய்ய","already-registered":"ஏற்கனவே பதிவு செய்துள்ளீர்களா?","login-link":"உள்நுழையவும்","footer-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
   }}
 };
 
@@ -146,45 +173,50 @@ i18next.use(i18nextBrowserLanguageDetector).init({resources,fallbackLng:'en'}, u
 function changeLng(lang){ i18next.changeLanguage(lang, updateTexts); }
 function updateTexts(){ document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=i18next.t(el.getAttribute('data-i18n'))); }
 
-/* password toggle */
+/* Password Toggle */
 function togglePassword(){
-  const pass = document.getElementById('password');
-  const icon = document.querySelector('.password-toggle i');
-  if(pass.type === 'password'){ pass.type = 'text'; icon.classList.replace('fa-eye','fa-eye-slash'); }
-  else { pass.type = 'password'; icon.classList.replace('fa-eye-slash','fa-eye'); }
+  const p = document.getElementById("password");
+  const icon = document.querySelector(".password-toggle i");
+  p.type = (p.type === "password") ? "text" : "password";
+  icon.classList.toggle("fa-eye");
+  icon.classList.toggle("fa-eye-slash");
 }
 
-/* signup - send to backend at http://localhost:5000/api/buyer/signup */
+/* Signup API */
 async function signup(e){
   e.preventDefault();
+
   const payload = {
-    buyer_name: document.getElementById('buyer_name').value.trim(),
-    business_name: document.getElementById('business_name').value.trim(),
-    district: document.getElementById('district').value,
-    phone: document.getElementById('phone').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    username: document.getElementById('username').value.trim(),
-    password: document.getElementById('password').value
+    buyer_name: buyer_name.value.trim(),
+    business_name: business_name.value.trim(),
+    district: district.value,
+    phone: phone.value.trim(),
+    email: email.value.trim(),
+    username: username.value.trim(),
+    password: password.value
   };
 
   try{
-    const res = await fetch('http://localhost:5000/api/buyer/signup', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
+    const res = await fetch("http://localhost:5000/api/buyer/signup", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
     });
+
     const data = await res.json();
-    if(data.status === 'success'){
-      alert('Registered. Please login.');
-      window.location.href = 'buyer-login.html';
+
+    if(data.status === "success"){
+      alert("Registration successful! Please login.");
+      location.href = "buyer-login.html";
     } else {
-      alert(data.message || 'Registration failed');
+      alert(data.message || "Registration failed");
     }
-  }catch(err){
-    console.error(err);
-    alert('Unable to contact server');
+
+  } catch(err){
+    alert("Server connection failed!");
   }
 }
 </script>
+
 </body>
 </html>
