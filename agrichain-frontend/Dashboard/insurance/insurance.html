@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="title">🌾 Crop Insurance Recommendation System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- i18next library -->
+  <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
+
+  <!-- Combined CSS -->
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(120deg, #e0f7fa, #f1f8e9);
+      color: #333;
+      line-height: 1.6;
+      background: 
+    linear-gradient(rgba(168,224,99,0.5), rgba(86,171,47,0.5)),
+    url('../../images/insurance-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+    }
+
+    /* Header */
+    header {
+      background: rgba(25, 105, 44, 0.95);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header img {
+      height: 50px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    header img:hover {
+      transform: scale(1.1);
+    }
+
+    header h1 {
+      color: #ffffff;
+      font-size: 1.8em;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #f3f7f4;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #ffeaa7;
+      transform: scale(1.1);
+    }
+
+    .language-toggle {
+      display: flex;
+      gap: 10px;
+    }
+
+    .language-toggle button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #2e7d32;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .language-toggle button:hover {
+      background: #1b5e20;
+    }
+
+    /* Form Section */
+    .insurance-form {
+      background: white;
+      width: 60%;
+      margin: 40px auto;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .insurance-form h2 {
+      text-align: center;
+      color: #19692c;
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      transition: border 0.3s;
+    }
+
+    input:focus {
+      border-color: #43a047;
+      outline: none;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background-color: #43a047;
+      color: white;
+      border: none;
+      font-size: 1rem;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #2e7d32;
+    }
+
+    /* Result Box */
+    .result-box {
+      background: #e8f5e9;
+      padding: 20px;
+      margin: 25px auto;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      width: 60%;
+    }
+
+    .result-box h3 {
+      color: #1b5e20;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #19692c;
+      color: white;
+      padding: 30px 20px;
+      font-size: 13px;
+      line-height: 1.5;
+      border-radius: 10px 10px 0 0;
+      margin-top: 40px;
+    }
+
+    .footer-container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .footer-brand,
+    .footer-links,
+    .footer-social {
+      flex: 1 1 250px;
+    }
+
+    .footer-brand h2 {
+      margin-bottom: 8px;
+      color: #a8d5a2;
+    }
+
+    .footer-links h4,
+    .footer-social h4 {
+      margin-bottom: 8px;
+      color: #a8d5a2;
+      font-size: 14px;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 6px;
+    }
+
+    .footer-links a,
+    .footer-social a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 13px;
+      transition: 0.3s;
+    }
+
+    .footer-links a:hover,
+    .footer-social a:hover {
+      color: #a8d5a2;
+    }
+
+    .footer-social a i {
+      margin-right: 5px;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.3);
+      padding-top: 10px;
+    }
+
+    /* Responsive */
+    @media(max-width:768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        margin-top: 10px;
+      }
+
+      .insurance-form,
+      .result-box {
+        width: 90%;
+      }
+
+      .footer-container {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <img src="../../images/logo.png" alt="AgriChain Logo" />
+    </div>
+    <nav>
+      <a href="../../index.html" data-i18n="home">Home</a>
+      <a href="../../All/about.html" data-i18n="about">About</a>
+      <a href="../../Farmer/farmer-dashboard.html" data-i18n="farmer">Farmer</a>
+      <a href="../../instruction/buyerinstruction.html" data-i18n="buyer">Buyer</a>
+      <a href="../../instruction/admininstruction.html" data-i18n="admin">Admin</a>
+      <a href="../../instruction/trnsportinstruction.html" data-i18n="transporter">Transporter</a>
+      <a href="../../Dashboard/insurance/insurance.html" data-i18n="insurance">Insurance</a>
+    </nav>
+    <div class="language-toggle">
+      <button onclick="changeLang('en')">English</button>
+      <button onclick="changeLang('ta')">தமிழ்</button>
+    </div>
+  </header>
+
+  <!-- Main Form -->
+  <section class="insurance-form">
+    <h2 data-i18n="form_title">🌾 Crop Insurance Recommendation System</h2>
+
+    <form id="insuranceForm" enctype="multipart/form-data">
+      <label data-i18n="region_label">Region (State/City):</label>
+      <input type="text" id="region" required />
+
+      <label data-i18n="crop_label">Crop Type:</label>
+      <input type="text" id="crop_type" required />
+
+      <label data-i18n="soil_label">Soil Type:</label>
+      <input type="text" id="soil_type" required placeholder="e.g., Loamy, Sandy, Clay" />
+
+      <label data-i18n="loss_label">Estimated Loss (%):</label>
+      <input type="number" id="loss" step="0.01" required />
+
+      <label data-i18n="size_label">Farm Size (in acres):</label>
+      <input type="number" id="farm_size" step="0.01" required />
+
+      <!-- Image Input -->
+      <label for="crop_image" data-i18n="image_label">Upload Crop/Farm Image:</label>
+      <input type="file" id="crop_image" name="crop_image" accept="image/*" required />
+
+      <button type="submit" data-i18n="submit_btn">Get Recommendation</button>
+    </form>
+
+    <div class="result-box" id="resultBox" style="display:none;">
+      <h3>✅ <span data-i18n="recommended_plan">Recommended Plan:</span> <span id="plan"></span></h3>
+      <p>🌍 <span data-i18n="region">Region:</span> <span id="region_out"></span></p>
+      <p>🌾 <span data-i18n="crop">Crop:</span> <span id="crop_out"></span></p>
+      <p>🧱 <span data-i18n="soil">Soil Type:</span> <span id="soil_out"></span></p>
+      <p>🌤 <span data-i18n="rainfall">Rainfall:</span> <span id="rainfall"></span> mm</p>
+      <p>🌡 <span data-i18n="temperature">Temperature:</span> <span id="temperature"></span> °C</p>
+      <p>📈 <span data-i18n="yield">Average Yield:</span> <span id="yield"></span> kg/acre</p>
+      <p>💰 <span data-i18n="price">Market Price:</span> ₹<span id="price"></span></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h2 data-i18n="brand_name">AgriChain</h2>
+        <p data-i18n="brand_desc">Empowering farmers, ensuring transparency, and connecting directly with buyers through technology.</p>
+      </div>
+      <div class="footer-links">
+        <h4 data-i18n="quick_links">Quick Links</h4>
+        <ul>
+          <li><a href="../../index.html" data-i18n="home">Home</a></li>
+          <li><a href="../../All/about.html" data-i18n="about">About</a></li>
+          <li><a href="../../All/contact.html" data-i18n="contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-social">
+        <h4 data-i18n="follow_us">Follow Us</h4>
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+        <a href="https://wa.me/+919541954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 AgriChain. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize i18next translations
+    i18next.init({
+      lng: "en",
+      debug: false,
+      resources: {
+        en: {
+          translation: {
+            title: "🌾 Crop Insurance Recommendation System",
+            brand_name: "AgriChain",
+            brand_desc: "Empowering farmers, ensuring transparency, and connecting directly with buyers through technology.",
+            home: "Home",
+            about: "About",
+            contact: "Contact",
+            farmer: "Farmer",
+            buyer: "Buyer",
+            admin: "Admin",
+            transporter: "Transporter",
+            insurance: "Insurance",
+            quick_links: "Quick Links",
+            follow_us: "Follow Us",
+            form_title: "🌾 Crop Insurance Recommendation System",
+            region_label: "Region (State/City):",
+            crop_label: "Crop Type:",
+            soil_label: "Soil Type:",
+            loss_label: "Estimated Loss (%):",
+            size_label: "Farm Size (in acres):",
+            image_label: "Upload Crop/Farm Image:",
+            submit_btn: "Get Recommendation",
+            recommended_plan: "Recommended Plan:",
+            region: "Region:",
+            crop: "Crop:",
+            soil: "Soil Type:",
+            rainfall: "Rainfall:",
+            temperature: "Temperature:",
+            yield: "Average Yield:",
+            price: "Market Price:"
+          }
+        },
+        ta: {
+          translation: {
+            title: "🌾 பயிர் காப்பீட்டு பரிந்துரை அமைப்பு",
+            brand_name: "அக்ரிச்செயின்",
+            brand_desc: "விவசாயிகளை வலுப்படுத்தி, வெளிப்படைத்தன்மையை உறுதி செய்து, நேரடியாக வாங்குபவர்களுடன் இணைக்கும் தொழில்நுட்பம்.",
+            home: "முகப்பு",
+            about: "எங்களை பற்றி",
+            contact: "தொடர்பு கொள்ள",
+            farmer: "விவசாயி",
+            buyer: "வாங்குபவர்",
+            admin: "நிர்வாகி",
+            transporter: "போக்குவரத்து",
+            insurance: "காப்பீடு",
+            quick_links: "விரைவு இணைப்புகள்",
+            follow_us: "எங்களை பின்தொடரவும்",
+            form_title: "🌾 பயிர் காப்பீட்டு பரிந்துரை அமைப்பு",
+            region_label: "பகுதி (மாநிலம்/நகரம்):",
+            crop_label: "பயிர் வகை:",
+            soil_label: "மண் வகை:",
+            loss_label: "மதிப்பிடப்பட்ட இழப்பு (%):",
+            size_label: "பண்ணை பரப்பளவு (ஏக்கர்):",
+            image_label: "பயிர் / பண்ணை படத்தை பதிவேற்றவும்:",
+            submit_btn: "பரிந்துரையை பெறவும்",
+            recommended_plan: "பரிந்துரைக்கப்பட்ட திட்டம்:",
+            region: "பகுதி:",
+            crop: "பயிர்:",
+            soil: "மண் வகை:",
+            rainfall: "மழை அளவு:",
+            temperature: "வெப்பநிலை:",
+            yield: "சராசரி விளைச்சல்:",
+            price: "சந்தை விலை:"
+          }
+        }
+      }
+    }, function(err, t) {
+      updateContent();
+    });
+
+    function updateContent() {
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.innerHTML = i18next.t(el.getAttribute("data-i18n"));
+      });
+    }
+
+    function changeLang(lang) {
+      i18next.changeLanguage(lang, updateContent);
+    }
+
+    // JSON + Image POST request
+    document.getElementById("insuranceForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("region", document.getElementById("region").value);
+      formData.append("crop_type", document.getElementById("crop_type").value);
+      formData.append("soil_type", document.getElementById("soil_type").value);
+      formData.append("loss", document.getElementById("loss").value);
+      formData.append("farm_size", document.getElementById("farm_size").value);
+      formData.append("crop_image", document.getElementById("crop_image").files[0]);
+
+      try {
+        const response = await fetch("/recommend", {
+          method: "POST",
+          body: formData
+        });
+        if (!response.ok) throw new Error("Failed to get recommendation");
+        const result = await response.json();
+
+        document.getElementById("resultBox").style.display = "block";
+        document.getElementById("plan").textContent = result.recommended_plan;
+        document.getElementById("region_out").textContent = formData.get("region");
+        document.getElementById("crop_out").textContent = formData.get("crop_type");
+        document.getElementById("soil_out").textContent = formData.get("soil_type");
+        document.getElementById("rainfall").textContent = result.weather.rainfall_mm;
+        document.getElementById("temperature").textContent = result.weather.temperature_c;
+        document.getElementById("yield").textContent = result.avg_yield;
+        document.getElementById("price").textContent = result.market_price;
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
