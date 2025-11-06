@@ -169,45 +169,51 @@ header h1:hover {
 </header>
 
 <section class="hero">
-    <h2 data-i18n="dashboard.title">Farmer Dashboard</h2>
-    <p data-i18n="dashboard.desc">Manage your crops, sales, insurance, and activities all in one place.</p>
-     <div class="profile-icon" onclick="goToProfile()">
-        <img src="../../images/farmer-profile.jpg" alt="Farmer Photo">
-    </div>
+  <h2 data-i18n="dashboard.title">Farmer Dashboard</h2>
+  <p data-i18n="dashboard.desc">
+    Manage your crops, sales, insurance, and activities all in one place.
+  </p>
+
+  <!-- Profile Icon -->
+  <div class="profile-icon" id="profileIcon" onclick="goToProfile()">
+    <img id="farmerPhoto" src="../../images/farmer-profile.jpg" alt="Farmer Photo">
+  </div>
 </section>
 
 <section class="dashboard">
-    <div class="card">
-        <i class="fas fa-seedling"></i>
-        <h3 data-i18n="dashboard.crop.title">Crop Management</h3>
-        <p data-i18n="dashboard.crop.desc">Add, update, and track your crop details.</p>
-        <a href="../farmer/add-crop.html" data-i18n="dashboard.go">Go</a>
-    </div>
-    <div class="card">
-        <i class="fas fa-hand-holding-usd"></i>
-        <h3 data-i18n="dashboard.sales.title">Sales</h3>
-        <p data-i18n="dashboard.sales.desc">View and manage your sales and transactions.</p>
-        <a href="../../All/sales.html" data-i18n="dashboard.go">Go</a>
-    </div>
-    <div class="card">
-        <i class="fas fa-shield-alt"></i>
-        <h3 data-i18n="dashboard.insurance.title">Insurance</h3>
-        <p data-i18n="dashboard.insurance.desc">Apply and track crop insurance claims.</p>
-        <a href="../farmer/insurance-application.html" data-i18n="dashboard.go">Go</a>
-    </div>
-    <div class="card">
-        <i class="fas fa-chart-line"></i>
-        <h3 data-i18n="dashboard.reports.title">Reports</h3>
-        <p data-i18n="dashboard.reports.desc">Analyze your farming progress and performance.</p>
-        <a href="../../All/reports.html" data-i18n="dashboard.go">Go</a>
-    </div>
+  <div class="card">
+    <i class="fas fa-seedling"></i>
+    <h3 data-i18n="dashboard.crop.title">Crop Management</h3>
+    <p data-i18n="dashboard.crop.desc">Add, update, and track your crop details.</p>
+    <a href="../farmer/add-crop.html" data-i18n="dashboard.go">Go</a>
+  </div>
+  <div class="card">
+    <i class="fas fa-hand-holding-usd"></i>
+    <h3 data-i18n="dashboard.sales.title">Sales</h3>
+    <p data-i18n="dashboard.sales.desc">View and manage your sales and transactions.</p>
+    <a href="../../All/sales.html" data-i18n="dashboard.go">Go</a>
+  </div>
+  <div class="card">
+    <i class="fas fa-shield-alt"></i>
+    <h3 data-i18n="dashboard.insurance.title">Insurance</h3>
+    <p data-i18n="dashboard.insurance.desc">Apply and track crop insurance claims.</p>
+    <a href="../farmer/insurance-application.html" data-i18n="dashboard.go">Go</a>
+  </div>
+  <div class="card">
+    <i class="fas fa-chart-line"></i>
+    <h3 data-i18n="dashboard.reports.title">Reports</h3>
+    <p data-i18n="dashboard.reports.desc">Analyze your farming progress and performance.</p>
+    <a href="../../All/reports.html" data-i18n="dashboard.go">Go</a>
+  </div>
 </section>
 
 <footer>
   <div class="footer-container">
     <div class="footer-brand">
       <h2 data-i18n="brand">AgriChain</h2>
-      <p data-i18n="footer.text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
+      <p data-i18n="footer.text">
+        Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.
+      </p>
     </div>
     <div class="footer-links">
       <h4>Quick Links</h4>
@@ -220,7 +226,7 @@ header h1:hover {
     <div class="footer-social">
       <h4>Follow Us</h4>
       <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
-      <a href="https://wa.me/+9195419 54142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://wa.me/+919541954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
     </div>
   </div>
@@ -275,13 +281,46 @@ function updateContent(){
     if(el.tagName === "TITLE") el.textContent = i18next.t(key);
   });
 }
+
 function goToProfile(){
-    window.location.href = "farmer-profile.html";
+  window.location.href = "farmer-profile.html";
 }
 
 function changeLang(lang){
   i18next.changeLanguage(lang, updateContent);
 }
+
+// ✅ Fetch farmer profile photo dynamically
+async function loadFarmerProfile() {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const res = await fetch("http://localhost:5000/farmer/profile", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error("Failed to load profile");
+
+    const data = await res.json();
+    const imgElement = document.getElementById("farmerPhoto");
+
+    // If backend sends Base64 photo, display it
+    if (data.photo) {
+      imgElement.src = data.photo.startsWith("data:")
+        ? data.photo
+        : `data:image/jpeg;base64,${data.photo}`;
+    } else {
+      imgElement.src = "../../images/farmer-profile.jpg"; // fallback image
+    }
+  } catch (error) {
+    console.error("Error loading farmer photo:", error);
+  }
+}
+
+// ✅ Call on page load
+window.onload = loadFarmerProfile;
 </script>
 </body>
 </html>
+

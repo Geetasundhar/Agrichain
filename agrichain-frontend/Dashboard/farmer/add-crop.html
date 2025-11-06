@@ -238,7 +238,7 @@ border-top:1px solid rgba(255,255,255,0.3);padding-top:10px;}
 <script src="https://unpkg.com/i18next-browser-languagedetector@7.2.0/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-// LANGUAGE SUPPORT
+/* LANGUAGE SUPPORT */
 const resources = {
   en: {
     translation: {
@@ -253,8 +253,7 @@ const resources = {
       "footer.brand": "AgriChain", "footer.text": "Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
       "footer.linksTitle": "Quick Links", "footer.home": "Home", "footer.about": "About", "footer.contact": "Contact",
       "footer.socialTitle": "Follow Us", "footer.bottom": "© 2025 AgriChain. All Rights Reserved.",
-      "form.networkError": "Network error, please try again.",
-      "footer.socialTitle": "Follow Us", "footer.bottom": "© 2025 AgriChain. All Rights Reserved."
+      "form.networkError": "Network error, please try again."
     }
   },
   ta: {
@@ -274,11 +273,22 @@ const resources = {
     }
   }
 };
-i18next.init({lng:"en",debug:false,resources},()=>updateContent());
-function changeLang(lang){i18next.changeLanguage(lang,()=>updateContent());}
-function updateContent(){document.querySelectorAll("[data-i18n]").forEach(el=>el.innerText=i18next.t(el.getAttribute("data-i18n")));}
 
-// FORM SUBMISSION
+i18next.init({ lng: "en", debug: false, resources }, function(err, t){
+  updateContent();
+});
+
+function changeLang(lang){
+  i18next.changeLanguage(lang, () => updateContent());
+}
+
+function updateContent(){
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    el.innerText = i18next.t(el.getAttribute("data-i18n"));
+  });
+}
+
+/* FORM SUBMISSION */
 document.getElementById("add-crop-form").addEventListener("submit", async e => {
   e.preventDefault();
   const form = e.target;
@@ -299,7 +309,6 @@ document.getElementById("add-crop-form").addEventListener("submit", async e => {
       image: reader.result
     };
 
-    // CHECK IF ALL FIELDS ARE FILLED
     if (!payload.name || !payload.type || !payload.quantity || !payload.price || !payload.location) {
       return alert("Please fill all fields correctly.");
     }
@@ -322,7 +331,7 @@ document.getElementById("add-crop-form").addEventListener("submit", async e => {
         alert("✅ Crop added successfully!");
         const qrDiv = document.getElementById("qrCode");
         qrDiv.innerHTML = "";
-        new QRCode(qrDiv, { text: data.crop.qrCode || "No QR", width: 150, height: 150 });
+        new QRCode(qrDiv, { text: data.crop?.qrCode || "No QR", width: 150, height: 150 });
         qrDiv.classList.add("visible");
         form.reset();
       }
@@ -332,22 +341,6 @@ document.getElementById("add-crop-form").addEventListener("submit", async e => {
     }
   };
 });
-      "footer.socialTitle": "எங்களை பின்தொடரவும்", "footer.bottom": "© 2025 அக்ரிச்செயின். அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."
-i18next.init({
-  lng: "en",
-  debug: false,
-  resources
-}, function(err, t){
-  updateContent();
-});
-function changeLang(lang){
-  i18next.changeLanguage(lang, () => updateContent());
-}
-function updateContent(){
-  document.querySelectorAll("[data-i18n]").forEach(el=>{
-    el.innerText = i18next.t(el.getAttribute("data-i18n"));
-  });
-}
 </script>
 </body>
 </html>

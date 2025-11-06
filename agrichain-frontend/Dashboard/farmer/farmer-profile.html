@@ -322,7 +322,7 @@ footer {
     <div class="card grid">
       <div class="avatar">
         <img id="photoPreview" src="../../images/farmer-profile.jpg" alt="Farmer photo">
-        <p class="muted" id="displayLocation"></p>
+        <p class="muted" id="displayName"></p>
         <div class="info-list">
           <div class="info-item"><b>Land:</b> <span id="displayLand"></span></div>
           <div class="info-item"><b>Email:</b> <span id="displayEmail"></span></div>
@@ -379,7 +379,6 @@ footer {
   </div>
 </section>
 
-<!-- Footer -->
 <footer>
   <div class="footer-container">
     <div class="footer-column">
@@ -411,10 +410,8 @@ footer {
   </div>
 </footer>
 
-<!-- Scripts -->
 <script src="https://unpkg.com/i18next@23.7.6/dist/umd/i18next.min.js"></script>
 <script>
-// 🌐 Language support
 const resources = {
   en: {
     translation: {
@@ -445,31 +442,48 @@ function updateContent() {
 }
 function changeLang(lang) { i18next.changeLanguage(lang, updateContent); }
 
-// 🌿 Fetch Profile
+let photoBase64 = "";
 async function loadProfile() {
   try {
-    const farmerId = localStorage.getItem("farmerId") || 1;
-    const res = await fetch(`http://localhost:3000/api/farmer/profile/${farmerId}`);
+    const token = localStorage.getItem("token");
+    if (!token) return alert("Please log in first!");
+
+    const res = await fetch("http://localhost:5000/farmer/profile", {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
     const data = await res.json();
-    document.getElementById("displayName").textContent = data.name;
-    document.getElementById("displayLocation").textContent = data.location;
-    document.getElementById("displayEmail").textContent = data.email;
-    document.getElementById("displayPhone").textContent = data.phone;
-    document.getElementById("displayLand").textContent = data.land;
-    document.getElementById("displayAge").textContent = data.age;
+    if (!res.ok) return alert(data.message || "Failed to load profile");
 
-    document.getElementById("fullName").value = data.name;
-    document.getElementById("phone").value = data.phone;
-    document.getElementById("email").value = data.email;
-    document.getElementById("age").value = data.age;
-    document.getElementById("location").value = data.location;
-    document.getElementById("land").value = data.land;
-    document.getElementById("crops").value = data.crops;
-    if (data.photo) document.getElementById("photoPreview").src = data.photo;
+   // document.getElementById("displayLocation").textContent = data.farm_address || "";
+    document.getElementById("displayEmail").textContent = data.email || "";
+    document.getElementById("displayPhone").textContent = data.phone || "";
+    document.getElementById("displayLand").textContent = data.farm_size || "";
+    document.getElementById("displayAge").textContent = data.age || "";
+    document.getElementById("displayName").textContent = data.name || "";
+
+    
+
+    document.getElementById("fullName").value = data.name || "";
+    document.getElementById("phone").value = data.phone || "";
+    document.getElementById("email").value = data.email || "";
+    document.getElementById("age").value = data.age || "";
+    document.getElementById("location").value = data.farm_address || "";
+    document.getElementById("land").value = data.farm_size || "";
+    document.getElementById("crops").value = data.crop_type || "";
+
+    if (data.photo) {
+      document.getElementById("photoPreview").src = data.photo;
+      photoBase64 = data.photo;
+    } else {
+      document.getElementById("photoPreview").src = "../../images/farmer-profile.jpg";
+    }
+
     setReadOnly(true);
-  } catch (err) { console.error("Error loading profile:", err); }
+  } catch (err) {
+    console.error("Error loading profile:", err);
+  }
 }
-
 function setReadOnly(isReadOnly) {
   document.querySelectorAll("#fullName, #phone, #email, #age, #location, #land, #crops, #photo")
     .forEach(input => input.disabled = isReadOnly);
@@ -482,36 +496,54 @@ document.getElementById("editBtn").addEventListener("click", () => {
   setReadOnly(!editMode);
   document.getElementById("editBtn").textContent = editMode ? "Cancel Edit" : "Edit";
 });
-
 document.getElementById("saveBtn").addEventListener("click", async () => {
-  const farmerId = localStorage.getItem("farmerId") || 1;
   const updatedData = {
     name: document.getElementById("fullName").value,
     phone: document.getElementById("phone").value,
     email: document.getElementById("email").value,
     age: document.getElementById("age").value,
-    location: document.getElementById("location").value,
-    land: document.getElementById("land").value,
-    crops: document.getElementById("crops").value
+    farm_address: document.getElementById("location").value,
+    farm_size: document.getElementById("land").value,
+    crop_type: document.getElementById("crops").value,
+    photo: photoBase64
   };
+
   try {
-    await fetch(`http://localhost:3000/api/farmer/profile/${farmerId}`, {
+    const token = localStorage.getItem("token");
+    const res = await fetch("http://localhost:5000/farmer/profile", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify(updatedData)
     });
+
+    const result = await res.json();
+    if (!res.ok) return alert(result.message || "Failed to update profile");
+
     alert("Profile updated successfully!");
     loadProfile();
     editMode = false;
     setReadOnly(true);
-  } catch (err) { console.error("Error updating profile:", err); }
+  } catch (err) {
+    console.error("Error updating profile:", err);
+  }
 });
 
 document.getElementById("resetBtn").addEventListener("click", loadProfile);
 
+/* 🧩 Convert to Base64 for Photo Upload */
 document.getElementById("photo").addEventListener("change", e => {
   const file = e.target.files[0];
-  if (file) document.getElementById("photoPreview").src = URL.createObjectURL(file);
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      photoBase64 = reader.result;
+      document.getElementById("photoPreview").src = photoBase64;
+    };
+    reader.readAsDataURL(file);
+  }
 });
 
 loadProfile();
