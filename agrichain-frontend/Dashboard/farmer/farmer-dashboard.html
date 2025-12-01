@@ -8,6 +8,7 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
 body { line-height:1.6; background:#f9f9f9; color:#333; }
+
 header{
   background: rgba(25,105,44,0.95);
   padding:15px 20px;
@@ -20,162 +21,158 @@ header{
 }
 header img { height:50px; }
 header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
+
 nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; transition: all 0.3s ease;}
 nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em; }
 nav a:hover { color:#ffeaa7; transform:scale(1.1);}
+
 .language-toggle { display:flex; gap:10px; margin-top:10px; }
-.language-toggle button { padding:6px 12px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; font-size:14px; }
+.language-toggle button {
+  padding:6px 12px;
+  border:none;
+  cursor:pointer;
+  border-radius:5px;
+  background:#19692c;
+  color:white;
+  font-size:14px;
+}
 .language-toggle button:hover { background:#0f4d23; }
-.hero { background:#dff0d8; text-align:center; padding:50px 20px; border-radius:10px; margin:20px; }
+
+.hero {
+  background:#dff0d8;
+  text-align:center;
+  padding:50px 20px;
+  border-radius:10px;
+  margin:20px;
+}
 .hero h2 { font-size:2.2em; margin-bottom:10px; color:#19692c; }
 .hero p { font-size:1.1em; }
+
 .dashboard {
-    max-width:1200px;
-    margin:20px auto;
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
-    gap:20px;
-    padding:0 20px;
+  max-width:1200px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+  gap:20px;
+  padding:0 20px;
 }
 .card {
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 4px 6px rgba(0,0,0,0.1);
-    text-align:center;
-    transition:0.3s;
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 4px 6px rgba(0,0,0,0.1);
+  text-align:center;
+  transition:0.3s;
 }
 .card:hover { transform:translateY(-5px); box-shadow:0 6px 12px rgba(0,0,0,0.15); }
 .card i { font-size:2em; color:#19692c; margin-bottom:10px; }
 .card h3 { margin-bottom:8px; color:#0f4d23; font-size:1.2em; }
 .card p { font-size:0.95em; margin-bottom:12px; }
-.card a { display:inline-block; padding:8px 15px; border-radius:6px; background:#19692c; color:white; text-decoration:none; font-size:0.95em; font-weight:bold; }
+.card a {
+  display:inline-block;
+  padding:8px 15px;
+  border-radius:6px;
+  background:#19692c;
+  color:white;
+  text-decoration:none;
+  font-size:0.95em;
+  font-weight:bold;
+}
 .card a:hover { background:#0f4d23; }
 .profile-icon {
-    position:absolute;
-    top:150px; /* moved down */
-    right:50px;
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    overflow:hidden;
-    border:2px solid #19692c;
-    cursor:pointer;
-    transition:transform 0.3s ease;
+  position:absolute;
+  top:150px; 
+  right:50px;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  overflow:hidden;
+  border:2px solid #19692c;
+  cursor:pointer;
+  transition:transform 0.3s ease;
 }
 .profile-icon img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 .profile-icon:hover{
-    transform:scale(1.1);
+  transform:scale(1.1);
 }
-
 footer {
-    background-color:#19692c;
-    color:white;
-    padding:30px 20px;
-    font-size:13px;
-    line-height:1.4;
-    border-radius:10px 10px 0 0;
-    margin-top:40px;
+  background-color:#19692c;
+  color:white;
+  padding:30px 20px;
+  font-size:13px;
+  line-height:1.4;
+  border-radius:10px 10px 0 0;
+  margin-top:40px;
 }
 footer .footer-container {
-    display:flex;
-    flex-wrap:wrap;
-    max-width:1200px;
-    margin:0 auto;
-    justify-content:space-between;
-    gap:15px;
+  display:flex;
+  flex-wrap:wrap;
+  max-width:1200px;
+  margin:0 auto;
+  justify-content:space-between;
+  gap:15px;
 }
 .footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
 .footer-brand h2 { margin-bottom:8px; color:#a8d5a2; font-size:1.2em; }
 .footer-links h4, .footer-social h4 { margin-bottom:8px; font-size:14px; color:#a8d5a2; }
 .footer-links ul { list-style:none; padding:0; }
 .footer-links li { margin-bottom:5px; }
-.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:10px; font-weight:bold; font-size:13px; }
+.footer-links a, .footer-social a {
+  color:white;
+  text-decoration:none;
+  margin-right:10px;
+  font-weight:bold;
+  font-size:13px;
+}
 .footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
 .footer-social a i { margin-right:5px; }
-.footer-bottom { text-align:center; margin-top:15px; border-top:1px solid rgba(255,255,255,0.3); padding-top:8px; }
+.footer-bottom {
+  text-align:center;
+  margin-top:15px;
+  border-top:1px solid rgba(255,255,255,0.3);
+  padding-top:8px;
+}
+
 @media(max-width:768px) {
-    header { flex-direction:column; align-items:flex-start; }
-    nav { text-align:left; margin-top:10px; }
-    nav a { display:inline-block; margin:5px 8px; font-size:13px; }
-    .hero h2 { font-size:1.6em; }
-    .hero p { font-size:0.95em; }
-    .footer-container { flex-direction:column; text-align:center; }
-    .footer-social a { display:inline-block; margin:5px; }
+  header { flex-direction:column; align-items:flex-start; }
+  nav { text-align:left; margin-top:10px; }
+  nav a { display:inline-block; margin:5px 8px; font-size:13px; }
+  .hero h2 { font-size:1.6em; }
+  .hero p { font-size:0.95em; }
+  .footer-container { flex-direction:column; text-align:center; }
+  .footer-social a { display:inline-block; margin:5px; }
 }
-header img {
-    height: 80px;              
-    width: auto;               
-    border-radius: 15px;       
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
-}
-
-header img:hover {
-    transform: scale(1.2) rotate(-5deg); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
-}
-header .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;                 
-}
-header h1 {
-    font-size: 2em;
-    color: #19692c;
-    font-weight: bold;
-    white-space: nowrap;      
-    transition: color 0.3s ease;
-}
-
-header h1:hover {
-    color: #0f4d23;            
-}
-
-@media(max-width:768px){
-    header img {
-        height: 60px;          
-    }
-    header h1 {
-        font-size: 1.5em;
-    }
-}
-
 </style>
 </head>
 <body>
 <header>
-    <div style="display:flex; align-items:center;">
-        <img src="../../images/logo.png" alt="AgriChain Logo">
-    </div>
-    <nav>
-        <a href="../../index.html" data-i18n="nav.home">Home</a>
-        <a href="../../All/about.html" data-i18n="nav.about">About</a>
-        <a href="farmer-dashboard.html" data-i18n="nav.farmer" class="active">Farmer</a>
-        <a href="#" data-i18n="nav.buyer">Buyer</a>
-        <a href="#" data-i18n="nav.admin">Admin</a>
-        <a href="#" data-i18n="nav.transporter">Transporter</a>
-        <a href="insurance-application.html" data-i18n="nav.insurance">Insurance</a>
-    </nav>
-    <div class="language-toggle">
-        <button onclick="changeLang('en')">English</button>
-        <button onclick="changeLang('ta')">தமிழ்</button>
-    </div>
+  <div style="display:flex; align-items:center;">
+    <img src="../../images/logo.png" alt="AgriChain Logo">
+  </div>
+  <nav>
+    <a href="../../index.html" data-i18n="nav.home">Home</a>
+    <a href="../../All/about.html" data-i18n="nav.about">About</a>
+    <a href="farmer-dashboard.html" data-i18n="nav.farmer" class="active">Farmer</a>
+    <a href="#" data-i18n="nav.buyer">Buyer</a>
+    <a href="#" data-i18n="nav.admin">Admin</a>
+    <a href="#" data-i18n="nav.transporter">Transporter</a>
+    <a href="insurance-application.html" data-i18n="nav.insurance">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLang('en')">English</button>
+    <button onclick="changeLang('ta')">தமிழ்</button>
+  </div>
 </header>
 
 <section class="hero">
-  <h2 data-i18n="dashboard.title">Farmer Dashboard</h2>
-  <p data-i18n="dashboard.desc">
-    Manage your crops, sales, insurance, and activities all in one place.
-  </p>
+  <h2 id="welcomeText" data-i18n="dashboard.title">Farmer Dashboard</h2>
+  <p data-i18n="dashboard.desc">Manage your crops, sales, insurance, and activities all in one place.</p>
 
-  <!-- Profile Icon -->
-  <div class="profile-icon" id="profileIcon" onclick="goToProfile()">
+  <div class="profile-icon" onclick="goToProfile()">
     <img id="farmerPhoto" src="../../images/farmer-profile.jpg" alt="Farmer Photo">
   </div>
 </section>
@@ -193,12 +190,14 @@ header h1:hover {
     <p data-i18n="dashboard.sales.desc">View and manage your sales and transactions.</p>
     <a href="../../All/sales.html" data-i18n="dashboard.go">Go</a>
   </div>
+
   <div class="card">
     <i class="fas fa-shield-alt"></i>
     <h3 data-i18n="dashboard.insurance.title">Insurance</h3>
     <p data-i18n="dashboard.insurance.desc">Apply and track crop insurance claims.</p>
     <a href="../farmer/insurance-application.html" data-i18n="dashboard.go">Go</a>
   </div>
+
   <div class="card">
     <i class="fas fa-chart-line"></i>
     <h3 data-i18n="dashboard.reports.title">Reports</h3>
@@ -282,12 +281,12 @@ function updateContent(){
   });
 }
 
-function goToProfile(){
-  window.location.href = "farmer-profile.html";
-}
-
 function changeLang(lang){
   i18next.changeLanguage(lang, updateContent);
+}
+
+function goToProfile(){
+  window.location.href = "farmer-profile.html";
 }
 
 // ✅ Fetch farmer profile photo dynamically
@@ -296,7 +295,7 @@ async function loadFarmerProfile() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    const res = await fetch("http://localhost:5000/farmer/profile", {
+    const res = await fetch("http://localhost:8000/farmer/profile", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -304,23 +303,20 @@ async function loadFarmerProfile() {
 
     const data = await res.json();
     const imgElement = document.getElementById("farmerPhoto");
+    const welcome = document.getElementById("welcomeText");
 
-    // If backend sends Base64 photo, display it
+    if (data.name) welcome.textContent = `Welcome, ${data.name}`;
     if (data.photo) {
       imgElement.src = data.photo.startsWith("data:")
         ? data.photo
         : `data:image/jpeg;base64,${data.photo}`;
-    } else {
-      imgElement.src = "../../images/farmer-profile.jpg"; // fallback image
     }
   } catch (error) {
     console.error("Error loading farmer photo:", error);
   }
 }
 
-// ✅ Call on page load
 window.onload = loadFarmerProfile;
 </script>
 </body>
 </html>
-

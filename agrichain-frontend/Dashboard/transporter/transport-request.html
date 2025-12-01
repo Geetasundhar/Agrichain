@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="title">Request Transport - AgriChain</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins", sans-serif; transition:all 0.3s ease; }
+body { background:#f9f9f9; color:#333; min-height:100vh; position:relative; }
+
+/* Background Image */
+body::before {
+  content:"";
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background:url('../../images/transport_request.jpg') no-repeat center center/cover;
+  z-index:-1;
+}
+
+/* Header */
+header {
+  background:rgba(25,105,44,0.95); color:white; padding:15px 20px;
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;
+  border-bottom:3px solid #a8d5a2;
+}
+header img { width:50px; height:50px; border-radius:5px; }
+nav { display:flex; gap:15px; flex-wrap:wrap; }
+nav a { color:white; text-decoration:none; font-weight:600; font-size:1em; }
+nav a:hover, nav a.active { color:#ffeaa7; transform:scale(1.08); }
+.language-toggle { display:flex; gap:10px; }
+.language-toggle button {
+  background:#0f4d23; color:white; border:none; padding:6px 12px;
+  border-radius:8px; cursor:pointer; font-size:0.9em;
+}
+.language-toggle button:hover { background:#0c3d1c; }
+
+/* Form Section */
+section {
+  max-width:700px;
+  margin:50px auto;
+  background:rgba(255,255,255,0.95);
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  backdrop-filter:blur(3px);
+}
+section h2 {
+  color:#19692c;
+  font-size:2em;
+  text-align:center;
+  margin-bottom:10px;
+}
+section p { text-align:center; color:#555; margin-bottom:25px; }
+
+label { display:block; margin:10px 0 5px; font-weight:600; color:#333; }
+input, select {
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:15px;
+}
+
+button {
+  margin-top:15px;
+  background:#19692c;
+  color:white;
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
+}
+button:hover { background:#0f4d23; transform:scale(1.05); }
+
+.btn-container { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+
+/* Footer */
+footer {
+  background-color:#19692c;
+  color:white;
+  padding:25px 15px;
+  text-align:center;
+  border-radius:10px 10px 0 0;
+  margin-top:40px;
+  font-size:14px;
+}
+
+/* Responsive */
+@media(max-width:768px){
+  header { flex-direction:column; text-align:center; }
+  nav { justify-content:center; margin:10px 0; }
+  section { padding:20px; }
+  section h2 { font-size:1.5em; }
+  .btn-container button { width:100%; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:10px;">
+      <img src="../../images/logo.png" alt="AgriChain Logo">
+  </div>
+  <nav>
+        <a href="../../index.html" class="no-translate">Home</a>
+        <a href="../../All/about.html" class="no-translate">About</a>
+        <a href="../../instruction/farmerinstruction.html" data-i18n="nav.farmer">Farmer</a>
+        <a href="../../instruction/buyerinstruction.html" data-i18n="nav.buyer" >Buyer</a>
+        <a href="../../instruction/admininstruction.html" data-i18n="nav.admin">Admin</a>
+        <a href="../../instruction/insuranceinstruction.html" class="no-translate">Transporter</a>
+        <a href="../../instruction/insuranceinstruction.html" class="no-translate">Insurance</a>
+  </nav>
+  <div class="language-toggle">
+    <button onclick="changeLang('en')">English</button>
+    <button onclick="changeLang('ta')">தமிழ்</button>
+  </div>
+</header>
+
+<section>
+  <h2 data-i18n="form.title">Request Transport</h2>
+  <p data-i18n="form.desc">Fill in the details below to arrange transport for your crops.</p>
+
+  <form id="transportForm">
+    <label data-i18n="form.pickup">Pickup Location (Farmer)</label>
+    <input type="text" id="pickup" value="Madurai" readonly>
+
+    <label data-i18n="form.drop">Drop Location (Buyer)</label>
+    <input type="text" id="drop" placeholder="Enter your address" required>
+
+    <label data-i18n="form.crop">Crop Name</label>
+    <input type="text" id="crop" value="Tomato" readonly>
+
+    <label data-i18n="form.quantity">Quantity (kg)</label>
+    <input type="number" id="quantity" value="200" required>
+
+    <label data-i18n="form.charge">Estimated Delivery Charge (₹)</label>
+    <input type="text" id="charge" readonly>
+
+    <div class="btn-container">
+      <button type="button" onclick="calculate()" data-i18n="form.estimate">Estimate Charge</button>
+      <button type="submit" data-i18n="form.request">Request Transport</button>
+    </div>
+  </form>
+</section>
+
+<footer>
+  <p data-i18n="footer.text">© 2025 AgriChain. Empowering Farmers, Connecting Buyers.</p>
+</footer>
+
+<script src="https://unpkg.com/i18next@23.7.6/dist/umd/i18next.min.js"></script>
+<script>
+// 🌐 i18next Language Support
+const resources = {
+  en: { translation: {
+    title:"Request Transport - AgriChain",
+    nav:{farmer:"Farmer", buyer:"Buyer", admin:"Admin"},
+    form:{
+      title:"Request Transport",
+      desc:"Fill in the details below to arrange transport for your crops.",
+      pickup:"Pickup Location (Farmer)",
+      drop:"Drop Location (Buyer)",
+      crop:"Crop Name",
+      quantity:"Quantity (kg)",
+      charge:"Estimated Delivery Charge (₹)",
+      estimate:"Estimate Charge",
+      request:"Request Transport"
+    },
+    footer:{text:"© 2025 AgriChain. Empowering Farmers, Connecting Buyers."}
+  }},
+  ta: { translation: {
+    title:"போக்குவரத்து கோரிக்கை - அக்ரிச்செயின்",
+    nav:{farmer:"விவசாயி", buyer:"வாங்குபவர்", admin:"நிர்வாகி"},
+    form:{
+      title:"போக்குவரத்து கோரிக்கை",
+      desc:"உங்கள் பயிர்களுக்கு போக்குவரத்தை ஏற்பாடு செய்ய கீழே உள்ள விவரங்களை நிரப்பவும்.",
+      pickup:"எடுத்த இடம் (விவசாயி)",
+      drop:"விநியோக இடம் (வாங்குபவர்)",
+      crop:"பயிர் பெயர்",
+      quantity:"அளவு (கிலோ)",
+      charge:"மதிப்பிடப்பட்ட கட்டணம் (₹)",
+      estimate:"கட்டணம் கணக்கிடு",
+      request:"போக்குவரத்து கோரிக்கை"
+    },
+    footer:{text:"© 2025 அக்ரிச்செயின். விவசாயிகளை வலுப்படுத்தி வாங்குபவர்களை இணைக்கும் தளம்."}
+  }}
+};
+
+i18next.init({ lng:"en", debug:false, resources }, updateContent);
+function updateContent(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    el.innerHTML = i18next.t(key);
+    if(el.tagName==="TITLE") el.textContent = i18next.t(key);
+  });
+}
+function changeLang(lang){ i18next.changeLanguage(lang, updateContent); }
+
+// 🌿 Calculate Delivery Charge
+function calculate(){
+  const quantity = parseFloat(document.getElementById('quantity').value);
+  const distance = 150; // km (replace with dynamic API if needed)
+  const baseFare = 100;
+  const perKmRate = 3;
+  const perKgRate = 1;
+  const charge = baseFare + (distance * perKmRate) + (quantity * perKgRate);
+  document.getElementById('charge').value = charge.toFixed(2);
+}
+
+// 🌿 Form Submission
+document.getElementById('transportForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const charge = document.getElementById('charge').value;
+  if(!charge){
+    alert(i18next.language==="ta" ? "முதலில் கட்டணத்தை கணக்கிடவும்!" : "Please estimate the charge first!");
+    return;
+  }
+  alert(i18next.language==="ta" ? "போக்குவரத்து கோரிக்கை வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!" : "Transport Requested Successfully!");
+  window.location.href='transport-dashboard.html';
+});
+</script>
+
+</body>
+</html>

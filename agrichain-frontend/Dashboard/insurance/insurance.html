@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="title">🌾 Crop Insurance Recommendation System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- i18next library -->
+  <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <img src="/Logo.png" alt="AgriChain Logo" />
+      <h1 data-i18n="brand_name">AgriChain</h1>
+    </div>
+    <nav>
+      <a href="../../index.html" data-i18n="home">Home</a>
+      <a href="../../All/about.html" data-i18n="about">About</a>
+      <a href="../../Farmer/farmer-dashboard.html" data-i18n="farmer">Farmer</a>
+      <a href="#" data-i18n="buyer">Buyer</a>
+      <a href="#" data-i18n="admin">Admin</a>
+      <a href="#" data-i18n="transporter">Transporter</a>
+      <a href="insurance.html" class="active" data-i18n="insurance">Insurance</a>
+    </nav>
+    <div class="language-toggle">
+      <button onclick="changeLang('en')">English</button>
+      <button onclick="changeLang('ta')">தமிழ்</button>
+    </div>
+  </header>
+
+  <!-- Main Form -->
+  <section class="insurance-form">
+    <h2 data-i18n="form_title">🌾 Crop Insurance Recommendation System</h2>
+
+    <form id="insuranceForm">
+      <label data-i18n="region_label">Region (State/City):</label>
+      <input type="text" id="region" required />
+
+      <label data-i18n="crop_label">Crop Type:</label>
+      <input type="text" id="crop_type" required />
+
+      <label data-i18n="soil_label">Soil Type:</label>
+      <input type="text" id="soil_type" required placeholder="e.g., Loamy, Sandy, Clay" />
+
+      <label data-i18n="loss_label">Estimated Loss (%):</label>
+      <input type="number" id="loss" step="0.01" required />
+
+      <label data-i18n="size_label">Farm Size (in acres):</label>
+      <input type="number" id="farm_size" step="0.01" required />
+
+      <button type="submit" data-i18n="submit_btn">Get Recommendation</button>
+    </form>
+
+    <div class="result-box" id="resultBox" style="display:none;">
+      <h3>✅ <span data-i18n="recommended_plan">Recommended Plan:</span> <span id="plan"></span></h3>
+      <p>🌍 <span data-i18n="region">Region:</span> <span id="region_out"></span></p>
+      <p>🌾 <span data-i18n="crop">Crop:</span> <span id="crop_out"></span></p>
+      <p>🧱 <span data-i18n="soil">Soil Type:</span> <span id="soil_out"></span></p>
+      <p>🌤 <span data-i18n="rainfall">Rainfall:</span> <span id="rainfall"></span> mm</p>
+      <p>🌡 <span data-i18n="temperature">Temperature:</span> <span id="temperature"></span> °C</p>
+      <p>📈 <span data-i18n="yield">Average Yield:</span> <span id="yield"></span> kg/acre</p>
+      <p>💰 <span data-i18n="price">Market Price:</span> ₹<span id="price"></span></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h2 data-i18n="brand_name">AgriChain</h2>
+        <p data-i18n="brand_desc">Empowering farmers, ensuring transparency, and connecting directly with buyers through technology.</p>
+      </div>
+      <div class="footer-links">
+        <h4 data-i18n="quick_links">Quick Links</h4>
+        <ul>
+          <li><a href="../../index.html" data-i18n="home">Home</a></li>
+          <li><a href="../../All/about.html" data-i18n="about">About</a></li>
+          <li><a href="../../All/contact.html" data-i18n="contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-social">
+        <h4 data-i18n="follow_us">Follow Us</h4>
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+        <a href="https://wa.me/+919541954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 AgriChain. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+  // Initialize i18next translations
+  i18next.init({
+    lng: "en",
+    debug: false,
+    resources: {
+      en: {
+        translation: {
+          title: "🌾 Crop Insurance Recommendation System",
+          brand_name: "AgriChain",
+          brand_desc: "Empowering farmers, ensuring transparency, and connecting directly with buyers through technology.",
+          home: "Home",
+          about: "About",
+          contact: "Contact",
+          farmer: "Farmer",
+          buyer: "Buyer",
+          admin: "Admin",
+          transporter: "Transporter",
+          insurance: "Insurance",
+          quick_links: "Quick Links",
+          follow_us: "Follow Us",
+          form_title: "🌾 Crop Insurance Recommendation System",
+          region_label: "Region (State/City):",
+          crop_label: "Crop Type:",
+          soil_label: "Soil Type:",
+          loss_label: "Estimated Loss (%):",
+          size_label: "Farm Size (in acres):",
+          submit_btn: "Get Recommendation",
+          recommended_plan: "Recommended Plan:",
+          region: "Region:",
+          crop: "Crop:",
+          soil: "Soil Type:",
+          rainfall: "Rainfall:",
+          temperature: "Temperature:",
+          yield: "Average Yield:",
+          price: "Market Price:"
+        }
+      },
+      ta: {
+        translation: {
+          title: "🌾 பயிர் காப்பீட்டு பரிந்துரை அமைப்பு",
+          brand_name: "அக்ரிச்செயின்",
+          brand_desc: "விவசாயிகளை வலுப்படுத்தி, வெளிப்படைத்தன்மையை உறுதி செய்து, நேரடியாக வாங்குபவர்களுடன் இணைக்கும் தொழில்நுட்பம்.",
+          home: "முகப்பு",
+          about: "எங்களை பற்றி",
+          contact: "தொடர்பு கொள்ள",
+          farmer: "விவசாயி",
+          buyer: "வாங்குபவர்",
+          admin: "நிர்வாகி",
+          transporter: "போக்குவரத்து",
+          insurance: "காப்பீடு",
+          quick_links: "விரைவு இணைப்புகள்",
+          follow_us: "எங்களை பின்தொடரவும்",
+          form_title: "🌾 பயிர் காப்பீட்டு பரிந்துரை அமைப்பு",
+          region_label: "பகுதி (மாநிலம்/நகரம்):",
+          crop_label: "பயிர் வகை:",
+          soil_label: "மண் வகை:",
+          loss_label: "மதிப்பிடப்பட்ட இழப்பு (%):",
+          size_label: "பண்ணை பரப்பளவு (ஏக்கர்):",
+          submit_btn: "பரிந்துரையை பெறவும்",
+          recommended_plan: "பரிந்துரைக்கப்பட்ட திட்டம்:",
+          region: "பகுதி:",
+          crop: "பயிர்:",
+          soil: "மண் வகை:",
+          rainfall: "மழை அளவு:",
+          temperature: "வெப்பநிலை:",
+          yield: "சராசரி விளைச்சல்:",
+          price: "சந்தை விலை:"
+        }
+      }
+    }
+  }, function(err, t) {
+    updateContent();
+  });
+
+  function updateContent() {
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      el.innerHTML = i18next.t(el.getAttribute("data-i18n"));
+    });
+  }
+
+  function changeLang(lang) {
+    i18next.changeLanguage(lang, updateContent);
+  }
+
+  // JSON POST request
+  document.getElementById("insuranceForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = {
+      region: document.getElementById("region").value,
+      crop_type: document.getElementById("crop_type").value,
+      soil_type: document.getElementById("soil_type").value,
+      loss: document.getElementById("loss").value,
+      farm_size: document.getElementById("farm_size").value
+    };
+    try {
+      const response = await fetch("/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) throw new Error("Failed to get recommendation");
+      const result = await response.json();
+      document.getElementById("resultBox").style.display = "block";
+      document.getElementById("plan").textContent = result.recommended_plan;
+      document.getElementById("region_out").textContent = data.region;
+      document.getElementById("crop_out").textContent = data.crop_type;
+      document.getElementById("soil_out").textContent = data.soil_type;
+      document.getElementById("rainfall").textContent = result.weather.rainfall_mm;
+      document.getElementById("temperature").textContent = result.weather.temperature_c;
+      document.getElementById("yield").textContent = result.avg_yield;
+      document.getElementById("price").textContent = result.market_price;
+    } catch (err) {
+      alert("Error: " + err.message);
+    }
+  });
+  </script>
+</body>
+</html>

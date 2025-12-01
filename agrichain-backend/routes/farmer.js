@@ -1,5 +1,5 @@
 const express = require("express");
-const { addCrop, getAllCrops, getCropById } = require("../controllers/farmerController.js");
+const { addCrop, getAllCrops, getCropById, getStorageReport } = require("../controllers/farmerController.js");
 const { authMiddleware } = require("../middleware/auth.js"); // JWT auth
 const { getUserProfile, updateUserProfile } = require("../controllers/userController.js");
 
@@ -18,5 +18,7 @@ router.get("/profile", authMiddleware, getUserProfile);
 
 // Update logged-in user's profile
 router.put("/profile", authMiddleware, updateUserProfile);
+
+router.get("/storage-report", authMiddleware,getStorageReport);
 
 module.exports = router;

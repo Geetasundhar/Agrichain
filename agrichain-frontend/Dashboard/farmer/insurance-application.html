@@ -3,182 +3,336 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="insurance-title">Insurance Application - AgriChain</title>
+<title>AgriChain - Crop Insurance Application</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif; }
-body { line-height:1.6; background:#f9f9f9; color:#333; }
-header { display:flex; justify-content:space-between; align-items:center; background:#e6f2e6; padding:15px 30px; border-radius:0 0 10px 10px; flex-wrap:wrap; }
-header img { height:50px; }
-header h1 { margin-left:10px; color:#19692c; font-size:1.8em; }
-nav { flex:1; text-align:center; }
-nav a { margin:0 12px; text-decoration:none; color:#19692c; font-weight:bold; transition:0.3s; }
-nav a:hover { color:#0f4d23; }
-.language-toggle button { margin-left:10px; padding:5px 10px; border:none; cursor:pointer; border-radius:5px; background:#19692c; color:white; }
-.language-toggle button:hover { background:#0f4d23; }
-.hero { background:#dff0d8; text-align:center; padding:60px 20px; border-radius:10px; margin:20px; }
-.hero h2 { font-size:2.4em; margin-bottom:15px; color:#19692c; }
-.hero p { font-size:1.2em; }
-.form-section { max-width:600px; margin:30px auto; padding:20px; }
-.form-container { background:white; padding:25px 20px; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,0.1); }
-.form-container label { display:block; margin:12px 0 6px; font-weight:bold; }
-.form-container input { width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; margin-bottom:15px; }
-.form-container button { padding:12px 25px; border:none; border-radius:8px; background:#19692c; color:white; font-size:1em; cursor:pointer; transition:0.3s; }
-.form-container button:hover { background:#0f4d23; }
-footer { background-color:#19692c; color:white; padding:40px 20px 20px; font-size:14px; line-height:1.5; border-radius:10px 10px 0 0; margin-top:40px; }
-footer .footer-container { display:flex; flex-wrap:wrap; max-width:1200px; margin:0 auto; justify-content:space-between; gap:20px; }
-.footer-brand, .footer-links, .footer-social { flex:1 1 250px; }
-.footer-brand h2 { margin-bottom:10px; color:#a8d5a2; }
-.footer-links h4, .footer-social h4 { margin-bottom:10px; font-size:16px; color:#a8d5a2; }
-.footer-links ul { list-style:none; padding-left:0; }
-.footer-links li { margin-bottom:8px; }
-.footer-links a, .footer-social a { color:white; text-decoration:none; margin-right:15px; transition:0.3s; font-weight:bold; }
-.footer-links a:hover, .footer-social a:hover { color:#a8d5a2; }
-.footer-social a i { margin-right:5px; }
-.footer-bottom { text-align:center; margin-top:20px; border-top:1px solid rgba(255,255,255,0.3); padding-top:10px; }
-@media(max-width:768px){
-  header h1 { font-size:1.5em; }
-  nav { margin-top:10px; }
-  .hero h2 { font-size:2em; }
-  .footer-container { flex-direction:column; text-align:center; }
-  .footer-social a { margin:5px; display:inline-block; }
+* {margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body {
+  background:url('../../images/insurance1.jpg') no-repeat center center/cover;
+  min-height:90vh;
+  min-width: 90vw;
+  display:flex;
+  flex-direction:column;
+  color:#333;
 }
-@media(max-width:500px){
-  .hero { padding:30px 15px; }
-  .hero h2 { font-size:1.5em; }
-  .form-container { padding:15px; }
-  nav a { display:block; margin:8px 0; }
+
+@keyframes fadeIn {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+
+/* HEADER */
+header {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  background: rgba(4, 59, 4, 0.95);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+  flex-wrap: wrap;
 }
 header img {
-    height: 80px;              
-    width: auto;               
-    border-radius: 15px;       
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    cursor: pointer;
+  height: 65px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+header img:hover { transform: scale(1.1); }
+
+/* NAVBAR */
+nav { display:flex; gap:20px; flex-wrap:wrap; justify-content:center; }
+nav a { text-decoration:none; color:#f3f7f4; font-weight:600; transition:0.3s; font-size:1.05em; }
+nav a:hover { color:#ffeaa7; transform:scale(1.1);}
+.language-toggle {
+  display: flex;
+  gap: 8px;
+}
+.language-toggle button {
+  background: #1d7a3c;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.language-toggle button:hover {
+  background: #14642d;
 }
 
-header img:hover {
-    transform: scale(1.2) rotate(-5deg); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+
+/* FORM */
+.form-container {
+  background:rgba(255,255,255,0.93);
+  width:90%;
+  max-width:600px;
+  margin:80px auto;
+  padding:35px 25px;
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
+  transition:0.4s;
 }
-header .logo-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;                 
+.form-container:hover {
+  transform:translateY(-5px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.35);
 }
-header h1 {
-    font-size: 2em;
-    color: #19692c;
-    font-weight: bold;
-    white-space: nowrap;      
-    transition: color 0.3s ease;
+.form-container h2 {
+  text-align:center;
+  margin-bottom:20px;
+  color:#1b5e20;
+}
+label {font-weight:600;display:block;margin:10px 0 5px;}
+input,select,textarea {
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  transition:0.3s;
+  resize:none;
+}
+input:focus,select:focus,textarea:focus {
+  border-color:#1b5e20;
+  box-shadow:0 0 6px rgba(27,94,32,0.3);
+  outline:none;
+}
+button {
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#1b5e20;
+  color:white;
+  font-size:1.1em;
+  border-radius:8px;
+  cursor:pointer;
+  transition:background 0.3s,transform 0.3s;
+}
+button:hover {background:#0f4d23;transform:scale(1.05);}
+
+/* Insurance Info Box */
+#scheme-info {
+  background:#e8f5e9;
+  border-left:5px solid #1b5e20;
+  padding:12px;
+  margin-top:10px;
+  border-radius:8px;
+  display:none;
+  animation:fadeIn 0.5s ease;
 }
 
-header h1:hover {
-    color: #0f4d23;            
+/* FOOTER */
+footer {
+  background: #19692c;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 30px 20px;
+  text-align: center;
 }
-
+.footer-section {
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
+}
+.footer-section h4 {
+  color: #ffeaa7;
+  margin-bottom: 8px;
+}
+.footer-section a, .footer-section p {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  display: block;
+}
+.footer-section a:hover {
+  color: #ffeaa7;
+}
+.footer-bottom {
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  margin-top: 10px;
+  padding-top: 8px;
+  font-size: 0.85rem;
+}
+/* Responsive */
 @media(max-width:768px){
-    header img {
-        height: 60px;          
-    }
-    header h1 {
-        font-size: 1.5em;
-    }
+  nav {text-align:center;margin-top:10px;}
+  nav a {display:inline-block;margin:8px;}
+  .form-container {width:95%;padding:25px;}
+  header {flex-direction:column;}
 }
-
 </style>
 </head>
 <body>
+
 <header>
-  <div style="display:flex; align-items:center;">
-    <img src="../../images/logo.png" alt="AgriChain Logo">
-   </div>
+  <img src="../../images/logo.png" alt="AgriChain Logo">
   <nav>
-    <a href="../../index.html" data-i18n="nav-home">Home</a>
+    <a href="../../index.html" class="active" data-i18n="nav-home">Home</a>
     <a href="../../All/about.html" data-i18n="nav-about">About</a>
     <a href="../../Dashboard/farmer/farmer-dashboard.html" data-i18n="nav-farmer">Farmer</a>
-    <a href="../../Dashboard/buyer/buyer-dashboard.html" data-i18n="nav-buyer">Buyer</a>
-    <a href="../../Dashboard/admin/admin-dashboard.html" data-i18n="nav-admin">Admin</a>
-    <a href="../../Dashboard/transporter/transporter-dashboard.html" data-i18n="nav-transporter">Transporter</a>
-    <a href="insurance-application.html" data-i18n="nav-insurance" class="active">Insurance</a>
+    <a href="instruction/buyerinstruction.html" data-i18n="nav-buyer">Buyer</a>
+    <a href="instruction/admininstruction.html" data-i18n="nav-admin">Admin</a>
+    <a href="instruction/trnsportinstruction.html" data-i18n="nav-transporter">Transporter</a>
+    <a href="instruction/insuranceinstruction.html" data-i18n="nav-insurance">Insurance</a>
   </nav>
   <div class="language-toggle">
     <button onclick="changeLng('en')">English</button>
     <button onclick="changeLng('ta')">தமிழ்</button>
   </div>
 </header>
-<section class="hero">
-  <h2 data-i18n="insurance-title">Apply for Crop Insurance</h2>
-  <p data-i18n="insurance-desc">Protect your crops from unexpected losses by applying for insurance with AgriChain.</p>
-</section>
-<section class="form-section">
-  <div class="form-container">
-    <form id="insurance-form">
-      <label data-i18n="label-crop" for="crop">Crop Name</label>
-      <input type="text" id="crop" name="crop" placeholder="Enter crop name" required>
-      <label data-i18n="label-area" for="area">Cultivated Area (acres)</label>
-      <input type="number" id="area" name="area" placeholder="Enter cultivated area" required>
-      <label data-i18n="label-loss" for="expected-loss">Expected Loss ($)</label>
-      <input type="number" id="expected-loss" name="expected-loss" placeholder="Enter expected loss" required>
-      <button type="submit" data-i18n="submit-insurance">Apply</button>
-    </form>
-  </div>
-</section>
+
+<div class="form-container">
+  <h2 data-i18n="insurance-title"><i class="fas fa-file-shield"></i> Crop Insurance Application</h2>
+  <form id="insurance-form">
+    <label data-i18n="label-name">Farmer Name</label>
+    <input type="text" id="name" required>
+
+    <label data-i18n="label-crop">Crop Name</label>
+    <select id="crop" required>
+      <option value="">Select Crop</option>
+      <option value="Paddy">Paddy</option>
+      <option value="Wheat">Wheat</option>
+      <option value="Cotton">Cotton</option>
+      <option value="Sugarcane">Sugarcane</option>
+      <option value="Groundnut">Groundnut</option>
+    </select>
+
+    <div id="scheme-info"></div>
+
+    <label data-i18n="label-area">Cultivated Area (acres)</label>
+    <input type="number" id="area" required>
+
+    <label data-i18n="label-location">Location / Village</label>
+    <input type="text" id="location" required>
+
+    <label data-i18n="label-loss">Expected Loss (₹)</label>
+    <input type="number" id="loss" required>
+
+    <label data-i18n="label-proof">Upload Proof (Image / Document)</label>
+    <input type="file" id="proof" accept="image/*,.pdf" required>
+
+    <label data-i18n="label-description">Description</label>
+    <textarea id="description" rows="3" placeholder="Describe damage..." required></textarea>
+
+    <button type="submit" data-i18n="submit-insurance">Submit Application</button>
+  </form>
+</div>
+
+<!-- FOOTER -->
 <footer>
-  <div class="footer-container">
-    <div class="footer-brand">
-      <h2 data-i18n="footer-brand-title">AgriChain</h2>
-      <p data-i18n="footer-text">Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.</p>
-    </div>
-    <div class="footer-links">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="../../index.html" data-i18n="footer-home">Home</a></li>
-        <li><a href="../../All/about.html" data-i18n="footer-about">About</a></li>
-        <li><a href="../../All/contact.html" data-i18n="footer-contact">Contact</a></li>
-      </ul>
-    </div>
-    <div class="footer-social">
-      <h4>Follow Us</h4>
-      <a href="https://facebook.com/YourPage" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a> |
-      <a href="https://wa.me/+919541954142" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a> |
-      <a href="https://twitter.com/YourProfile" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
-    </div>
+  <div class="footer-section">
+    <h4 data-i18n="footer-contact">Contact Us</h4>
+    <p>📞 +91 9514954142</p>
+    <p>📧 info@agrichain.com</p>
+    <p>📍 Chennai, Tamil Nadu</p>
   </div>
-  <div class="footer-bottom">
-    <p data-i18n="footer-bottom-text">© 2025 AgriChain. All Rights Reserved.</p>
+  <div class="footer-section">
+    <h4 data-i18n="footer-links">Quick Links</h4>
+    <a href="../../index.html" data-i18n="nav-home">Home</a>
+    <a href="../../All/about.html" data-i18n="nav-about">About</a>
+    <a href="../../All/contact.html" data-i18n="nav-contact">Contact</a>
+  </div>
+  <div class="footer-section">
+    <h4 data-i18n="footer-social">Follow Us</h4>
+    <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+    <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+    <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+    <a href="https://wa.me/+919514954142"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+  </div>
+  <div class="footer-bottom" data-i18n="footer-bottom-text">
+    © 2025 AgriChain. All Rights Reserved.
   </div>
 </footer>
+<!-- Language Script -->
 <script src="https://unpkg.com/i18next@23.7.6/dist/umd/i18next.min.js"></script>
 <script src="https://unpkg.com/i18next-browser-languagedetector@7.1.0/i18nextBrowserLanguageDetector.min.js"></script>
 <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js"></script>
 <script src="https://unpkg.com/jquery-i18next@1.2.1/dist/umd/jquery-i18next.min.js"></script>
+
 <script>
+// i18n Language Support
 i18next.init({
   lng: 'en',
   resources: {
     en: { translation: {
-      "nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-admin":"Admin","nav-transporter":"Transporter","nav-insurance":"Insurance",
-      "insurance-title":"Apply for Crop Insurance","insurance-desc":"Protect your crops from unexpected losses by applying for insurance with AgriChain.",
-      "label-crop":"Crop Name","label-area":"Cultivated Area (acres)","label-loss":"Expected Loss ($)","submit-insurance":"Apply",
-      "footer-text":"AgriChain – Empowering farmers, ensuring transparency, and connecting directly with buyers through blockchain technology.",
-      "footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-brand-title":"AgriChain","footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
+      "nav-home":"Home","nav-about":"About","nav-farmer":"Farmer","nav-buyer":"Buyer","nav-admin":"Admin",
+      "nav-transporter":"Transporter","insurance-title":"Crop Insurance Application",
+      "label-name":"Farmer Name","label-crop":"Crop Name","label-area":"Cultivated Area (acres)",
+      "label-location":"Location / Village","label-loss":"Expected Loss (₹)","label-proof":"Upload Proof",
+      "label-description":"Description","submit-insurance":"Submit Application",
+      "footer-brand-title":"AgriChain","footer-text":"Empowering farmers and ensuring transparency with blockchain-based solutions.",
+      "footer-home":"Home","footer-about":"About","footer-contact":"Contact","footer-bottom-text":"© 2025 AgriChain. All Rights Reserved."
     }},
     ta: { translation: {
-      "nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-admin":"நிர்வாகி","nav-transporter":"போக்குவரத்து","nav-insurance":"காப்பீடு",
-      "insurance-title":"பயிர் காப்பீட்டிற்கு விண்ணப்பிக்கவும்","insurance-desc":"எதிர்பாராத இழப்புகளிலிருந்து உங்கள் பயிர்களை பாதுகாக்க அக்ரிச்செயினில் காப்பீட்டிற்கு விண்ணப்பிக்கவும்.",
-      "label-crop":"பயிர் பெயர்","label-area":"சாகுபடி செய்யப்பட்ட பரப்பு (ஏக்கர்)","label-loss":"எதிர்பார்க்கப்படும் இழப்பு (₹)","submit-insurance":"விண்ணப்பிக்கவும்",
-      "footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது, மற்றும் நேரடியாக வாடிக்கையாளர்களுடன் இணைக்கிறது.",
-      "footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-brand-title":"அக்ரிச்செயின்","footer-bottom-text":"© 2025 அக்ரிச்செயின். எல்லா உரிமைகளும் பாதுகாக்கப்பட்டவை."
+      "nav-home":"முகப்பு","nav-about":"பற்றி","nav-farmer":"விவசாயி","nav-buyer":"வாங்குபவர்","nav-admin":"நிர்வாகி",
+      "nav-transporter":"போக்குவரத்து","insurance-title":"பயிர் காப்பீட்டு விண்ணப்பம்",
+      "label-name":"விவசாயி பெயர்","label-crop":"பயிர் பெயர்","label-area":"சாகுபடி பரப்பு (ஏக்கர்)",
+      "label-location":"இடம் / கிராமம்","label-loss":"எதிர்பார்க்கப்படும் இழப்பு (₹)","label-proof":"சான்று பதிவேற்றவும்",
+      "label-description":"விவரணம்","submit-insurance":"விண்ணப்பிக்கவும்",
+      "footer-brand-title":"அக்ரிச்செயின்","footer-text":"அக்ரிச்செயின் – விவசாயிகளை சக்திவாய்ந்தவர் ஆக்கும், தெளிவுத்தன்மையை உறுதி செய்கிறது.",
+      "footer-home":"முகப்பு","footer-about":"பற்றி","footer-contact":"தொடர்பு","footer-bottom-text":"© 2025 அக்ரிச்செயின். அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."
     }}
   }
-}, function() {
-  jqueryI18next.init(i18next, $);
-  $('body').localize();
-});
+}, function() { jqueryI18next.init(i18next, $); $('body').localize(); });
 function changeLng(lng){ i18next.changeLanguage(lng, () => $('body').localize()); }
+
+// REST API submission
+document.getElementById('insurance-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const jsonData = {
+    name: document.getElementById('name').value,
+    crop: document.getElementById('crop').value,
+    area: document.getElementById('area').value,
+    location: document.getElementById('location').value,
+    expectedLoss: document.getElementById('loss').value,
+    description: document.getElementById('description').value
+  };
+  try {
+    const res = await fetch('http://localhost:3000/api/insurance', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(jsonData)
+    });
+    if(res.ok){
+      alert('✅ Insurance application submitted successfully!');
+      this.reset();
+    } else {
+      alert('❌ Submission failed. Try again.');
+    }
+  } catch {
+    alert('⚠️ Unable to connect to server.');
+  }
+});
+
+// Dynamic Insurance Scheme Info
+const cropSelect=document.getElementById('crop');
+const schemeInfo=document.getElementById('scheme-info');
+cropSelect.addEventListener('change',()=>{
+  const crop=cropSelect.value;
+  let info='';
+  switch(crop){
+    case 'Paddy': info='Scheme: PMFBY Paddy Protection | Coverage: Flood, Pest, Drought | Premium: ₹200/acre'; break;
+    case 'Wheat': info='Scheme: Bharat Krishi Bima | Coverage: Frost, Disease, Fire | Premium: ₹180/acre'; break;
+    case 'Cotton': info='Scheme: PMFBY Cotton Safety | Coverage: Pest, Heavy Rain | Premium: ₹250/acre'; break;
+    case 'Sugarcane': info='Scheme: Smart Cane Secure | Coverage: Drought, Flood | Premium: ₹300/acre'; break;
+    case 'Groundnut': info='Scheme: AgriSure | Coverage: Drought, Pest | Premium: ₹150/acre'; break;
+  }
+  schemeInfo.innerText=info;
+  schemeInfo.style.display=info?'block':'none';
+});
 </script>
+
 </body>
 </html>
+
