@@ -9,7 +9,7 @@ export default function Navbar() {
   const links = [
     { key: "nav.home", path: "/" },
     { key: "nav.about", path: "/about" },
-    { key: "nav.farmer", path: "/farmer" },
+    { key: "nav.farmer", path: "/farmer/dashboard" },
     { key: "nav.buyer", path: "/buyer" },
     { key: "nav.admin", path: "/admin" },
     { key: "nav.transporter", path: "/transporter" },
