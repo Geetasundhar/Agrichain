@@ -2,10 +2,68 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+
+const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function Signup() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    phone: "",
+    age: "",
+    gender: "",
+    farm_name: "",
+    farm_size: "",
+    crop_type: "",
+    farm_address: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  // Handle input change
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle submit
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API}/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Signup failed");
+        return;
+      }
+
+      alert("Signup successful 🎉");
+      navigate("/farmer/login");
+
+    } catch (error) {
+      console.error(error);
+      alert("Server error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">
@@ -19,85 +77,53 @@ export default function Signup() {
 
           <form className="grid md:grid-cols-2 gap-6">
 
-            <input
-              type="text"
-              placeholder={t("signup.fullName")}
-              className="input"
-            />
+            <input name="name" onChange={handleChange}
+              placeholder={t("signup.fullName")} className="input" />
 
-            <input
-              type="text"
-              placeholder={t("signup.username")}
-              className="input"
-            />
+            <input name="username" onChange={handleChange}
+              placeholder={t("signup.username")} className="input" />
 
-            <input
-              type="email"
-              placeholder={t("signup.email")}
-              className="input"
-            />
+            <input name="email" type="email" onChange={handleChange}
+              placeholder={t("signup.email")} className="input" />
 
-            <input
-              type="text"
-              placeholder={t("signup.phone")}
-              className="input"
-            />
+            <input name="phone" onChange={handleChange}
+              placeholder={t("signup.phone")} className="input" />
 
-            <input
-              type="number"
-              placeholder={t("signup.age")}
-              className="input"
-            />
+            <input name="age" type="number" onChange={handleChange}
+              placeholder={t("signup.age")} className="input" />
 
-            <select className="input">
+            <select name="gender" onChange={handleChange} className="input">
               <option value="">{t("signup.gender.select")}</option>
-              <option>{t("signup.gender.male")}</option>
-              <option>{t("signup.gender.female")}</option>
-              <option>{t("signup.gender.other")}</option>
+              <option value="Male">{t("signup.gender.male")}</option>
+              <option value="Female">{t("signup.gender.female")}</option>
+              <option value="Other">{t("signup.gender.other")}</option>
             </select>
 
-            <input
-              type="text"
-              placeholder={t("signup.farmName")}
-              className="input"
-            />
+            <input name="farm_name" onChange={handleChange}
+              placeholder={t("signup.farmName")} className="input" />
 
-            <input
-              type="number"
-              placeholder={t("signup.farmSize")}
-              className="input"
-            />
+            <input name="farm_size" type="number" onChange={handleChange}
+              placeholder={t("signup.farmSize")} className="input" />
 
-            <input
-              type="text"
-              placeholder={t("signup.cropType")}
-              className="input"
-            />
+            <input name="crop_type" onChange={handleChange}
+              placeholder={t("signup.cropType")} className="input" />
 
-            <textarea
-              rows="2"
+            <textarea name="farm_address" rows="2" onChange={handleChange}
               placeholder={t("signup.farmAddress")}
-              className="input md:col-span-2"
-            />
+              className="input md:col-span-2" />
 
-            <input
-              type="password"
-              placeholder={t("signup.password")}
-              className="input"
-            />
-
-            <input
-              type="file"
-              className="input"
-            />
+            <input name="password" type="password" onChange={handleChange}
+              placeholder={t("signup.password")} className="input" />
 
             <button
               type="button"
+              onClick={handleSubmit}
+              disabled={loading}
               className="md:col-span-2 bg-[#132a13] text-[#ecf39e]
                          py-4 rounded-xl font-semibold
                          hover:bg-[#31572c] transition-all"
             >
-              {t("signup.button")}
+              {loading ? "Please wait..." : t("signup.button")}
             </button>
           </form>
 

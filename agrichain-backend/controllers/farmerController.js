@@ -5,14 +5,26 @@ import QRCode from "qrcode"; // npm install qrcode
 // ➤ Add new crop
 export const addCrop = async (req, res) => {
   try {
-    const { farmerId, name, type, quantity, price, location, image } = req.body;
-    if (!farmerId || !name || !type || !quantity || !price || !location || !image) {
-      return res.status(400).json({ status: "error", message: "All fields are required" });
+    // 🔐 farmerId comes from JWT, NOT body
+    const farmerId = req.user.id;
+
+    const { name, type, quantity, price, location, image } = req.body;
+
+    if (!name || !type || !quantity || !price || !location || !image) {
+      return res.status(400).json({
+        status: "error",
+        message: "All fields are required",
+      });
     }
+
     const farmer = await Farmer.findById(farmerId);
     if (!farmer) {
-      return res.status(404).json({ status: "error", message: "Farmer not found" });
+      return res.status(404).json({
+        status: "error",
+        message: "Farmer not found",
+      });
     }
+
     const newCrop = await Crop.create({
       farmerId,
       cropName: name,
@@ -22,6 +34,7 @@ export const addCrop = async (req, res) => {
       location,
       images: [image],
     });
+
     const qrDetails = [
       `🌾 FARMER DETAILS`,
       `---------------------------`,
@@ -38,10 +51,13 @@ export const addCrop = async (req, res) => {
       `Price/kg  : ₹${price}`,
       `Added On  : ${new Date().toLocaleDateString()}`,
     ].join("\n");
+
     const qrCodeBase64 = await QRCode.toDataURL(qrDetails);
+
     newCrop.qrCode = qrCodeBase64;
     await newCrop.save();
-    res.status(201).json({
+
+    return res.status(201).json({
       status: "success",
       message: "✅ Crop added successfully with QR code!",
       crop: {
@@ -51,14 +67,20 @@ export const addCrop = async (req, res) => {
         quantityKg: newCrop.quantityKg,
         pricePerKg: newCrop.pricePerKg,
         location: newCrop.location,
-        qrCode: newCrop.qrCode, // base64 QR image
+        qrCode: newCrop.qrCode,
       },
     });
+
   } catch (err) {
     console.error("Add Crop Error:", err);
-    res.status(500).json({ status: "error", message: "Server error", error: err.message });
+    return res.status(500).json({
+      status: "error",
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
+
 
 // ➤ Get all crops
 export const getAllCrops = async (req, res) => {

@@ -2,10 +2,60 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+
+const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function Login() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        return;
+      }
+
+      // 🔥 CLEAR OLD TOKEN (VERY IMPORTANT)
+      localStorage.clear();
+
+      // 🔐 SAVE TOKEN + USER
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      alert("Login successful 🎉");
+
+      // 🚀 ROLE BASED NAVIGATION
+      navigate("/farmer/dashboard");
+    } catch (error) {
+      console.error(error);
+      alert("Server error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">
@@ -17,29 +67,33 @@ export default function Login() {
             {t("login.title")}
           </h2>
 
-          <form className="space-y-6">
-            {/* Email */}
+          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+
             <input
               type="email"
               placeholder={t("login.email")}
               className="input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
-            {/* Password */}
             <input
               type="password"
               placeholder={t("login.password")}
               className="input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
-            {/* Login Button */}
             <button
               type="button"
+              onClick={handleLogin}
+              disabled={loading}
               className="w-full bg-[#132a13] text-[#ecf39e]
                          py-4 rounded-xl font-semibold
                          hover:bg-[#31572c] transition-all"
             >
-              {t("login.button")}
+              {loading ? "Please wait..." : t("login.button")}
             </button>
           </form>
 

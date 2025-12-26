@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+const API = import.meta.env.VITE_API_BASE_URL;
 
 const FarmerDashboard = () => {
   const [farmerName, setFarmerName] = useState("Farmer");
@@ -40,7 +41,7 @@ const FarmerDashboard = () => {
       <Navbar />
 
       {/* Header Section */}
-      <div className="bg-linear-to-r from-green-700 to-emerald-500 text-white px-6 py-10 mt-20">
+      <div className="bg-linear-to-r from-green-700 to-emerald-500 text-white px-6 py-10 mt-18">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Farmer Dashboard</h1>

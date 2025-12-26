@@ -122,5 +122,23 @@
     "button": "Login",
     "noAccount": "Don’t have an account?",
     "signup": "Sign Up"
+  },
+  "addCrop": {
+    "title": "Add New Crop",
+    "desc": "Fill in the details below to add your crop to the marketplace."
+  },
+  "form": {
+    "cropName": "Crop Name",
+    "selectType": "-- Select Crop Type --",
+    "cereal": "Cereal",
+    "vegetable": "Vegetable",
+    "fruit": "Fruit",
+    "pulses": "Pulses",
+    "quantity": "Quantity (kg)",
+    "price": "Price per kg (₹)",
+    "location": "Location",
+    "submit": "Add Crop",
+    "networkError": "Network error, please try again.",
+    "imageRequired": "Please upload an image"
   }
 }
