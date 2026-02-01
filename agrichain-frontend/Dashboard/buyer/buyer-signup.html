@@ -197,7 +197,7 @@ async function signup(e){
   };
 
   try{
-    const res = await fetch("http://localhost:8000/buyer/signup", {
+    const res = await fetch("http://localhost:5000/buyer/signup", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(payload)

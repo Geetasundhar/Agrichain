@@ -10,6 +10,8 @@ const farmerRoutes = require("./routes/farmer");
 const buyerRoutes = require("./routes/buyerRoutes");
 const buyerProfileRoutes = require("./routes/buyerProfileRoutes");
 
+const cropRoutes = require("./routes/cropRoutes");
+
 const app = express();
 
 // 🔹 Middleware
@@ -32,6 +34,9 @@ app.use("/auth", authRoutes);
 app.use("/farmer", farmerRoutes);
 app.use("/buyer", buyerRoutes);
 app.use("/buyer/profile", buyerProfileRoutes);
+
+//blockchain route
+app.use("/api/crops", cropRoutes);
 
 // 🔹 Health Check
 app.get("/", (req, res) => {

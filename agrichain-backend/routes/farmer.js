@@ -3,6 +3,7 @@ const { addCrop, getAllCrops, getCropById, getStorageReport } = require("../cont
 const { authMiddleware } = require("../middleware/auth.js"); // JWT auth
 const { getUserProfile, updateUserProfile } = require("../controllers/userController.js");
 
+
 const router = express.Router();
 
 // Protected route - farmer must be logged in
@@ -20,5 +21,8 @@ router.get("/profile", authMiddleware, getUserProfile);
 router.put("/profile", authMiddleware, updateUserProfile);
 
 router.get("/storage-report", authMiddleware,getStorageReport);
+
+//buyer crops view
+
 
 module.exports = router;

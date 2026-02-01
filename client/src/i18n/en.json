@@ -140,5 +140,19 @@
     "submit": "Add Crop",
     "networkError": "Network error, please try again.",
     "imageRequired": "Please upload an image"
+  },
+  "buyerSignup": {
+    "title": "AgroMart",
+    "name": "Full Name",
+    "business": "Business Name",
+    "district": "District",
+    "selectDistrict": "Select District",
+    "phone": "Phone Number",
+    "email": "Email",
+    "username": "Username",
+    "password": "Password",
+    "signup": "Signup",
+    "already": "Already Registered?",
+    "login": "Login"
   }
 }
