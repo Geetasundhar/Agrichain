@@ -22,6 +22,8 @@ export default function AddCrop() {
     durationPeriod: "month",
     fertilizer: "",
     soilType: "",
+    seedProductId: "",
+    fertilizerProductId: "",
     image: null,
   });
 
@@ -118,6 +120,8 @@ export default function AddCrop() {
         durationPeriod: formData.durationPeriod,
         fertilizer: formData.fertilizer,
         soilType: formData.soilType,
+        seedProductId: formData.seedProductId || undefined,
+        fertilizerProductId: formData.fertilizerProductId || undefined,
         image: imageBase64,
         latitude,
         longitude
@@ -195,6 +199,20 @@ export default function AddCrop() {
               placeholder={t("form.cropName")}
               className="input"
               required
+            />
+            <input
+              name="seedProductId"
+              value={formData.seedProductId}
+              onChange={handleChange}
+              placeholder="Seed product ID (optional)"
+              className="input"
+            />
+            <input
+              name="fertilizerProductId"
+              value={formData.fertilizerProductId}
+              onChange={handleChange}
+              placeholder="Fertilizer product ID (optional)"
+              className="input"
             />
 
             <select

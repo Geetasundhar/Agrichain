@@ -161,6 +161,12 @@ const cards = [
     link: "/farmer/add-crop",
   },
   {
+    title: "Buy Inputs",
+    desc: "Purchase seeds or fertilizer using product ID.",
+    icon: "fas fa-shopping-cart",
+    link: "/farmer/buy-product",
+  },
+  {
     title: "Sales",
     desc: "Track orders, buyers, and payments of sales.",
     icon: "fas fa-store",
@@ -177,6 +183,12 @@ const cards = [
     desc: "View analytics and farming insights reports.",
     icon: "fas fa-chart-bar",
     link: "/farmer/storage-report",
+  },
+  {
+    title: "My Purchases",
+    desc: "Check the seeds and fertilizers you bought.",
+    icon: "fas fa-shopping-cart",
+    link: "/farmer/my-purchases",
   },
 ];
 

@@ -4,11 +4,18 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
 
+const API = import.meta.env.VITE_API_BASE_URL;
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [retailer, setRetailer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState([
+    { label: "Total Products", value: "0", icon: "fas fa-box" },
+    { label: "Total Orders", value: "0", icon: "fas fa-shopping-cart" },
+    { label: "Total Revenue", value: "₹0", icon: "fas fa-rupee-sign" },
+  ]);
 
   useEffect(() => {
     // Check if retailer is logged in
@@ -18,6 +25,37 @@ export default function Dashboard() {
       return;
     }
     setRetailer(JSON.parse(retailerData));
+
+    // fetch stats
+    const fetchStats = async () => {
+      try {
+        const [prodRes, orderRes] = await Promise.all([
+          fetch(`${API}/retailer/products`, {
+            headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+          }),
+          fetch(`${API}/retailer/purchases`, {
+            headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+          }),
+        ]);
+        const prodData = await prodRes.json();
+        const orderData = await orderRes.json();
+        const totalProducts = prodData.products ? prodData.products.length : 0;
+        const totalOrders = orderData.purchases ? orderData.purchases.length : 0;
+        let revenue = 0;
+        if (orderData.purchases) {
+          revenue = orderData.purchases.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+        }
+        setStats([
+          { label: "Total Products", value: totalProducts, icon: "fas fa-box" },
+          { label: "Total Orders", value: totalOrders, icon: "fas fa-shopping-cart" },
+          { label: "Total Revenue", value: `₹${revenue}`, icon: "fas fa-rupee-sign" },
+        ]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStats();
+
     setLoading(false);
   }, [navigate]);
 
