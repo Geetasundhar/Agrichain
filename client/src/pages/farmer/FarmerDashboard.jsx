@@ -158,7 +158,7 @@ const cards = [
     title: "Crop Management",
     desc: "Create and manage all your crops easily.",
     icon: "fas fa-leaf",
-    link: "/farmer/add-crop",
+    link: "/farmer/my-crops",
   },
   {
     title: "Buy Inputs",

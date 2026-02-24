@@ -20,15 +20,17 @@ export default function AddCrop() {
     price: "",
     durationNumber: "",
     durationPeriod: "month",
-    fertilizer: "",
     soilType: "",
     seedProductId: "",
     fertilizerProductId: "",
+    seedQuantityUsed: "",
+    fertilizerQuantityUsed: "",
     image: null,
   });
 
   const [qrCode, setQrCode] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [purchasedProducts, setPurchasedProducts] = useState({ seed: [], fertilizer: [] });
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
@@ -40,6 +42,22 @@ export default function AddCrop() {
         streamRef.current.getTracks().forEach((t) => t.stop());
       }
     };
+  }, []);
+
+  // Load purchased products for dropdowns
+  useEffect(() => {
+    const loadPurchasedProducts = async () => {
+      try {
+        const res = await fetch(`${API}/farmer/purchased-products-by-type`, {
+          headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const data = await res.json();
+        setPurchasedProducts(data);
+      } catch (err) {
+        console.error("Error loading purchased products:", err);
+      }
+    };
+    loadPurchasedProducts();
   }, []);
 
   // Handle input change
@@ -67,10 +85,22 @@ export default function AddCrop() {
     });
 
   const startCamera = async () => {
-    if (streamRef.current) return;
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    streamRef.current = stream;
-    videoRef.current.srcObject = stream;
+    try {
+      if (streamRef.current) {
+        console.log("Camera already running");
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "environment" } 
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Camera error:", err);
+      alert("Unable to access camera. Please check permissions.");
+    }
   };
 
   const capturePhoto = () => {
@@ -97,34 +127,22 @@ export default function AddCrop() {
     setLoading(true);
 
     try {
-      // Get current location
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        });
-      });
-
-      const { latitude, longitude } = position.coords;
-
       const imageBase64 = await toBase64(formData.image);
 
       const payload = {
         farmerId: localStorage.getItem("userId"),
         name: formData.name,
         type: formData.type,
-        quantity: formData.quantity,
-        price: formData.price,
+        quantity: formData.quantity || 0,
+        price: formData.price || 0,
         durationNumber: formData.durationNumber,
         durationPeriod: formData.durationPeriod,
-        fertilizer: formData.fertilizer,
         soilType: formData.soilType,
-        seedProductId: formData.seedProductId || undefined,
-        fertilizerProductId: formData.fertilizerProductId || undefined,
-        image: imageBase64,
-        latitude,
-        longitude
+        seedProductId: formData.seedProductId,
+        fertilizerProductId: formData.fertilizerProductId,
+        seedQuantityUsed: formData.seedQuantityUsed ? Number(formData.seedQuantityUsed) : undefined,
+        fertilizerQuantityUsed: formData.fertilizerQuantityUsed ? Number(formData.fertilizerQuantityUsed) : undefined,
+        image: imageBase64
       };
 
       const res = await fetch(`${API}/farmer/add-crop`, {
@@ -148,8 +166,11 @@ export default function AddCrop() {
           price: "",
           durationNumber: "",
           durationPeriod: "month",
-          fertilizer: "",
           soilType: "",
+          seedProductId: "",
+          fertilizerProductId: "",
+          seedQuantityUsed: "",
+          fertilizerQuantityUsed: "",
           image: null,
         });
         setCapturedImage(null);
@@ -159,15 +180,7 @@ export default function AddCrop() {
       }
     } catch (err) {
       console.error(err);
-      if (err.code === 1) {
-        alert("Location access denied. Please enable location services to add crop.");
-      } else if (err.code === 2) {
-        alert("Location unavailable. Please try again.");
-      } else if (err.code === 3) {
-        alert("Location request timed out. Please try again.");
-      } else {
-        alert(t("form.networkError"));
-      }
+      alert("Error adding crop. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -200,20 +213,72 @@ export default function AddCrop() {
               className="input"
               required
             />
-            <input
-              name="seedProductId"
-              value={formData.seedProductId}
-              onChange={handleChange}
-              placeholder="Seed product ID (optional)"
-              className="input"
-            />
-            <input
-              name="fertilizerProductId"
-              value={formData.fertilizerProductId}
-              onChange={handleChange}
-              placeholder="Fertilizer product ID (optional)"
-              className="input"
-            />
+
+            {/* Seed Product Dropdown */}
+            <div>
+              <label className="text-sm text-[#31572c] block mb-2">Seed Product <span className="text-red-600">*</span></label>
+              <select
+                name="seedProductId"
+                value={formData.seedProductId}
+                onChange={handleChange}
+                className="input"
+                required
+              >
+                <option value="">-- Select Seed --</option>
+                {purchasedProducts.seed && purchasedProducts.seed.map((p) => (
+                  <option key={p.productId} value={p.productId}>
+                    {p.productName} ({p.quantity} units, ₹{p.price})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Seed Quantity Input */}
+            {formData.seedProductId && (
+              <input
+                type="number"
+                name="seedQuantityUsed"
+                value={formData.seedQuantityUsed}
+                onChange={handleChange}
+                placeholder="Seed quantity to use"
+                className="input"
+                min="1"
+                required
+              />
+            )}
+
+            {/* Fertilizer Product Dropdown */}
+            <div>
+              <label className="text-sm text-[#31572c] block mb-2">Fertilizer Product <span className="text-red-600">*</span></label>
+              <select
+                name="fertilizerProductId"
+                value={formData.fertilizerProductId}
+                onChange={handleChange}
+                className="input"
+                required
+              >
+                <option value="">-- Select Fertilizer --</option>
+                {purchasedProducts.fertilizer && purchasedProducts.fertilizer.map((p) => (
+                  <option key={p.productId} value={p.productId}>
+                    {p.productName} ({p.quantity} units, ₹{p.price})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Fertilizer Quantity Input */}
+            {formData.fertilizerProductId && (
+              <input
+                type="number"
+                name="fertilizerQuantityUsed"
+                value={formData.fertilizerQuantityUsed}
+                onChange={handleChange}
+                placeholder="Fertilizer quantity to use"
+                className="input"
+                min="1"
+                required
+              />
+            )}
 
             <select
               name="type"
@@ -236,7 +301,6 @@ export default function AddCrop() {
               onChange={handleChange}
               placeholder={t("form.quantity")}
               className="input"
-              required
             />
 
             <input
@@ -246,7 +310,6 @@ export default function AddCrop() {
               onChange={handleChange}
               placeholder={t("form.price")}
               className="input"
-              required
             />
 
             {/* Duration Field */}
@@ -281,16 +344,6 @@ export default function AddCrop() {
                 </select>
               </div>
             </div>
-
-            <input
-              type="text"
-              name="fertilizer"
-              value={formData.fertilizer}
-              onChange={handleChange}
-              placeholder="Fertilizer (e.g., Urea, NPK)"
-              className="input"
-              required
-            />
 
             <select
               name="soilType"

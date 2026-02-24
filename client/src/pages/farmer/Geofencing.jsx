@@ -39,6 +39,7 @@ export default function Geofencing() {
   const [isTracking, setIsTracking] = useState(false);
   const [watchId, setWatchId] = useState(null);
   const [polygonClosed, setPolygonClosed] = useState(false);
+  const [accuracy, setAccuracy] = useState(null);
 
   /* Get initial location */
   useEffect(() => {
@@ -65,7 +66,10 @@ export default function Geofencing() {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
         const accuracy = pos.coords.accuracy;
-        if (accuracy > 20 || polygonClosed) return;
+        setAccuracy(accuracy.toFixed(1));
+
+        // More lenient accuracy threshold (50m instead of 20m)
+        if (accuracy > 50 || polygonClosed) return;
 
         const newPoint = [lat, lng];
         setUserLocation(newPoint);
@@ -79,7 +83,8 @@ export default function Geofencing() {
           const to = turf.point([lng, lat]);
           const segmentDistance = turf.distance(from, to, { units: "meters" });
 
-          if (segmentDistance > 3) {
+          // Lower minimum distance threshold (2m instead of 3m) for better boundary capture
+          if (segmentDistance > 2) {
             const updated = [...prev, newPoint];
 
             // Update total distance
@@ -92,7 +97,7 @@ export default function Geofencing() {
               const currentPoint = turf.point([lng, lat]);
               const closeDistance = turf.distance(startPoint, currentPoint, { units: "meters" });
 
-              if (closeDistance < 5) {
+              if (closeDistance < 8) {
                 finishPolygon(updated);
               }
             }
@@ -103,8 +108,12 @@ export default function Geofencing() {
           return prev;
         });
       },
-      (err) => console.error(err),
-      { enableHighAccuracy: true }
+      (err) => console.error("Geolocation error:", err),
+      { 
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 1000
+      }
     );
 
     setWatchId(id);
@@ -192,8 +201,10 @@ export default function Geofencing() {
           </h2>
 
           {/* Info Display */}
-          <div className="mb-4 text-center font-semibold text-green-800">
-            Distance Walked: {distanceWalked.toFixed(1)} meters
+          <div className="mb-4 text-center font-semibold text-green-800 space-y-2">
+            <div>Distance Walked: {distanceWalked.toFixed(1)} meters</div>
+            {accuracy && <div>GPS Accuracy: ±{accuracy} meters (Good: &lt;15m)</div>}
+            <div>Points Captured: {points.length}</div>
           </div>
 
           {/* Inputs */}

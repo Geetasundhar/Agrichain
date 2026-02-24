@@ -1,74 +1,175 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function BuyProduct() {
-  const [productId, setProductId] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [type, setType] = useState("seed");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${API}/retailer/all-products`);
+        const data = await res.json();
+        if (res.ok && data.products) {
+          setProducts(data.products);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const handleQuantityChange = (productId, delta) => {
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p._id !== productId) return p;
+        const avail = p.quantity || 0;
+        const nextQty = Math.max(1, Math.min(avail, (p._selectedQty || 1) + delta));
+        return { ...p, _selectedQty: nextQty, _computedTotal: nextQty * (p.price || 0) };
+      })
+    );
+  };
+
+  const handleSetQty = (productId, value) => {
+    const intVal = Number(value) || 0;
+    setProducts((prev) =>
+      prev.map((p) => {
+        if (p._id !== productId) return p;
+        const avail = p.quantity || 0;
+        const nextQty = Math.max(1, Math.min(avail, intVal));
+        return { ...p, _selectedQty: nextQty, _computedTotal: nextQty * (p.price || 0) };
+      })
+    );
+  };
+
+  const handleBuy = async (product) => {
+    const qty = product._selectedQty || 1;
+    if (qty <= 0) return;
     try {
       const res = await fetch(`${API}/farmer/buy-product`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "content-type": "application/json",
           authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ productId, quantity: Number(quantity) }),
+        body: JSON.stringify({ productId: product.productId, quantity: qty }),
       });
       const data = await res.json();
-      if (res.ok) {
-        alert("Purchase successful");
-        setProductId("");
-        setQuantity("");
-      } else {
-        alert(data.message || "Failed to buy product");
-      }
+      if (!res.ok) throw new Error(data.message || "Purchase failed");
+
+      // prefer the server-saved purchase.productId when available
+      const purchase = data.purchase || null;
+      const purchasedProductId = purchase?.productId || product.productId || "-";
+
+      // generate simple receipt in new window and trigger print
+      const receiptWindow = window.open("", "_blank");
+      const receiptHtml = `
+        <html>
+        <head><title>Receipt</title></head>
+        <body>
+          <h2>Agrichain - Purchase Receipt</h2>
+          <p><strong>Order ID:</strong> ${purchase?._id || "-"}</p>
+          <p><strong>Product ID:</strong> ${purchasedProductId}</p>
+          <p><strong>Buyer:</strong> ${localStorage.getItem("user_name") || "Farmer"}</p>
+          <p><strong>Retailer:</strong> ${product.retailer?.name || "-"}</p>
+          <p><strong>Organization:</strong> ${product.retailer?.organization?.organizationName || "-"}</p>
+          <p><strong>Product:</strong> ${product.productName} (${product.productType})</p>
+          <p><strong>Unit Price:</strong> ${product.price || 0}</p>
+          <p><strong>Quantity:</strong> ${qty}</p>
+          <p><strong>Total:</strong> ${qty * (product.price || 0)}</p>
+          <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+          <hr/>
+          <p>Thank you for your purchase.</p>
+        </body>
+        </html>
+      `;
+      receiptWindow.document.write(receiptHtml);
+      receiptWindow.document.close();
+      receiptWindow.focus();
+      // give a moment for render then print
+      setTimeout(() => {
+        try { receiptWindow.print(); } catch (e) { /* ignore */ }
+      }, 500);
+
+      // After purchase navigate to My Purchases
+      navigate("/farmer/my-purchases");
+      // also open retailer orders in a new tab (helps retailer view update)
+      try { window.open(window.location.origin + "/retailer/orders", "_blank"); } catch (e) {}
     } catch (err) {
       console.error(err);
-      alert("Network error");
-    } finally {
-      setLoading(false);
+      alert(err.message || "Purchase failed");
     }
   };
+
+  const filtered = products.filter((p) => p.productType === type && (p.quantity || 0) > 0);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">
       <Navbar />
       <main className="flex-grow pt-32 px-6">
-        <h2 className="text-3xl font-bold text-[#132a13] mb-6">Buy Product</h2>
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4 bg-white p-6 rounded-xl shadow">
-          <input
-            type="text"
-            placeholder="Product ID"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-            className="input w-full"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            className="input w-full"
-            required
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-[#132a13] text-[#ecf39e] py-2 px-4 rounded-lg"
-          >
-            {loading ? "Buying..." : "Buy"}
-          </button>
-        </form>
+        <h2 className="text-3xl font-bold mb-6">Buy Products</h2>
+
+        <div className="mb-6">
+          <label className="mr-2 font-semibold">Select Type:</label>
+          <select value={type} onChange={(e) => setType(e.target.value)} className="p-2 border rounded">
+            <option value="seed">Seed</option>
+            <option value="fertilizer">Fertilizer</option>
+          </select>
+        </div>
+
+        {filtered.length === 0 ? (
+          <p>No products found for selected type.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filtered.map((p) => (
+              <div key={p._id} className="bg-white p-4 rounded-xl shadow">
+                <div className="flex items-center gap-4">
+                  {p.retailer?.shop_image ? (
+                    <img src={p.retailer.shop_image} alt="shop" className="w-20 h-20 object-cover rounded" />
+                  ) : (
+                    <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">No Image</div>
+                  )}
+                  <div>
+                    <h3 className="font-semibold">{p.productName}</h3>
+                    <p className="text-sm">Retailer: {p.retailer?.name || "-"}</p>
+                    <p className="text-sm">Organization: {p.retailer?.organization?.organizationName || "-"}</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  <div>
+                    <p>Unit Price: <strong>{p.price || 0}</strong></p>
+                    <p>Available: {p.quantity || 0}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => handleQuantityChange(p._id, -1)} className="px-3 py-1 bg-gray-200 rounded">-</button>
+                    <input type="number" min="1" max={p.quantity || 0} value={p._selectedQty || 1} onChange={(e) => handleSetQty(p._id, e.target.value)} className="w-16 text-center border rounded p-1" />
+                    <button onClick={() => handleQuantityChange(p._id, 1)} className="px-3 py-1 bg-gray-200 rounded">+</button>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  <div>Total: <strong>{(p._selectedQty || 1) * (p.price || 0)}</strong></div>
+                  <button onClick={() => handleBuy(p)} className="px-4 py-2 bg-green-600 text-white rounded">Buy</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
   );
 }
+
