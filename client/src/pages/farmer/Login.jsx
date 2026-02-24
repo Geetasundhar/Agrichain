@@ -15,47 +15,53 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      alert("Please fill all fields");
+  if (!email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const res = await fetch(`${API}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Login failed");
       return;
     }
 
-    try {
-      setLoading(true);
+    // 🔐 STORE TOKEN + USER (DO NOT CLEAR EVERYTHING)
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
-      const res = await fetch(`${API}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
 
-      const data = await res.json();
+    alert("Login successful 🎉");
 
-      if (!res.ok) {
-        alert(data.message || "Login failed");
-        return;
-      }
-
-      // 🔥 CLEAR OLD TOKEN (VERY IMPORTANT)
-      localStorage.clear();
-
-      // 🔐 SAVE TOKEN + USER
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      alert("Login successful 🎉");
-
-      // 🚀 ROLE BASED NAVIGATION
+    // 🌱 CONDITIONAL NAVIGATION
+    if (!data.user?.isFarmLocationAdded) {
+      navigate("/farmer/geofencing");
+    } else {
       navigate("/farmer/dashboard");
-    } catch (error) {
-      console.error(error);
-      alert("Server error");
-    } finally {
-      setLoading(false);
     }
-  };
+
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">

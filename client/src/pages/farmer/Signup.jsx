@@ -12,15 +12,10 @@ export default function Signup() {
 
   const [formData, setFormData] = useState({
     name: "",
-    username: "",
     email: "",
     phone: "",
     age: "",
     gender: "",
-    farm_name: "",
-    farm_size: "",
-    crop_type: "",
-    farm_address: "",
     password: "",
   });
 
@@ -38,6 +33,8 @@ export default function Signup() {
   const handleSubmit = async () => {
     try {
       setLoading(true);
+      
+      console.log("📤 Sending formData:", formData);
 
       const res = await fetch(`${API}/auth/signup`, {
         method: "POST",
@@ -48,6 +45,10 @@ export default function Signup() {
       });
 
       const data = await res.json();
+      console.log("📥 Response Status:", res.status);
+      console.log("📥 Response Message:", data.message);
+      console.log("📥 Full Response:", JSON.stringify(data, null, 2));
+      console.log("📥 Form Data being sent:", JSON.stringify(formData, null, 2));
 
       if (!res.ok) {
         alert(data.message || "Signup failed");
@@ -55,6 +56,8 @@ export default function Signup() {
       }
 
       alert("Signup successful 🎉");
+
+      // 🚜 Redirect farmer to geofencing (mandatory step)
       navigate("/farmer/login");
 
     } catch (error) {
@@ -77,43 +80,60 @@ export default function Signup() {
 
           <form className="grid md:grid-cols-2 gap-6">
 
-            <input name="name" onChange={handleChange}
-              placeholder={t("signup.fullName")} className="input" />
+            <input
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder={t("signup.fullName")}
+              className="input"
+            />
 
-            <input name="username" onChange={handleChange}
-              placeholder={t("signup.username")} className="input" />
+            <input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder={t("signup.email")}
+              className="input"
+            />
 
-            <input name="email" type="email" onChange={handleChange}
-              placeholder={t("signup.email")} className="input" />
+            <input
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder={t("signup.phone")}
+              className="input"
+            />
 
-            <input name="phone" onChange={handleChange}
-              placeholder={t("signup.phone")} className="input" />
+            <input
+              name="age"
+              type="number"
+              value={formData.age}
+              onChange={handleChange}
+              placeholder={t("signup.age")}
+              className="input"
+            />
 
-            <input name="age" type="number" onChange={handleChange}
-              placeholder={t("signup.age")} className="input" />
-
-            <select name="gender" onChange={handleChange} className="input">
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="input"
+            >
               <option value="">{t("signup.gender.select")}</option>
               <option value="Male">{t("signup.gender.male")}</option>
               <option value="Female">{t("signup.gender.female")}</option>
               <option value="Other">{t("signup.gender.other")}</option>
             </select>
 
-            <input name="farm_name" onChange={handleChange}
-              placeholder={t("signup.farmName")} className="input" />
-
-            <input name="farm_size" type="number" onChange={handleChange}
-              placeholder={t("signup.farmSize")} className="input" />
-
-            <input name="crop_type" onChange={handleChange}
-              placeholder={t("signup.cropType")} className="input" />
-
-            <textarea name="farm_address" rows="2" onChange={handleChange}
-              placeholder={t("signup.farmAddress")}
-              className="input md:col-span-2" />
-
-            <input name="password" type="password" onChange={handleChange}
-              placeholder={t("signup.password")} className="input" />
+            <input
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder={t("signup.password")}
+              className="input"
+            />
 
             <button
               type="button"

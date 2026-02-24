@@ -1,18 +1,16 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
-
-
-export default function AddCrop() {
+export default function UpdateCrop() {
   const { t } = useTranslation();
-
+  const { id } = useParams();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     type: "",
@@ -22,15 +20,19 @@ export default function AddCrop() {
     durationPeriod: "month",
     fertilizer: "",
     soilType: "",
-    image: null,
+    image: null, // local file or dataURL
+    existingImage: null, // url/base64 from server
   });
 
-  const [qrCode, setQrCode] = useState(null);
   const [loading, setLoading] = useState(false);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
+
+  useEffect(() => {
+    fetchCrop();
+  }, [id]);
 
   useEffect(() => {
     return () => {
@@ -40,18 +42,33 @@ export default function AddCrop() {
     };
   }, []);
 
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (name === "image") {
-      setFormData({ ...formData, image: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
+  const fetchCrop = async () => {
+    try {
+      const res = await fetch(`${API}/farmer/crops/${id}`);
+      const data = await res.json();
+      if (data.status === "success" && data.crop) {
+        const c = data.crop;
+        setFormData({
+          name: c.cropName || "",
+          type: c.cropType || "",
+          quantity: c.quantityKg || "",
+          price: c.pricePerKg || "",
+          durationNumber: c.durationNumber || "",
+          durationPeriod: c.durationPeriod || "month",
+          fertilizer: c.fertilizer || "",
+          soilType: c.soilType || "",
+          image: null,
+          existingImage: c.images?.[0] || c.qrCode || null,
+        });
+      } else {
+        alert(data.message || "Failed to load crop");
+      }
+    } catch (err) {
+      console.error(err);
+      alert(t("form.networkError"));
     }
   };
 
-  // Convert image → base64
   const toBase64 = (fileOrDataUrl) =>
     new Promise((resolve, reject) => {
       if (typeof fileOrDataUrl === "string" && fileOrDataUrl.startsWith("data:")) {
@@ -63,6 +80,15 @@ export default function AddCrop() {
       reader.onload = () => resolve(reader.result);
       reader.onerror = reject;
     });
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "image") {
+      setFormData({ ...formData, image: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
 
   const startCamera = async () => {
     if (streamRef.current) return;
@@ -83,33 +109,17 @@ export default function AddCrop() {
     setCapturedImage(imageData);
   };
 
-  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.image) {
-      alert(t("form.imageRequired"));
-      return;
-    }
-
     setLoading(true);
 
     try {
-      // Get current location
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        });
-      });
-
-      const { latitude, longitude } = position.coords;
-
-      const imageBase64 = await toBase64(formData.image);
+      let newImageBase64 = null;
+      if (formData.image) {
+        newImageBase64 = await toBase64(formData.image);
+      }
 
       const payload = {
-        farmerId: localStorage.getItem("userId"),
         name: formData.name,
         type: formData.type,
         quantity: formData.quantity,
@@ -118,13 +128,12 @@ export default function AddCrop() {
         durationPeriod: formData.durationPeriod,
         fertilizer: formData.fertilizer,
         soilType: formData.soilType,
-        image: imageBase64,
-        latitude,
-        longitude
       };
 
-      const res = await fetch(`${API}/farmer/add-crop`, {
-        method: "POST",
+      if (newImageBase64) payload.newImage = newImageBase64;
+
+      const res = await fetch(`${API}/farmer/update-crop/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -133,37 +142,15 @@ export default function AddCrop() {
       });
 
       const data = await res.json();
-
       if (data.status === "success") {
-        alert("✅ Crop added successfully");
-        setQrCode(data.crop.qrCode);
-        setFormData({
-          name: "",
-          type: "",
-          quantity: "",
-          price: "",
-          durationNumber: "",
-          durationPeriod: "month",
-          fertilizer: "",
-          soilType: "",
-          image: null,
-        });
-        setCapturedImage(null);
-        navigate("/farmer/my-crops")
+        alert(data.message || "Crop updated");
+        navigate("/farmer/my-crops");
       } else {
-        alert(data.message || "Something went wrong");
+        alert(data.message || data.error || "Update failed");
       }
     } catch (err) {
       console.error(err);
-      if (err.code === 1) {
-        alert("Location access denied. Please enable location services to add crop.");
-      } else if (err.code === 2) {
-        alert("Location unavailable. Please try again.");
-      } else if (err.code === 3) {
-        alert("Location request timed out. Please try again.");
-      } else {
-        alert(t("form.networkError"));
-      }
+      alert(t("form.networkError"));
     } finally {
       setLoading(false);
     }
@@ -174,20 +161,13 @@ export default function AddCrop() {
       <Navbar />
 
       <main className="flex-grow pt-32 px-6">
-        {/* Hero */}
         <section className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-[#132a13] mb-3">
-            {t("addCrop.title")}
-          </h2>
-          <p className="text-[#31572c]">
-            {t("addCrop.desc")}
-          </p>
+          <h2 className="text-4xl font-bold text-[#132a13] mb-3">{"Update Crop"}</h2>
+          {/* <p className="text-[#31572c]">{t("updateCrop.desc") || "Edit details and update your crop"}</p> */}
         </section>
 
-        {/* Form */}
         <section className="max-w-3xl mx-auto bg-white p-10 rounded-3xl shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-6">
-
             <input
               name="name"
               value={formData.name}
@@ -290,6 +270,15 @@ export default function AddCrop() {
             </select>
 
             <div>
+              <label className="text-sm text-[#31572c]">Existing Image</label>
+              {formData.existingImage ? (
+                <img src={formData.existingImage} alt="existing" className="w-40 h-40 object-cover rounded-md block mt-2" />
+              ) : (
+                <p className="text-sm text-[#888]">No image available</p>
+              )}
+            </div>
+
+            <div>
               <label className="text-sm text-[#31572c]">Capture Image</label>
               <video ref={videoRef} autoPlay playsInline muted className="w-full h-44 rounded-xl mb-3 bg-black" />
 
@@ -312,27 +301,9 @@ export default function AddCrop() {
                          py-4 rounded-xl font-semibold
                          hover:bg-[#31572c] transition"
             >
-              {loading ? "Adding..." : t("form.submit")}
+              {loading ? "Updating..." : "Update Crop"}
             </button>
           </form>
-
-          {/* QR Code */}
-          {qrCode && (
-            <div className="mt-10 text-center">
-              <img
-                src={qrCode}
-                alt="QR Code"
-                className="mx-auto w-44 border-2 border-green-600 p-3 rounded-xl shadow-lg"
-              />
-              <a
-                href={qrCode}
-                download="crop_qr.png"
-                className="block mt-4 text-[#132a13] font-semibold"
-              >
-                ⬇️ Download QR
-              </a>
-            </div>
-          )}
         </section>
       </main>
 

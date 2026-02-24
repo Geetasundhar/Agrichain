@@ -13,7 +13,7 @@ export default function Navbar() {
     { key: "nav.buyer", path: "/buyer" },
     { key: "nav.admin", path: "/admin" },
     { key: "nav.transporter", path: "/transporter" },
-    { key: "nav.insurance", path: "/insurance" },
+   // { key: "nav.insurance", path: "/insurance" },
   ];
 
   const changeLanguage = (lang) => {
