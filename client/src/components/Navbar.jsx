@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import RetailerModal from "./RetailerModal";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showRetailerModal, setShowRetailerModal] = useState(false);
   const { t, i18n } = useTranslation();
 
   const links = [
@@ -11,6 +13,7 @@ export default function Navbar() {
     { key: "nav.about", path: "/about" },
     { key: "nav.farmer", path: "/farmer/dashboard" },
     { key: "nav.buyer", path: "/buyer" },
+    { key: "nav.retailer", path: null, onClick: () => setShowRetailerModal(true) },
     { key: "nav.admin", path: "/admin" },
     { key: "nav.transporter", path: "/transporter" },
    // { key: "nav.insurance", path: "/insurance" },
@@ -39,15 +42,27 @@ export default function Navbar() {
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-6">
           {links.map((link) => (
-            <Link
-              key={link.key}
-              to={link.path}
-              className="text-[#ecf39e] font-medium px-3 py-2 rounded-md
-                         hover:bg-[#ecf39e] hover:text-[#132a13]
-                         transition"
-            >
-              {t(link.key)}
-            </Link>
+            link.onClick ? (
+              <button
+                key={link.key}
+                onClick={link.onClick}
+                className="text-[#ecf39e] font-medium px-3 py-2 rounded-md
+                           hover:bg-[#ecf39e] hover:text-[#132a13]
+                           transition"
+              >
+                {t(link.key)}
+              </button>
+            ) : (
+              <Link
+                key={link.key}
+                to={link.path}
+                className="text-[#ecf39e] font-medium px-3 py-2 rounded-md
+                           hover:bg-[#ecf39e] hover:text-[#132a13]
+                           transition"
+              >
+                {t(link.key)}
+              </Link>
+            )
           ))}
         </nav>
 
@@ -88,16 +103,31 @@ export default function Navbar() {
         <div className="md:hidden bg-[#132a13] border-t border-[#31572c]">
           <nav className="flex flex-col px-6 py-4 gap-4">
             {links.map((link) => (
-              <Link
-                key={link.key}
-                to={link.path}
-                onClick={() => setMenuOpen(false)}
-                className="text-[#ecf39e] font-medium py-2 rounded-md
-                           hover:bg-[#ecf39e] hover:text-[#132a13]
-                           transition"
-              >
-                {t(link.key)}
-              </Link>
+              link.onClick ? (
+                <button
+                  key={link.key}
+                  onClick={() => {
+                    link.onClick();
+                    setMenuOpen(false);
+                  }}
+                  className="text-[#ecf39e] font-medium py-2 rounded-md text-left
+                             hover:bg-[#ecf39e] hover:text-[#132a13]
+                             transition"
+                >
+                  {t(link.key)}
+                </button>
+              ) : (
+                <Link
+                  key={link.key}
+                  to={link.path}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-[#ecf39e] font-medium py-2 rounded-md
+                             hover:bg-[#ecf39e] hover:text-[#132a13]
+                             transition"
+                >
+                  {t(link.key)}
+                </Link>
+              )
             ))}
 
             {/* Mobile Language Buttons */}
@@ -125,6 +155,12 @@ export default function Navbar() {
           </nav>
         </div>
       )}
+
+      {/* Retailer Modal */}
+      <RetailerModal 
+        isOpen={showRetailerModal} 
+        onClose={() => setShowRetailerModal(false)} 
+      />
     </header>
   );
 }

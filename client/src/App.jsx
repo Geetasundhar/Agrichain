@@ -16,6 +16,9 @@ import BuyerLogin from "./pages/buyer/BuyerLogin.jsx";
 import BuyerDashboard from "./pages/buyer/BuyerDashboard.jsx";
 import BuyerCrops from "./pages/buyer/BuyCrops.jsx";
 import GeoFencing from "./pages/farmer/GeoFencing.jsx";
+import RetailerSignup from "./pages/retailer/Signup";
+import RetailerLogin from "./pages/retailer/Login";
+import RetailerDashboard from "./pages/retailer/Dashboard";
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
       <Route path="/buyer/login" element={<BuyerLogin />} />
       <Route path="/buyer/dashboard" element={<BuyerDashboard />} />
       <Route path="/buyer/crops" element={<BuyerCrops />} />
+      <Route path="/retailer/signup" element={<RetailerSignup />} />
+      <Route path="/retailer/login" element={<RetailerLogin />} />
+      <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
       <Route path="/farmer/geofencing" element={<GeoFencing />} />
     </Routes>
   );
