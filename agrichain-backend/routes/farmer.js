@@ -12,6 +12,7 @@ router.post("/add-crop", authMiddleware, addCrop);
 // purchase / inventory routes
 router.post("/buy-product", authMiddleware, productController.buyProduct);
 router.get("/my-purchases", authMiddleware, productController.getMyPurchases);
+router.get("/purchased-products-by-type", authMiddleware, productController.getPurchasedProductsByType);
 // handy helper to check a product id before using it in crop registration
 router.get("/verify-product/:id", authMiddleware, productController.getProductByProductId);
 

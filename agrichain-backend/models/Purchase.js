@@ -7,6 +7,8 @@ const purchaseSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
+    // store the Product.productId string for quick reference
+    productId: { type: String },
     retailer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Retailer",

@@ -17,38 +17,30 @@ export const addCrop = async (req, res) => {
       price,
       durationNumber,
       durationPeriod,
-      fertilizer,
       soilType,
       image,
       latitude,
       longitude,
       seedProductId,
-      fertilizerProductId
+      fertilizerProductId,
+      seedQuantityUsed,
+      fertilizerQuantityUsed
     } = req.body;
 
     // 🛑 Validate crop fields
     if (
       !name ||
       !type ||
-      !quantity ||
-      !price ||
       !durationNumber ||
       !durationPeriod ||
-      !fertilizer ||
       !soilType ||
-      !image
+      !image ||
+      !seedProductId ||
+      !fertilizerProductId
     ) {
       return res.status(400).json({
         status: "error",
-        message: "All fields are required",
-      });
-    }
-
-    // 🌍 Validate location
-    if (!latitude || !longitude) {
-      return res.status(400).json({
-        status: "error",
-        message: "Current location is required to add crop",
+        message: "Crop name, type, duration, soil type, seed product, fertilizer product, and image are required",
       });
     }
 
@@ -61,28 +53,7 @@ export const addCrop = async (req, res) => {
       });
     }
 
-    // 📍 Check if farmer is inside registered land
-    const land = await Land.findOne({
-      farmer: farmerId,
-      location: {
-        $geoIntersects: {
-          $geometry: {
-            type: "Point",
-            coordinates: [longitude, latitude], // ⚠️ lng first
-          },
-        },
-      },
-    });
-
-    if (!land) {
-      return res.status(403).json({
-        status: "error",
-        message:
-          "You are out of your land. Crop cannot be added.",
-      });
-    }
-
-    // ✅ verify seed/fertilizer product ids if provided
+    // ✅ verify seed/fertilizer product ids if provided and validate quantities
     let seedProductRef, fertProductRef;
     if (seedProductId) {
       const product = await Product.findOne({ productId: seedProductId });
@@ -90,9 +61,17 @@ export const addCrop = async (req, res) => {
         return res.status(400).json({ status: "error", message: "Invalid seed product id" });
       }
       // confirm farmer purchased this product
-      const bought = await Purchase.findOne({ product: product._id, farmer: farmerId });
-      if (!bought) {
+      const purchase = await Purchase.findOne({ product: product._id, farmer: farmerId });
+      if (!purchase) {
         return res.status(403).json({ status: "error", message: "You have not bought the seed with this product id" });
+      }
+      // validate quantity
+      const seedQtyToUse = Number(seedQuantityUsed) || 0;
+      if (seedQtyToUse <= 0) {
+        return res.status(400).json({ status: "error", message: "Seed quantity must be greater than 0" });
+      }
+      if (seedQtyToUse > purchase.quantity) {
+        return res.status(400).json({ status: "error", message: `You have only ${purchase.quantity} units of this seed. Cannot use ${seedQtyToUse}` });
       }
       seedProductRef = product._id;
     }
@@ -101,9 +80,17 @@ export const addCrop = async (req, res) => {
       if (!product) {
         return res.status(400).json({ status: "error", message: "Invalid fertilizer product id" });
       }
-      const bought = await Purchase.findOne({ product: product._id, farmer: farmerId });
-      if (!bought) {
+      const purchase = await Purchase.findOne({ product: product._id, farmer: farmerId });
+      if (!purchase) {
         return res.status(403).json({ status: "error", message: "You have not bought the fertilizer with this product id" });
+      }
+      // validate quantity
+      const fertQtyToUse = Number(fertilizerQuantityUsed) || 0;
+      if (fertQtyToUse <= 0) {
+        return res.status(400).json({ status: "error", message: "Fertilizer quantity must be greater than 0" });
+      }
+      if (fertQtyToUse > purchase.quantity) {
+        return res.status(400).json({ status: "error", message: `You have only ${purchase.quantity} units of this fertilizer. Cannot use ${fertQtyToUse}` });
       }
       fertProductRef = product._id;
     }
@@ -113,16 +100,45 @@ export const addCrop = async (req, res) => {
       farmerId,
       cropName: name,
       cropType: type,
-      quantityKg: quantity,
-      pricePerKg: price,
+      quantityKg: quantity || 0,
+      pricePerKg: price || 0,
       durationNumber,
       durationPeriod,
-      fertilizer,
       soilType,
       images: [image],
       seedProduct: seedProductRef,
       fertilizerProduct: fertProductRef,
+      seedQuantityUsed: Number(seedQuantityUsed) || 0,
+      fertilizerQuantityUsed: Number(fertilizerQuantityUsed) || 0,
     });
+
+    // 📉 Decrement purchase quantities and remove zero-quantity purchases
+    if (seedProductId) {
+      const seedQtyToUse = Number(seedQuantityUsed) || 0;
+      const seedProduct = await Product.findOne({ productId: seedProductId });
+      const seedPurchase = await Purchase.findOne({ product: seedProduct._id, farmer: farmerId });
+      if (seedPurchase) {
+        seedPurchase.quantity -= seedQtyToUse;
+        if (seedPurchase.quantity <= 0) {
+          await Purchase.deleteOne({ _id: seedPurchase._id });
+        } else {
+          await seedPurchase.save();
+        }
+      }
+    }
+    if (fertilizerProductId) {
+      const fertQtyToUse = Number(fertilizerQuantityUsed) || 0;
+      const fertProduct = await Product.findOne({ productId: fertilizerProductId });
+      const fertPurchase = await Purchase.findOne({ product: fertProduct._id, farmer: farmerId });
+      if (fertPurchase) {
+        fertPurchase.quantity -= fertQtyToUse;
+        if (fertPurchase.quantity <= 0) {
+          await Purchase.deleteOne({ _id: fertPurchase._id });
+        } else {
+          await fertPurchase.save();
+        }
+      }
+    }
 
     // 📦 QR Details
     const qrDetails = [
@@ -136,10 +152,9 @@ export const addCrop = async (req, res) => {
       `---------------------------`,
       `Crop Name  : ${name}`,
       `Crop Type  : ${type}`,
-      `Quantity   : ${quantity} kg`,
-      `Price/kg   : ₹${price}`,
+      `Quantity   : ${quantity || 0} kg`,
+      `Price/kg   : ₹${price || 0}`,
       `Duration   : ${durationNumber} ${durationPeriod}`,
-      `Fertilizer : ${fertilizer}`,
       `Soil Type  : ${soilType}`,
       `Added On   : ${new Date().toLocaleDateString()}`,
     ].join("\n");

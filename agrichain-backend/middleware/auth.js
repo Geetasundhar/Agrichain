@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-export const authMiddleware = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -10,13 +10,15 @@ export const authMiddleware = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { id, role }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret");
+    req.user = decoded; // expects { id, email, role }
     next();
   } catch (error) {
     return res.status(401).json({
       message: "Invalid token",
-      error: error.message, // jwt expired
+      error: error.message,
     });
   }
 };
+
+module.exports = { authMiddleware };
