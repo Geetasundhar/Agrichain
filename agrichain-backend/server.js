@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const farmerRoutes = require("./routes/farmer");
 const buyerRoutes = require("./routes/buyerRoutes");
 const buyerProfileRoutes = require("./routes/buyerProfileRoutes");
+const retailerRoutes = require("./routes/retailer");
 
 const cropRoutes = require("./routes/cropRoutes");
 
@@ -34,6 +35,7 @@ app.use("/auth", authRoutes);
 app.use("/farmer", farmerRoutes);
 app.use("/buyer", buyerRoutes);
 app.use("/buyer/profile", buyerProfileRoutes);
+app.use("/retailer", retailerRoutes);
 
 //blockchain route
 app.use("/api/crops", cropRoutes);
