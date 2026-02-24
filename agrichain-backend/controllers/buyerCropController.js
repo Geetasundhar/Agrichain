@@ -13,40 +13,43 @@ export const getAllCropsForBuyer = async (req, res) => {
   try {
     // 🔹 Fetch crops with farmer basic details
     const crops = await Crop.find()
-      .populate("farmerId", "name phone location")
+      .populate("farmerId", "name phone")
       .sort({ createdAt: -1 });
 
     const today = new Date();
 
-    // 🔹 Process crops
-    const processedCrops = crops.map((crop) => {
-      const ageInDays = Math.floor(
-        (today - new Date(crop.createdAt)) / (1000 * 60 * 60 * 24)
-      );
+    // 🔹 Process crops - Filter out crops with null farmer
+    const processedCrops = crops
+      .filter((crop) => crop.farmerId !== null) // Handle deleted farmers
+      .map((crop) => {
+        const ageInDays = Math.floor(
+          (today - new Date(crop.createdAt)) / (1000 * 60 * 60 * 24)
+        );
 
-      // 🔥 Priority logic
-      let priorityScore = ageInDays;
-      if (
-        crop.cropType.toLowerCase() === "vegetable" ||
-        crop.cropType.toLowerCase() === "fruit"
-      ) {
-        priorityScore = ageInDays * 2;
-      }
+        // 🔥 Priority logic
+        let priorityScore = ageInDays;
+        if (
+          crop.cropType &&
+          (crop.cropType.toLowerCase() === "vegetable" ||
+            crop.cropType.toLowerCase() === "fruit")
+        ) {
+          priorityScore = ageInDays * 2;
+        }
 
-      return {
-        _id: crop._id,
-        cropName: crop.cropName,
-        cropType: crop.cropType,
-        quantityKg: crop.quantityKg,
-        pricePerKg: crop.pricePerKg,
-        location: crop.location,
-        images: crop.images,
-        createdAt: crop.createdAt,
-        ageInDays,
-        priorityScore,
-        farmer: crop.farmerId,
-      };
-    });
+        return {
+          _id: crop._id,
+          cropName: crop.cropName,
+          cropType: crop.cropType,
+          quantityKg: crop.quantityKg,
+          pricePerKg: crop.pricePerKg,
+          location: crop.farmerId?.name || "Unknown Farmer",
+          images: crop.images || [],
+          createdAt: crop.createdAt,
+          ageInDays,
+          priorityScore,
+          farmer: crop.farmerId,
+        };
+      });
 
     // 🔹 Sort: highest priority FIRST
     processedCrops.sort((a, b) => b.priorityScore - a.priorityScore);

@@ -38,6 +38,8 @@ app.use("/buyer/profile", buyerProfileRoutes);
 //blockchain route
 app.use("/api/crops", cropRoutes);
 
+//Geofencing 
+
 // 🔹 Health Check
 app.get("/", (req, res) => {
   res.send("🌾 AgriChain API is running successfully!");

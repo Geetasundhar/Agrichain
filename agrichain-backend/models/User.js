@@ -1,20 +1,25 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  age: { type: Number },
-  gender: { type: String },
-  phone: { type: String },
-  email: { type: String, required: true, unique: true },
-  farm_name: { type: String },
-  farm_address: { type: String },
-  farm_size: { type: Number },
-  crop_type: { type: String },
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    age: { type: Number },
+    gender: { type: String },
+    phone: { type: String },
 
-  // 🖼️ New field for profile photo
-  photo: { type: String }, // can store image URL or Base64 string
-});
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+
+    // 🖼️ Profile photo
+    photo: { type: String },
+
+    // 🚜 To track geofencing completion (for farmers)
+    isFarmLocationAdded: {
+      type: Boolean,
+      default: false
+    }
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("User", userSchema);

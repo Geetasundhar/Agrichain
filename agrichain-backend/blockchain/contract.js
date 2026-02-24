@@ -13,7 +13,7 @@ const privateKey = "0xf7476399765920aec0c400989b7f1a3edc94b7c312b38bd2055a92ac8c
 const wallet = new ethers.Wallet(privateKey, provider);
 
 // Contract instance
-const contractAddress = "0x1F532755e7Ba573df6f60F08c5995628679FA506";
+const contractAddress = "0xd772c9ce1714072Acd99cbf6B9c66e22B3617bde";
 
 const contract = new ethers.Contract(
   contractAddress,

@@ -1,5 +1,5 @@
 const express = require("express");
-const { addCrop, getAllCrops, getCropById, getStorageReport } = require("../controllers/farmerController.js");
+const { addCrop, getAllCrops, getCropById, getStorageReport, getMyCrops, updateCrop, deleteCrop } = require("../controllers/farmerController.js");
 const { authMiddleware } = require("../middleware/auth.js"); // JWT auth
 const { getUserProfile, updateUserProfile } = require("../controllers/userController.js");
 
@@ -8,6 +8,22 @@ const router = express.Router();
 
 // Protected route - farmer must be logged in
 router.post("/add-crop", authMiddleware, addCrop);
+
+
+// router.get("/crops/:id", authMiddleware, getCropById);
+
+// Farmer specific crops
+router.get("/my-crops", authMiddleware, getMyCrops);
+
+// Update crop
+router.put("/update-crop/:id", authMiddleware, updateCrop);
+
+// Delete crop
+router.delete("/delete-crop/:id", authMiddleware, deleteCrop);
+
+
+
+
 
 // Get all crops
 router.get("/crops", getAllCrops);

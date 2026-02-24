@@ -5,27 +5,28 @@ const jwt = require("jsonwebtoken");
 // Signup Controller
 exports.signup = async (req, res) => {
   try {
+    console.log("🔍 Raw req.body:", req.body);
+    console.log("🔍 req.body keys:", Object.keys(req.body));
+
     const {
       name,
       age,
       gender,
       phone,
       email,
-      farm_name,
-      farm_address,
-      farm_size,
-      crop_type,
-      username,
       password,
     } = req.body;
 
+    console.log("📋 Extracted - name:", name, "email:", email, "password:", password);
+
     // Check for required fields
-    if (!name || !email || !password || !username) {
+    if (!name || !email || !password) {
+      console.log("❌ Missing fields - name:", name, "email:", email, "password:", password);
       return res.status(400).json({ message: "Please fill all required fields" });
     }
 
     // Check if email or username already exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    const existingUser = await User.findOne({ $or: [{ email }] });
     if (existingUser) {
       return res.status(400).json({ message: "Email or username already registered" });
     }
@@ -41,11 +42,6 @@ exports.signup = async (req, res) => {
       gender,
       phone,
       email,
-      farm_name,
-      farm_address,
-      farm_size,
-      crop_type,
-      username,
       password: hashedPassword,
     });
 
@@ -93,7 +89,6 @@ exports.login = async (req, res) => {
       message: "Login successful",
       userId: user._id,
       token,
-      username: user.username,
     });
   } catch (err) {
     console.error("Login Error:", err);
