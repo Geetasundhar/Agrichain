@@ -77,7 +77,7 @@ exports.signup = async (req, res) => {
 
     // Generate JWT (similar to authController)
     const token = jwt.sign(
-      { id: newRetailer._id, email: newRetailer.email },
+      { id: newRetailer._id, email: newRetailer.email, role: "retailer" },
       process.env.JWT_SECRET || "your_jwt_secret",
       { expiresIn: "1h" }
     );
@@ -124,7 +124,7 @@ exports.login = async (req, res) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { id: retailer._id, email: retailer.email },
+      { id: retailer._id, email: retailer.email, role: "retailer" },
       process.env.JWT_SECRET || "your_jwt_secret",
       { expiresIn: "1h" }
     );

@@ -2,10 +2,12 @@ import Crop from "../models/Crop.js";
 import Farmer from "../models/User.js";
 import QRCode from "qrcode"; // npm install qrcode
 import Land from "../models/Land.js";
+import Product from "../models/Product.js";
+import Purchase from "../models/Purchase.js";
 
+// ➤ Add crop (with QR code generation)
 export const addCrop = async (req, res) => {
   try {
-    // 🔐 farmerId comes from JWT
     const farmerId = req.user.id;
 
     const {
@@ -19,7 +21,9 @@ export const addCrop = async (req, res) => {
       soilType,
       image,
       latitude,
-      longitude
+      longitude,
+      seedProductId,
+      fertilizerProductId
     } = req.body;
 
     // 🛑 Validate crop fields
@@ -78,6 +82,32 @@ export const addCrop = async (req, res) => {
       });
     }
 
+    // ✅ verify seed/fertilizer product ids if provided
+    let seedProductRef, fertProductRef;
+    if (seedProductId) {
+      const product = await Product.findOne({ productId: seedProductId });
+      if (!product) {
+        return res.status(400).json({ status: "error", message: "Invalid seed product id" });
+      }
+      // confirm farmer purchased this product
+      const bought = await Purchase.findOne({ product: product._id, farmer: farmerId });
+      if (!bought) {
+        return res.status(403).json({ status: "error", message: "You have not bought the seed with this product id" });
+      }
+      seedProductRef = product._id;
+    }
+    if (fertilizerProductId) {
+      const product = await Product.findOne({ productId: fertilizerProductId });
+      if (!product) {
+        return res.status(400).json({ status: "error", message: "Invalid fertilizer product id" });
+      }
+      const bought = await Purchase.findOne({ product: product._id, farmer: farmerId });
+      if (!bought) {
+        return res.status(403).json({ status: "error", message: "You have not bought the fertilizer with this product id" });
+      }
+      fertProductRef = product._id;
+    }
+
     // 🌾 Create crop
     const newCrop = await Crop.create({
       farmerId,
@@ -90,6 +120,8 @@ export const addCrop = async (req, res) => {
       fertilizer,
       soilType,
       images: [image],
+      seedProduct: seedProductRef,
+      fertilizerProduct: fertProductRef,
     });
 
     // 📦 QR Details
@@ -148,8 +180,11 @@ export const addCrop = async (req, res) => {
 // ➤ Get all crops
 export const getAllCrops = async (req, res) => {
   try {
-    // ✅ Fetch crops and populate farmer name & email
-    const crops = await Crop.find().populate("farmerId", "name email");
+    // ✅ Fetch crops and populate farmer name & email and product refs
+    const crops = await Crop.find()
+      .populate("farmerId", "name email")
+      .populate("seedProduct", "productId productName")
+      .populate("fertilizerProduct", "productId productName");
 
     // ✅ Format data to match your frontend
     const formatted = crops.map(c => ({
@@ -162,6 +197,8 @@ export const getAllCrops = async (req, res) => {
       durationPeriod: c.durationPeriod,
       fertilizer: c.fertilizer,
       soilType: c.soilType,
+      seedProduct: c.seedProduct || null,
+      fertilizerProduct: c.fertilizerProduct || null,
       image: c.images && c.images.length > 0 ? c.images[0] : null, // show first image
       farmerName: c.farmerId?.name || "Unknown Farmer",
       quality: Math.floor(Math.random() * 5) + 1, // ⭐ random rating
@@ -249,7 +286,9 @@ export const getMyCrops = async (req, res) => {
   try {
     const farmerId = req.user.id;
 
-    const crops = await Crop.find({ farmerId });
+    const crops = await Crop.find({ farmerId })
+      .populate("seedProduct", "productId productName")
+      .populate("fertilizerProduct", "productId productName");
 
     const formatted = crops.map(c => ({
       _id: c._id,
@@ -261,6 +300,8 @@ export const getMyCrops = async (req, res) => {
       durationPeriod: c.durationPeriod,
       fertilizer: c.fertilizer,
       soilType: c.soilType,
+      seedProduct: c.seedProduct || null,
+      fertilizerProduct: c.fertilizerProduct || null,
       image: c.images?.[0] || null,
       qrCode: c.qrCode
     }));

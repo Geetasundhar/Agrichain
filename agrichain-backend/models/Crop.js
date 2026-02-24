@@ -16,6 +16,15 @@ const cropSchema = new mongoose.Schema(
     durationPeriod: { type: String, enum: ["week", "month", "year"], required: true },
     fertilizer: { type: String, required: true },
     soilType: { type: String, required: true },
+    // references to purchased products (optional)
+    seedProduct: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+    fertilizerProduct: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
     images: [String], // base64 or URL (initial image at index 0)
     progressPhotos: [
       {
