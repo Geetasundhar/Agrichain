@@ -22,4 +22,24 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Remove old username index if it exists and ensure email index
+userSchema.pre('save', async function(next) {
+  try {
+    // Drop the old username index if it exists (one-time cleanup)
+    const collection = this.constructor.collection;
+    const indexes = await collection.getIndexes();
+    
+    if (indexes.username_1) {
+      await collection.dropIndex('username_1');
+      console.log('✅ Dropped old username index');
+    }
+  } catch (err) {
+    // Index might not exist, that's okay
+    if (err.message.includes('index not found')) {
+      console.log('⚠️ No old username index found');
+    }
+  }
+  next();
+});
+
 module.exports = mongoose.model("User", userSchema);

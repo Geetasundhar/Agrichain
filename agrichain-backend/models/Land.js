@@ -20,18 +20,18 @@ const landSchema = new mongoose.Schema(
 
     areaInAcres: {
       type: Number,
-      required: true,
+      required: false,
     },
 
     location: {
       type: {
         type: String,
         enum: ["Polygon"],
-        required: true,
+        required: false,
       },
       coordinates: {
         type: [[[Number]]], // GeoJSON Polygon
-        required: true,
+        required: false,
       },
     },
 

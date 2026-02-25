@@ -25,10 +25,10 @@ exports.signup = async (req, res) => {
       return res.status(400).json({ message: "Please fill all required fields" });
     }
 
-    // Check if email or username already exists
-    const existingUser = await User.findOne({ $or: [{ email }] });
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "Email or username already registered" });
+      return res.status(400).json({ message: "Email already registered" });
     }
 
     // Hash password
@@ -48,7 +48,7 @@ exports.signup = async (req, res) => {
     await newUser.save();
 
     // Generate JWT
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.JWT_SECRET || "your_jwt_secret", {
       expiresIn: "5h",
     });
 
@@ -59,6 +59,13 @@ exports.signup = async (req, res) => {
     });
   } catch (err) {
     console.error("Signup Error:", err);
+    
+    // Handle duplicate key errors
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({ message: `${field} already exists` });
+    }
+    
     res.status(500).json({ message: "Server error during signup" });
   }
 };
