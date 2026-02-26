@@ -1,6 +1,5 @@
-import { MapContainer, TileLayer, Marker, Polyline, Polygon, useMap } from "react-leaflet";
-import L from "leaflet";
-import { useState, useEffect } from "react";
+import { GoogleMap, useLoadScript, Marker, Polyline, Polygon } from "@react-google-maps/api";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import * as turf from "@turf/turf";
 import Navbar from "../../components/Navbar";
@@ -8,25 +7,15 @@ import Footer from "../../components/Footer";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
-/* Fix default marker icon */
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
-
-/* Auto zoom */
-function RecenterMap({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) map.setView(position, 20, { animate: true });
-  }, [position]);
-  return null;
-}
-
 export default function Geofencing() {
   const navigate = useNavigate();
+
+  const libraries = useMemo(() => [], []);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
 
   const [points, setPoints] = useState([]);
   const [farmName, setFarmName] = useState("");
@@ -36,6 +25,7 @@ export default function Geofencing() {
   const [loading, setLoading] = useState(false);
 
   const [userLocation, setUserLocation] = useState(null);
+  const [center, setCenter] = useState({ lat: 10.7905, lng: 78.7047 });
   const [isTracking, setIsTracking] = useState(false);
   const [watchId, setWatchId] = useState(null);
   const [polygonClosed, setPolygonClosed] = useState(false);
@@ -46,7 +36,10 @@ export default function Geofencing() {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setUserLocation([pos.coords.latitude, pos.coords.longitude]);
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setUserLocation([lat, lng]);
+        setCenter({ lat, lng });
       },
       () => alert("Enable location access"),
       { enableHighAccuracy: true }
@@ -69,6 +62,7 @@ export default function Geofencing() {
 
         const newPoint = [lat, lng];
         setUserLocation(newPoint);
+        setCenter({ lat, lng });
 
         setPoints((prev) => {
           if (prev.length === 0) return [newPoint];
@@ -238,21 +232,24 @@ export default function Geofencing() {
           </div>
 
           {/* MAP */}
-          <MapContainer
-            center={userLocation || [10.7905, 78.7047]}
-            zoom={18}
-            maxZoom={22}
-            style={{ height: "500px", width: "100%" }}
-          >
-            <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" opacity={0.4} />
-
-            {userLocation && <Marker position={userLocation} />}
-            {points.length >= 2 && <Polyline positions={points} />}
-            {polygonClosed && <Polygon positions={points} />}
-
-            <RecenterMap position={userLocation} />
-          </MapContainer>
+          {!isLoaded ? (
+            <div>Loading map...</div>
+          ) : (
+            <GoogleMap
+              zoom={18}
+              center={center}
+              mapContainerClassName="map-container"
+              mapContainerStyle={{ height: "500px", width: "100%" }}
+              mapTypeId="satellite"
+              options={{
+                maxZoom: 22,
+              }}
+            >
+              {userLocation && <Marker position={{ lat: userLocation[0], lng: userLocation[1] }} />}
+              {points.length >= 2 && <Polyline path={points.map(p => ({ lat: p[0], lng: p[1] }))} />}
+              {polygonClosed && <Polygon paths={points.map(p => ({ lat: p[0], lng: p[1] }))} />}
+            </GoogleMap>
+          )}
 
           <div className="text-center mt-6">
             <button
