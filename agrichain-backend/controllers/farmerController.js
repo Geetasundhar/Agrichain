@@ -43,6 +43,7 @@ export const addCrop = async (req, res) => {
         message: "Crop name, type, duration, soil type, seed product, fertilizer product, and image are required",
       });
     }
+    console.log(seedProductId);
 
     // 👨‍🌾 Check farmer exists
     const farmer = await Farmer.findById(farmerId);
