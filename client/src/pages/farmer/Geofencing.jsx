@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import * as turf from "@turf/turf";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -30,7 +31,7 @@ function RecenterMap({ position }) {
 
 export default function Geofencing() {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const [points, setPoints] = useState([]);
   const [farmName, setFarmName] = useState("");
   const [farmAddress, setFarmAddress] = useState("");
@@ -232,32 +233,32 @@ export default function Geofencing() {
         <div className="w-full md:max-w-6xl md:mx-auto bg-white rounded-2xl md:mt-10 mt-2 shadow-lg p-4 md:p-6">
 
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-[#132a13]">
-            Map Your Farm 🌍
+            {t("geofencing.title")}
           </h2>
 
 
           {/* Info Display - Mobile optimized */}
           <div className="mb-4 text-center font-semibold text-green-800 space-y-1 text-sm md:text-base">
-            <div> Points: {points.length}</div>
+            <div> {t("geofencing.points")} {points.length}</div>
             {areaInAcres && <div className="text-base md:text-lg text-blue-700 font-bold">🏞️ Area: {areaInAcres} acres</div>}
           </div>
 
           {/* Inputs - Stack on mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 md:mb-6">
             <input
-              placeholder="Farm Name"
+              placeholder={t("geofencing.farmName")}
               value={farmName}
               onChange={(e) => setFarmName(e.target.value)}
               className="border rounded-lg px-3 md:px-4 py-2 text-sm md:text-base"
             />
             <input
-              placeholder="Farm Address"
+              placeholder={t("geofencing.farmAddress")}
               value={farmAddress}
               onChange={(e) => setFarmAddress(e.target.value)}
               className="border rounded-lg px-3 md:px-4 py-2 text-sm md:text-base"
             />
             <input
-              placeholder="Area (Auto)"
+              placeholder={t("geofencing.areaAuto")}
               value={areaInAcres}
               readOnly
               className="border rounded-lg px-3 md:px-4 py-2 bg-gray-100 text-sm md:text-base"
@@ -270,7 +271,7 @@ export default function Geofencing() {
               onClick={() => finishPolygon(points)}
               className="bg-red-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-red-700 transition text-sm md:text-base font-semibold active:scale-95"
             >
-              Finish & Calculate 📐
+              {t("geofencing.stop")}
             </button>
           </div>
 
@@ -309,7 +310,7 @@ export default function Geofencing() {
               disabled={loading}
               className="bg-[#132a13] text-[#ecf39e] px-6 md:px-8 py-2 md:py-3 rounded-xl font-semibold text-sm md:text-base active:scale-95 transition disabled:opacity-50"
             >
-              {loading ? "Saving..." : "Save Land"}
+              {loading ? t("geofencing.saving") : t("geofencing.saveLand")}
             </button>
           </div>
 
