@@ -4,11 +4,18 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useTranslation } from "react-i18next";
 
-export default function Dashboard() {
+const API = import.meta.env.VITE_API_BASE_URL;
+
+export function Dashboard({ cards }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [retailer, setRetailer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(() => [
+    { label: t("retailerDashboard.totalProducts"), value: "0", icon: "fas fa-box" },
+    { label: t("retailerDashboard.totalOrders"), value: "0", icon: "fas fa-shopping-cart" },
+    { label: t("retailerDashboard.totalRevenue"), value: "₹0", icon: "fas fa-rupee-sign" },
+  ]);
 
   useEffect(() => {
     // Check if retailer is logged in
@@ -18,6 +25,37 @@ export default function Dashboard() {
       return;
     }
     setRetailer(JSON.parse(retailerData));
+
+    // fetch stats
+    const fetchStats = async () => {
+      try {
+        const [prodRes, orderRes] = await Promise.all([
+          fetch(`${API}/retailer/products`, {
+            headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+          }),
+          fetch(`${API}/retailer/purchases`, {
+            headers: { authorization: `Bearer ${localStorage.getItem("token")}` },
+          }),
+        ]);
+        const prodData = await prodRes.json();
+        const orderData = await orderRes.json();
+        const totalProducts = prodData.products ? prodData.products.length : 0;
+        const totalOrders = orderData.purchases ? orderData.purchases.length : 0;
+        let revenue = 0;
+        if (orderData.purchases) {
+          revenue = orderData.purchases.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+        }
+        setStats([
+          { label: t("retailerDashboard.totalProducts"), value: totalProducts, icon: "fas fa-box" },
+          { label: t("retailerDashboard.totalOrders"), value: totalOrders, icon: "fas fa-shopping-cart" },
+          { label: t("retailerDashboard.totalRevenue"), value: `₹${revenue}`, icon: "fas fa-rupee-sign" },
+        ]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStats();
+
     setLoading(false);
   }, [navigate]);
 
@@ -28,7 +66,7 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t("buyCrops.loading")}</div>;
   }
 
   return (
@@ -40,10 +78,10 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center sm:items-center justify-between gap-6">
           <div className="text-center sm:text-left">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-              Retailer Dashboard
+              {t("retailerDashboard.title")}
             </h1>
             <p className="text-[#dbeccd] mt-1 text-sm sm:text-base">
-              Welcome back, {retailer?.name}
+              {t("retailerDashboard.welcomeBack")}, {retailer?.name}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -60,7 +98,7 @@ export default function Dashboard() {
               onClick={handleLogout}
               className="bg-[#ecf39e] hover:bg-[#94c668] text-[#132a13] font-bold py-2 px-4 rounded-lg transition"
             >
-              Logout
+              {t("retailerDashboard.logout")}
             </button>
           </div>
         </div>
@@ -96,7 +134,7 @@ export default function Dashboard() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-8 sm:mt-10">
         <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition-all duration-300">
           <h3 className="text-lg font-semibold text-[#132a13] mb-4">
-            License Verification Status
+            {t("retailerDashboard.licenseStatus")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center justify-between p-4 bg-[#f8fad9] rounded-xl">
@@ -104,22 +142,21 @@ export default function Dashboard() {
                 <div className="p-2 bg-[#ecf39e] rounded-lg">
                   <i className="fas fa-seedling text-[#132a13]"></i>
                 </div>
-                <span className="text-[#4f772d] font-medium">Seed License:</span>
+                <span className="text-[#4f772d] font-medium">{t("retailerDashboard.seedLicense")}:</span>
               </div>
               <span
-                className={`font-bold ${
-                  retailer?.verified_licenses?.seed
+                className={`font-bold ${retailer?.verified_licenses?.seed
                     ? "text-[#71a940]"
                     : "text-gray-400"
-                }`}
+                  }`}
               >
                 {retailer?.verified_licenses?.seed ? (
                   <>
-                    <i className="fas fa-check-circle mr-1"></i> Verified
+                    <i className="fas fa-check-circle mr-1"></i> {t("retailerDashboard.verified")}
                   </>
                 ) : (
                   <>
-                    <i className="fas fa-times-circle mr-1"></i> Not Verified
+                    <i className="fas fa-times-circle mr-1"></i> {t("retailerDashboard.notVerified")}
                   </>
                 )}
               </span>
@@ -129,22 +166,21 @@ export default function Dashboard() {
                 <div className="p-2 bg-[#ecf39e] rounded-lg">
                   <i className="fas fa-flask text-[#132a13]"></i>
                 </div>
-                <span className="text-[#4f772d] font-medium">Fertilizer License:</span>
+                <span className="text-[#4f772d] font-medium">{t("retailerDashboard.fertilizerLicense")}:</span>
               </div>
               <span
-                className={`font-bold ${
-                  retailer?.verified_licenses?.fertilizer
+                className={`font-bold ${retailer?.verified_licenses?.fertilizer
                     ? "text-[#71a940]"
                     : "text-gray-400"
-                }`}
+                  }`}
               >
                 {retailer?.verified_licenses?.fertilizer ? (
                   <>
-                    <i className="fas fa-check-circle mr-1"></i> Verified
+                    <i className="fas fa-check-circle mr-1"></i> {t("retailerDashboard.verified")}
                   </>
                 ) : (
                   <>
-                    <i className="fas fa-times-circle mr-1"></i> Not Verified
+                    <i className="fas fa-times-circle mr-1"></i> {t("retailerDashboard.notVerified")}
                   </>
                 )}
               </span>
@@ -152,16 +188,16 @@ export default function Dashboard() {
           </div>
           {retailer?.licenses && (
             <div className="mt-4 p-4 bg-gray-50 rounded-xl">
-              <h4 className="text-sm font-semibold text-[#132a13] mb-2">License Numbers:</h4>
+              <h4 className="text-sm font-semibold text-[#132a13] mb-2">{t("retailerDashboard.licenseObj")}:</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                 {retailer.licenses.seed && (
                   <p className="text-[#4f772d]">
-                    <span className="font-medium">Seed:</span> {retailer.licenses.seed}
+                    <span className="font-medium">{t("buyProduct.seed")}:</span> {retailer.licenses.seed}
                   </p>
                 )}
                 {retailer.licenses.fertilizer && (
                   <p className="text-[#4f772d]">
-                    <span className="font-medium">Fertilizer:</span> {retailer.licenses.fertilizer}
+                    <span className="font-medium">{t("buyProduct.fertilizer")}:</span> {retailer.licenses.fertilizer}
                   </p>
                 )}
               </div>
@@ -192,7 +228,7 @@ export default function Dashboard() {
               onClick={() => navigate(card.link)}
               className="block w-full text-center bg-[#132a13] text-[#ecf39e] py-3 font-medium group-hover:bg-[#31572c] transition"
             >
-              Open
+              {t("farmerDashboard.open")}
             </button>
           </div>
         ))}
@@ -203,37 +239,34 @@ export default function Dashboard() {
   );
 }
 
-/* ===== DATA ===== */
+export default function DashboardWrapper() {
+  const { t } = useTranslation();
+  const cards = [
+    {
+      title: t("retailerDashboard.viewProducts"),
+      desc: t("retailerDashboard.viewProductsDesc"),
+      icon: "fas fa-eye",
+      link: "/retailer/products",
+    },
+    {
+      title: t("retailerDashboard.addProducts"),
+      desc: t("retailerDashboard.addProductsDesc"),
+      icon: "fas fa-plus",
+      link: "/retailer/add-product",
+    },
+    {
+      title: t("retailerDashboard.viewOrders"),
+      desc: t("retailerDashboard.viewOrdersDesc"),
+      icon: "fas fa-list",
+      link: "/retailer/orders",
+    },
+    {
+      title: t("retailerDashboard.reports"),
+      desc: t("retailerDashboard.reportsDesc"),
+      icon: "fas fa-chart-bar",
+      link: "/retailer/reports",
+    },
+  ];
 
-const stats = [
-  { label: "Total Products", value: "0", icon: "fas fa-box" },
-  { label: "Total Orders", value: "0", icon: "fas fa-shopping-cart" },
-  { label: "Total Revenue", value: "₹0", icon: "fas fa-rupee-sign" },
-];
-
-const cards = [
-  {
-    title: "View Products",
-    desc: "Browse and manage your product inventory.",
-    icon: "fas fa-eye",
-    link: "/retailer/products",
-  },
-  {
-    title: "Add Products",
-    desc: "Add new products to your inventory.",
-    icon: "fas fa-plus",
-    link: "/retailer/add-product",
-  },
-  {
-    title: "View Orders",
-    desc: "Track and manage customer orders.",
-    icon: "fas fa-list",
-    link: "/retailer/orders",
-  },
-  {
-    title: "Reports",
-    desc: "View sales and performance analytics.",
-    icon: "fas fa-chart-bar",
-    link: "/retailer/reports",
-  },
-];
+  return <Dashboard cards={cards} />;
+}

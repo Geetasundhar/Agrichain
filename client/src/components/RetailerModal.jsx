@@ -19,7 +19,7 @@ export default function RetailerModal({ isOpen, onClose }) {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Retailer Portal</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{t("retailerModal.title")}</h2>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -29,7 +29,7 @@ export default function RetailerModal({ isOpen, onClose }) {
           </div>
 
           <p className="text-gray-600 mb-6 text-center">
-            Choose your retailer action
+            {t("retailerModal.subtitle")}
           </p>
 
           <div className="space-y-4">
@@ -39,7 +39,7 @@ export default function RetailerModal({ isOpen, onClose }) {
               onClick={onClose}
               className="block w-full bg-[#132a13] hover:bg-[#31572c] text-[#ecf39e] font-bold py-3 px-4 rounded-lg text-center transition"
             >
-              Sign Up as Retailer
+              {t("retailerModal.signupBtn")}
             </Link>
 
             {/* Login Button */}
@@ -48,7 +48,7 @@ export default function RetailerModal({ isOpen, onClose }) {
               onClick={onClose}
               className="block w-full bg-[#4f772d] hover:bg-[#31572c] text-[#ecf39e] font-bold py-3 px-4 rounded-lg text-center transition"
             >
-              Login as Retailer
+              {t("retailerModal.loginBtn")}
             </Link>
 
             {/* Close Button */}
@@ -56,7 +56,7 @@ export default function RetailerModal({ isOpen, onClose }) {
               onClick={onClose}
               className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-4 rounded-lg text-center transition"
             >
-              Close
+              {t("retailerModal.closeBtn")}
             </button>
           </div>
         </div>

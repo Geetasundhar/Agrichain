@@ -2,10 +2,12 @@ import Crop from "../models/Crop.js";
 import Farmer from "../models/User.js";
 import QRCode from "qrcode"; // npm install qrcode
 import Land from "../models/Land.js";
+import Product from "../models/Product.js";
+import Purchase from "../models/Purchase.js";
 
+// ➤ Add crop (with QR code generation)
 export const addCrop = async (req, res) => {
   try {
-    // 🔐 farmerId comes from JWT
     const farmerId = req.user.id;
 
     const {
@@ -15,36 +17,30 @@ export const addCrop = async (req, res) => {
       price,
       durationNumber,
       durationPeriod,
-      fertilizer,
       soilType,
       image,
       latitude,
-      longitude
+      longitude,
+      seedProductId,
+      fertilizerProductId,
+      seedQuantityUsed,
+      fertilizerQuantityUsed
     } = req.body;
 
     // 🛑 Validate crop fields
     if (
       !name ||
       !type ||
-      !quantity ||
-      !price ||
       !durationNumber ||
       !durationPeriod ||
-      !fertilizer ||
       !soilType ||
-      !image
+      !image ||
+      !seedProductId ||
+      !fertilizerProductId
     ) {
       return res.status(400).json({
         status: "error",
-        message: "All fields are required",
-      });
-    }
-
-    // 🌍 Validate location
-    if (!latitude || !longitude) {
-      return res.status(400).json({
-        status: "error",
-        message: "Current location is required to add crop",
+        message: "Crop name, type, duration, soil type, seed product, fertilizer product, and image are required",
       });
     }
 
@@ -57,25 +53,46 @@ export const addCrop = async (req, res) => {
       });
     }
 
-    // 📍 Check if farmer is inside registered land
-    const land = await Land.findOne({
-      farmer: farmerId,
-      location: {
-        $geoIntersects: {
-          $geometry: {
-            type: "Point",
-            coordinates: [longitude, latitude], // ⚠️ lng first
-          },
-        },
-      },
-    });
-
-    if (!land) {
-      return res.status(403).json({
-        status: "error",
-        message:
-          "You are out of your land. Crop cannot be added.",
-      });
+    // ✅ verify seed/fertilizer product ids if provided and validate quantities
+    let seedProductRef, fertProductRef;
+    if (seedProductId) {
+      const product = await Product.findOne({ productId: seedProductId });
+      if (!product) {
+        return res.status(400).json({ status: "error", message: "Invalid seed product id" });
+      }
+      // confirm farmer purchased this product
+      const purchase = await Purchase.findOne({ product: product._id, farmer: farmerId });
+      if (!purchase) {
+        return res.status(403).json({ status: "error", message: "You have not bought the seed with this product id" });
+      }
+      // validate quantity
+      const seedQtyToUse = Number(seedQuantityUsed) || 0;
+      if (seedQtyToUse <= 0) {
+        return res.status(400).json({ status: "error", message: "Seed quantity must be greater than 0" });
+      }
+      if (seedQtyToUse > purchase.quantity) {
+        return res.status(400).json({ status: "error", message: `You have only ${purchase.quantity} units of this seed. Cannot use ${seedQtyToUse}` });
+      }
+      seedProductRef = product._id;
+    }
+    if (fertilizerProductId) {
+      const product = await Product.findOne({ productId: fertilizerProductId });
+      if (!product) {
+        return res.status(400).json({ status: "error", message: "Invalid fertilizer product id" });
+      }
+      const purchase = await Purchase.findOne({ product: product._id, farmer: farmerId });
+      if (!purchase) {
+        return res.status(403).json({ status: "error", message: "You have not bought the fertilizer with this product id" });
+      }
+      // validate quantity
+      const fertQtyToUse = Number(fertilizerQuantityUsed) || 0;
+      if (fertQtyToUse <= 0) {
+        return res.status(400).json({ status: "error", message: "Fertilizer quantity must be greater than 0" });
+      }
+      if (fertQtyToUse > purchase.quantity) {
+        return res.status(400).json({ status: "error", message: `You have only ${purchase.quantity} units of this fertilizer. Cannot use ${fertQtyToUse}` });
+      }
+      fertProductRef = product._id;
     }
 
     // 🌾 Create crop
@@ -83,14 +100,45 @@ export const addCrop = async (req, res) => {
       farmerId,
       cropName: name,
       cropType: type,
-      quantityKg: quantity,
-      pricePerKg: price,
+      quantityKg: quantity || 0,
+      pricePerKg: price || 0,
       durationNumber,
       durationPeriod,
-      fertilizer,
       soilType,
       images: [image],
+      seedProduct: seedProductRef,
+      fertilizerProduct: fertProductRef,
+      seedQuantityUsed: Number(seedQuantityUsed) || 0,
+      fertilizerQuantityUsed: Number(fertilizerQuantityUsed) || 0,
     });
+
+    // 📉 Decrement purchase quantities and remove zero-quantity purchases
+    if (seedProductId) {
+      const seedQtyToUse = Number(seedQuantityUsed) || 0;
+      const seedProduct = await Product.findOne({ productId: seedProductId });
+      const seedPurchase = await Purchase.findOne({ product: seedProduct._id, farmer: farmerId });
+      if (seedPurchase) {
+        seedPurchase.quantity -= seedQtyToUse;
+        if (seedPurchase.quantity <= 0) {
+          await Purchase.deleteOne({ _id: seedPurchase._id });
+        } else {
+          await seedPurchase.save();
+        }
+      }
+    }
+    if (fertilizerProductId) {
+      const fertQtyToUse = Number(fertilizerQuantityUsed) || 0;
+      const fertProduct = await Product.findOne({ productId: fertilizerProductId });
+      const fertPurchase = await Purchase.findOne({ product: fertProduct._id, farmer: farmerId });
+      if (fertPurchase) {
+        fertPurchase.quantity -= fertQtyToUse;
+        if (fertPurchase.quantity <= 0) {
+          await Purchase.deleteOne({ _id: fertPurchase._id });
+        } else {
+          await fertPurchase.save();
+        }
+      }
+    }
 
     // 📦 QR Details
     const qrDetails = [
@@ -104,10 +152,9 @@ export const addCrop = async (req, res) => {
       `---------------------------`,
       `Crop Name  : ${name}`,
       `Crop Type  : ${type}`,
-      `Quantity   : ${quantity} kg`,
-      `Price/kg   : ₹${price}`,
+      `Quantity   : ${quantity || 0} kg`,
+      `Price/kg   : ₹${price || 0}`,
       `Duration   : ${durationNumber} ${durationPeriod}`,
-      `Fertilizer : ${fertilizer}`,
       `Soil Type  : ${soilType}`,
       `Added On   : ${new Date().toLocaleDateString()}`,
     ].join("\n");
@@ -148,8 +195,11 @@ export const addCrop = async (req, res) => {
 // ➤ Get all crops
 export const getAllCrops = async (req, res) => {
   try {
-    // ✅ Fetch crops and populate farmer name & email
-    const crops = await Crop.find().populate("farmerId", "name email");
+    // ✅ Fetch crops and populate farmer name & email and product refs
+    const crops = await Crop.find()
+      .populate("farmerId", "name email")
+      .populate("seedProduct", "productId productName")
+      .populate("fertilizerProduct", "productId productName");
 
     // ✅ Format data to match your frontend
     const formatted = crops.map(c => ({
@@ -162,6 +212,8 @@ export const getAllCrops = async (req, res) => {
       durationPeriod: c.durationPeriod,
       fertilizer: c.fertilizer,
       soilType: c.soilType,
+      seedProduct: c.seedProduct || null,
+      fertilizerProduct: c.fertilizerProduct || null,
       image: c.images && c.images.length > 0 ? c.images[0] : null, // show first image
       farmerName: c.farmerId?.name || "Unknown Farmer",
       quality: Math.floor(Math.random() * 5) + 1, // ⭐ random rating
@@ -249,7 +301,9 @@ export const getMyCrops = async (req, res) => {
   try {
     const farmerId = req.user.id;
 
-    const crops = await Crop.find({ farmerId });
+    const crops = await Crop.find({ farmerId })
+      .populate("seedProduct", "productId productName")
+      .populate("fertilizerProduct", "productId productName");
 
     const formatted = crops.map(c => ({
       _id: c._id,
@@ -261,6 +315,8 @@ export const getMyCrops = async (req, res) => {
       durationPeriod: c.durationPeriod,
       fertilizer: c.fertilizer,
       soilType: c.soilType,
+      seedProduct: c.seedProduct || null,
+      fertilizerProduct: c.fertilizerProduct || null,
       image: c.images?.[0] || null,
       qrCode: c.qrCode
     }));

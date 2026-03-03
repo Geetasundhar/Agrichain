@@ -10,12 +10,25 @@ const cropSchema = new mongoose.Schema(
     cropName: { type: String, required: true },
     cropType: { type: String },
     category: { type: String, enum: ["Vegetable", "Fruit", "Grain"]},
-    pricePerKg: { type: Number, required: true },
-    quantityKg: { type: Number, required: true },
+    pricePerKg: { type: Number, default: 0 },
+    quantityKg: { type: Number, default: 0 },
     durationNumber: { type: Number, required: true },
     durationPeriod: { type: String, enum: ["week", "month", "year"], required: true },
-    fertilizer: { type: String, required: true },
     soilType: { type: String, required: true },
+    // references to purchased products (required)
+    seedProduct: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    fertilizerProduct: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    // track quantities used from purchases for this crop
+    seedQuantityUsed: { type: Number, default: 0 },
+    fertilizerQuantityUsed: { type: Number, default: 0 },
     images: [String], // base64 or URL (initial image at index 0)
     progressPhotos: [
       {

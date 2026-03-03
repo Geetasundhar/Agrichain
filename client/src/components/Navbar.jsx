@@ -11,8 +11,8 @@ export default function Navbar() {
   const links = [
     { key: "nav.home", path: "/" },
     { key: "nav.about", path: "/about" },
-    { key: "nav.farmer", path: "/farmer/dashboard" },
-    { key: "nav.buyer", path: "/buyer" },
+    { key: "nav.farmer", path: "/farmer/login" },
+    { key: "nav.buyer", path: "/buyer/login" },
     { key: "nav.retailer", path: null, onClick: () => setShowRetailerModal(true) },
     { key: "nav.admin", path: "/admin" },
     { key: "nav.transporter", path: "/transporter" },

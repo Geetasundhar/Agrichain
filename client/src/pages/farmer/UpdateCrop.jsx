@@ -61,7 +61,7 @@ export default function UpdateCrop() {
           existingImage: c.images?.[0] || c.qrCode || null,
         });
       } else {
-        alert(data.message || "Failed to load crop");
+        alert(data.message || t("cropDisplay.failedLoad"));
       }
     } catch (err) {
       console.error(err);
@@ -143,10 +143,10 @@ export default function UpdateCrop() {
 
       const data = await res.json();
       if (data.status === "success") {
-        alert(data.message || "Crop updated");
+        alert(data.message || t("form.submit"));
         navigate("/farmer/my-crops");
       } else {
-        alert(data.message || data.error || "Update failed");
+        alert(data.message || data.error || t("form.networkError"));
       }
     } catch (err) {
       console.error(err);
@@ -162,7 +162,7 @@ export default function UpdateCrop() {
 
       <main className="flex-grow pt-32 px-6">
         <section className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-[#132a13] mb-3">{"Update Crop"}</h2>
+          <h2 className="text-4xl font-bold text-[#132a13] mb-3">{t("cropDisplay.updateCrop")}</h2>
           {/* <p className="text-[#31572c]">{t("updateCrop.desc") || "Edit details and update your crop"}</p> */}
         </section>
 
@@ -214,7 +214,7 @@ export default function UpdateCrop() {
             {/* Duration Field */}
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="text-sm text-[#31572c] block mb-2">Duration Number</label>
+                <label className="text-sm text-[#31572c] block mb-2">{t("form.durationNum")}</label>
                 <select
                   name="durationNumber"
                   value={formData.durationNumber}
@@ -222,14 +222,14 @@ export default function UpdateCrop() {
                   className="input"
                   required
                 >
-                  <option value="">Select</option>
+                  <option value="">{t("form.select")}</option>
                   {Array.from({ length: 12 }, (_, i) => i + 1).map(num => (
                     <option key={num} value={num}>{num}</option>
                   ))}
                 </select>
               </div>
               <div className="flex-1">
-                <label className="text-sm text-[#31572c] block mb-2">Duration Period</label>
+                <label className="text-sm text-[#31572c] block mb-2">{t("form.durationPeriod")}</label>
                 <select
                   name="durationPeriod"
                   value={formData.durationPeriod}
@@ -237,9 +237,9 @@ export default function UpdateCrop() {
                   className="input"
                   required
                 >
-                  <option value="week">Week</option>
-                  <option value="month">Month</option>
-                  <option value="year">Year</option>
+                  <option value="week">{t("form.period.week")}</option>
+                  <option value="month">{t("form.period.month")}</option>
+                  <option value="year">{t("form.period.year")}</option>
                 </select>
               </div>
             </div>
@@ -249,7 +249,7 @@ export default function UpdateCrop() {
               name="fertilizer"
               value={formData.fertilizer}
               onChange={handleChange}
-              placeholder="Fertilizer (e.g., Urea, NPK)"
+              placeholder={t("form.fertilizer")}
               className="input"
               required
             />
@@ -261,30 +261,30 @@ export default function UpdateCrop() {
               className="input"
               required
             >
-              <option value="">Select Soil Type</option>
-              <option value="clayey">Clayey</option>
-              <option value="sandy">Sandy</option>
-              <option value="loamy">Loamy</option>
-              <option value="silty">Silty</option>
-              <option value="peaty">Peaty</option>
+              <option value="">{t("form.selectSoilType")}</option>
+              <option value="clayey">{t("form.soil.clayey")}</option>
+              <option value="sandy">{t("form.soil.sandy")}</option>
+              <option value="loamy">{t("form.soil.loamy")}</option>
+              <option value="silty">{t("form.soil.silty")}</option>
+              <option value="peaty">{t("form.soil.peaty")}</option>
             </select>
 
             <div>
-              <label className="text-sm text-[#31572c]">Existing Image</label>
+              <label className="text-sm text-[#31572c]">{t("form.existingImage")}</label>
               {formData.existingImage ? (
                 <img src={formData.existingImage} alt="existing" className="w-40 h-40 object-cover rounded-md block mt-2" />
               ) : (
-                <p className="text-sm text-[#888]">No image available</p>
+                <p className="text-sm text-[#888]">{t("cropDisplay.noPhoto")}</p>
               )}
             </div>
 
             <div>
-              <label className="text-sm text-[#31572c]">Capture Image</label>
+              <label className="text-sm text-[#31572c]">{t("cropDisplay.capture")}</label>
               <video ref={videoRef} autoPlay playsInline muted className="w-full h-44 rounded-xl mb-3 bg-black" />
 
               <div className="flex gap-3 mb-3">
-                <button type="button" onClick={startCamera} className="bg-[#31572c] text-white px-4 py-2 rounded-xl">Open Camera</button>
-                <button type="button" onClick={capturePhoto} className="bg-[#132a13] text-[#ecf39e] px-4 py-2 rounded-xl">Capture</button>
+                <button type="button" onClick={startCamera} className="bg-[#31572c] text-white px-4 py-2 rounded-xl">{t("cropDisplay.openCamera")}</button>
+                <button type="button" onClick={capturePhoto} className="bg-[#132a13] text-[#ecf39e] px-4 py-2 rounded-xl">{t("cropDisplay.capture")}</button>
               </div>
 
               <canvas ref={canvasRef} className="hidden" />
@@ -301,7 +301,7 @@ export default function UpdateCrop() {
                          py-4 rounded-xl font-semibold
                          hover:bg-[#31572c] transition"
             >
-              {loading ? "Updating..." : "Update Crop"}
+              {loading ? t("cropDisplay.loading") : t("cropDisplay.updateCrop")}
             </button>
           </form>
         </section>

@@ -7,9 +7,17 @@ exports.addLand = async (req, res) => {
 
     const { farmName, farmAddress, areaInAcres, coordinates } = req.body;
 
+    // Validate all required fields
     if (!farmName || !farmAddress || !areaInAcres || !coordinates) {
       return res.status(400).json({
-        message: "All land details are required",
+        message: "All land details are required (farmName, farmAddress, areaInAcres, coordinates)",
+      });
+    }
+
+    // Validate coordinates format
+    if (!Array.isArray(coordinates) || coordinates.length < 3) {
+      return res.status(400).json({
+        message: "Coordinates must be an array with at least 3 points",
       });
     }
 
@@ -19,21 +27,19 @@ exports.addLand = async (req, res) => {
       return res.status(404).json({ message: "Farmer not found" });
     }
 
-    // Count farmer lands (CORRECT WAY ✅)
+    // Count farmer lands
     const landCount = await Land.countDocuments({ farmer: farmerId });
-
-   
-
     const isPrimaryLand = landCount === 0;
 
+    // Create land with proper GeoJSON format
     const newLand = new Land({
       farmer: farmerId,
       farmName,
       farmAddress,
-      areaInAcres,
+      areaInAcres: parseFloat(areaInAcres),
       location: {
         type: "Polygon",
-        coordinates: [coordinates], // GeoJSON format
+        coordinates: [coordinates], // GeoJSON requires array of coordinate arrays
       },
       isPrimary: isPrimaryLand,
     });
@@ -55,8 +61,10 @@ exports.addLand = async (req, res) => {
 
   } catch (error) {
     console.error("Add Land Error:", error);
+    console.error("Error details:", error.message);
     res.status(500).json({
       message: "Server error while adding land",
+      error: error.message, // Include error details for debugging
     });
   }
 };

@@ -15,10 +15,15 @@ import BuyerSignup from "./pages/buyer/buyersignup.jsx";
 import BuyerLogin from "./pages/buyer/BuyerLogin.jsx";
 import BuyerDashboard from "./pages/buyer/BuyerDashboard.jsx";
 import BuyerCrops from "./pages/buyer/BuyCrops.jsx";
-import GeoFencing from "./pages/farmer/GeoFencing.jsx";
+import GeoFencing from "./pages/farmer/Geofencing.jsx";
+import MyPurchases from "./pages/farmer/MyPurchases.jsx";
+import BuyProduct from "./pages/farmer/BuyProduct.jsx";
 import RetailerSignup from "./pages/retailer/Signup";
 import RetailerLogin from "./pages/retailer/Login";
 import RetailerDashboard from "./pages/retailer/Dashboard";
+import AddProduct from "./pages/retailer/AddProduct";
+import Products from "./pages/retailer/Products";
+import Orders from "./pages/retailer/Orders";
 
 function App() {
   return (
@@ -29,6 +34,8 @@ function App() {
       <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
       <Route path="/farmer/add-crop" element={<AddCrop />} />
       <Route path="/farmer/my-crops" element={<MyCrops />} />
+      <Route path="/farmer/buy-product" element={<BuyProduct />} />
+      <Route path="/farmer/my-purchases" element={<MyPurchases />} />
       <Route path="/farmer/crops/:id" element={<CropDisplay />} />
       <Route path="/farmer/update-crop/:id" element={<UpdateCrop />} />
       <Route path="/farmer/profile" element={<FarmerProfile />} />
@@ -41,6 +48,10 @@ function App() {
       <Route path="/retailer/signup" element={<RetailerSignup />} />
       <Route path="/retailer/login" element={<RetailerLogin />} />
       <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
+      <Route path="/retailer/add-product" element={<AddProduct />} />
+      <Route path="/retailer/products" element={<Products />} />
+      <Route path="/retailer/orders" element={<Orders />} />
+      {/* reports page can be added later */}
       <Route path="/farmer/geofencing" element={<GeoFencing />} />
     </Routes>
   );

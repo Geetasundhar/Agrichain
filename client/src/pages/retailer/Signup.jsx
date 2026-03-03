@@ -107,14 +107,14 @@ export default function Signup() {
       console.log("📥 Response Message:", data.message);
 
       if (res.ok) {
-        alert("Signup successful!");
+        alert(t("signup.success"));
         navigate("/retailer/login"); // Assuming login page exists
       } else {
-        alert(data.message);
+        alert(data.message || t("signup.failed"));
       }
     } catch (error) {
       console.error("Signup error:", error);
-      alert("An error occurred during signup");
+      alert(t("form.networkError"));
     } finally {
       setLoading(false);
     }
@@ -127,7 +127,7 @@ export default function Signup() {
       <main className="flex-grow flex items-center justify-center py-16 px-4 pt-32">
         <div className="bg-white w-full max-w-3xl rounded-3xl shadow-xl p-10">
           <h2 className="text-3xl font-bold text-center text-[#132a13] mb-8">
-            Retailer Signup
+            {t("retailerSignup.title")}
           </h2>
 
           <form className="grid md:grid-cols-2 gap-6">
@@ -136,7 +136,7 @@ export default function Signup() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Full Name"
+              placeholder={t("retailerSignup.name")}
               className="input"
               required
             />
@@ -146,7 +146,7 @@ export default function Signup() {
               type="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email"
+              placeholder={t("signup.email")}
               className="input"
               required
             />
@@ -156,14 +156,14 @@ export default function Signup() {
               type="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Password"
+              placeholder={t("signup.password")}
               className="input"
               required
             />
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-[#132a13] mb-2">
-                Shop Image
+                {t("retailerSignup.shopImage")}
               </label>
               <input
                 name="shop_image"
@@ -176,7 +176,7 @@ export default function Signup() {
 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-[#132a13] mb-4">
-                License Verification
+                {t("retailerDashboard.licenseStatus")}
               </label>
 
               <div className="space-y-4">
@@ -190,14 +190,14 @@ export default function Signup() {
                     className="h-4 w-4 text-[#132a13] focus:ring-[#90a955] border-gray-300 rounded"
                   />
                   <label htmlFor="seed" className="ml-2 block text-sm text-[#31572c]">
-                    Seed License
+                    {t("retailerDashboard.seedLicense")}
                   </label>
                 </div>
                 {selectedLicenses.seed && (
                   <input
                     name="seed"
                     type="text"
-                    placeholder="Enter Seed License Number"
+                    placeholder={t("form.seedPlaceholder", "Enter Seed License Number")}
                     value={formData.licenses.seed}
                     onChange={handleChange}
                     className="input ml-6"
@@ -214,14 +214,14 @@ export default function Signup() {
                     className="h-4 w-4 text-[#132a13] focus:ring-[#90a955] border-gray-300 rounded"
                   />
                   <label htmlFor="fertilizer" className="ml-2 block text-sm text-[#31572c]">
-                    Fertilizer License
+                    {t("retailerDashboard.fertilizerLicense")}
                   </label>
                 </div>
                 {selectedLicenses.fertilizer && (
                   <input
                     name="fertilizer"
                     type="text"
-                    placeholder="Enter Fertilizer License Number"
+                    placeholder={t("form.fertilizerPlaceholder", "Enter Fertilizer License Number")}
                     value={formData.licenses.fertilizer}
                     onChange={handleChange}
                     className="input ml-6"
@@ -238,17 +238,17 @@ export default function Signup() {
                          py-4 rounded-xl font-semibold
                          hover:bg-[#31572c] transition-all"
             >
-              {loading ? "Please wait..." : "Sign Up"}
+              {loading ? t("login.loading") : t("signup.button")}
             </button>
           </form>
 
           <p className="text-center text-sm mt-6 text-[#31572c]">
-            Already have an account?{" "}
+            {t("retailerSignup.alreadyHaveAccount")}
             <span
               onClick={() => navigate("/retailer/login")}
               className="text-[#132a13] font-semibold cursor-pointer"
             >
-              Login here
+              {t("signup.login")}
             </span>
           </p>
         </div>

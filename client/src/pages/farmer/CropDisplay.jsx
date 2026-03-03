@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import dayjs from "dayjs";
@@ -9,6 +10,7 @@ dayjs.extend(duration);
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function CropDisplay() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -38,7 +40,7 @@ export default function CropDisplay() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Failed to load crop");
+        setError(data.message || t("cropDisplay.failedLoad"));
         setLoading(false);
         return;
       }
@@ -84,9 +86,9 @@ export default function CropDisplay() {
   const capturePhoto = async () => {
     if (!canCapture) {
       if (nextCaptureTime) {
-        alert(`You can capture the next photo after ${dayjs(nextCaptureTime).format("MMM D, YYYY HH:mm")}`);
+        alert(`${t("cropDisplay.captureNext")} ${dayjs(nextCaptureTime).format("MMM D, YYYY HH:mm")}`);
       } else {
-        alert("You cannot capture a photo at this time.");
+        alert(t("cropDisplay.cannotCapture"));
       }
       return;
     }
@@ -105,7 +107,7 @@ export default function CropDisplay() {
       const token = localStorage.getItem("token");
 
       if (!token || token === "null" || token === "undefined") {
-        alert("You must be logged in to upload images. Redirecting to login...");
+        alert(t("cropDisplay.loginToUpload"));
         navigate("/farmer/login");
         return;
       }
@@ -124,7 +126,7 @@ export default function CropDisplay() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Failed to upload image");
+        alert(data.message || t("cropDisplay.failedUpload"));
         return;
       }
 
@@ -152,7 +154,7 @@ export default function CropDisplay() {
       const token = localStorage.getItem("token");
 
       if (!token || token === "null" || token === "undefined") {
-        alert("You must be logged in to update. Redirecting to login...");
+        alert(t("cropDisplay.loginToUpload"));
         navigate("/farmer/login");
         return;
       }
@@ -172,22 +174,22 @@ export default function CropDisplay() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Failed to update crop");
+        alert(data.message || t("form.networkError"));
         return;
       }
 
       setCrop(data.crop);
-      alert("Crop updated successfully!");
+      alert(t("form.submit"));
     } catch (err) {
       console.error(err);
-      alert("Server error");
+      alert(t("form.networkError"));
     }
   };
 
   /* 🗑 Delete crop */
   const handleDeleteCrop = async () => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this crop? This action cannot be undone."
+      t("cropDisplay.confirmDeleteInfo")
     );
 
     if (!confirmDelete) {
@@ -198,7 +200,7 @@ export default function CropDisplay() {
       const token = localStorage.getItem("token");
 
       if (!token || token === "null" || token === "undefined") {
-        alert("You must be logged in to delete. Redirecting to login...");
+        alert(t("cropDisplay.loginToUpload"));
         navigate("/farmer/login");
         return;
       }
@@ -213,15 +215,15 @@ export default function CropDisplay() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Failed to delete crop");
+        alert(data.message || t("form.networkError"));
         return;
       }
 
-      alert("Crop deleted successfully");
+      alert("✅");
       navigate("/farmer/my-crops");
     } catch (err) {
       console.error(err);
-      alert("Server error");
+      alert(t("form.networkError"));
     }
   };
 
@@ -294,7 +296,7 @@ export default function CropDisplay() {
 
   // notification removed: user requested no popup
 
-  if (loading) return <p className="pt-32 text-center">Loading...</p>;
+  if (loading) return <p className="pt-32 text-center">{t("cropDisplay.loading")}</p>;
   if (error) return <p className="pt-32 text-center text-red-600">{error}</p>;
 
   return (
@@ -311,7 +313,7 @@ export default function CropDisplay() {
             onClick={() => navigate("/farmer/my-crops")}
             className="text-[#31572c] underline"
           >
-            ← Back
+            ← {t("buyCrops.backToDashboard")}
           </button>
         </div>
 
@@ -339,12 +341,12 @@ export default function CropDisplay() {
                     download={`crop_${crop._id}_qr.png`}
                     className="mt-3 text-[#132a13] font-semibold"
                   >
-                    ⬇️ Download QR
+                    ⬇️ {t("cropDisplay.downloadQR")}
                   </a>
                 </>
               ) : (
                 <div className="w-44 h-44 rounded-xl bg-gray-100 flex items-center justify-center text-sm text-gray-500">
-                  No QR available
+                  {t("cropDisplay.noQR")}
                 </div>
               )}
             </div>
@@ -360,7 +362,7 @@ export default function CropDisplay() {
                           transition-all duration-300 p-6
                           flex flex-col items-center justify-center text-center">
             <h3 className="text-xl font-bold mb-4 text-[#132a13]">
-              ✏️ Update Crop
+              ✏️ {t("cropDisplay.updateCrop")}
             </h3>
 
             {/* <input
@@ -384,7 +386,7 @@ export default function CropDisplay() {
               className="w-full bg-[#132a13] text-[#ecf39e]
                          py-3 rounded-xl font-medium
                          group-hover:bg-[#31572c] transition">
-              Update Crop
+              {t("cropDisplay.updateCrop")}
             </button>
           </div>
 
@@ -393,7 +395,7 @@ export default function CropDisplay() {
                           hover:shadow-2xl hover:-translate-y-2
                           transition-all duration-300 p-6 text-center">
             <h3 className="text-xl font-bold mb-4 text-[#132a13]">
-              📸 Upload Progress
+              📸 {t("cropDisplay.uploadProgress")}
             </h3>
 
             <video
@@ -409,21 +411,21 @@ export default function CropDisplay() {
                 onClick={startCamera}
                 className="bg-[#31572c] text-white px-4 py-2 rounded-xl"
               >
-                Open Camera
+                {t("cropDisplay.openCamera")}
               </button>
               <button
                 onClick={capturePhoto}
                 className="bg-[#132a13] text-[#ecf39e] px-4 py-2 rounded-xl"
                 disabled={!canCapture}
               >
-                Capture
+                {t("cropDisplay.capture")}
               </button>
             </div>
 
             {(!canCapture && nextCaptureTime) && (
               <p className="text-red-600 mt-2 text-center">
-                You have already captured for this period.<br />
-                Next capture available: {dayjs(nextCaptureTime).format("MMM D, YYYY HH:mm")}
+                {t("cropDisplay.alreadyCaptured")}<br />
+                {t("cropDisplay.nextCapture")}: {dayjs(nextCaptureTime).format("MMM D, YYYY HH:mm")}
               </p>
             )}
             {/* notification removed */}
@@ -436,11 +438,11 @@ export default function CropDisplay() {
                           transition-all duration-300 p-6
                           flex flex-col items-center justify-center text-center">
             <h3 className="text-xl font-bold mb-4 text-[#132a13]">
-              🗑 Delete Crop
+              🗑 {t("cropDisplay.deleteCrop")}
             </h3>
 
             <p className="text-sm text-gray-600 mb-6">
-              This action cannot be undone.
+              {t("cropDisplay.cannotUndone")}
             </p>
 
             <button
@@ -448,7 +450,7 @@ export default function CropDisplay() {
               className="w-full bg-[#132a13] text-[#ecf39e]
                          py-3 rounded-xl font-medium
                          group-hover:bg-[#31572c] transition">
-              Delete Permanently
+              {t("cropDisplay.deletePermanently")}
             </button>
           </div>
         </div>
@@ -457,7 +459,7 @@ export default function CropDisplay() {
         {weeklyImages.length > 0 && (
           <div className="mt-14">
             <h3 className="text-2xl font-bold text-[#132a13] mb-6">
-              Growth Timeline 🌱
+              {t("cropDisplay.timeline")} 🌱
             </h3>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -478,11 +480,11 @@ export default function CropDisplay() {
                       />
                     ) : (
                       <div className="h-40 w-full rounded-xl bg-gray-100 flex items-center justify-center text-gray-500">
-                        No photo yet
+                        {t("cropDisplay.noPhoto")}
                       </div>
                     )}
                     <p className="text-center mt-2 text-sm text-[#31572c]">
-                      Progress {i + 1} / 4
+                      {t("cropDisplay.progress")} {i + 1} / 4
                     </p>
                   </div>
                 );
