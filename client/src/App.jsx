@@ -15,6 +15,9 @@ import BuyerSignup from "./pages/buyer/buyersignup.jsx";
 import BuyerLogin from "./pages/buyer/BuyerLogin.jsx";
 import BuyerDashboard from "./pages/buyer/BuyerDashboard.jsx";
 import BuyerCrops from "./pages/buyer/BuyCrops.jsx";
+import BuySpecificCrop from "./pages/buyer/BuySpecificCrop.jsx";
+import BuyerCart from "./pages/buyer/BuyerCart.jsx";
+import BuyerPurchases from "./pages/buyer/BuyerPurchases.jsx";
 import GeoFencing from "./pages/farmer/Geofencing.jsx";
 import MyPurchases from "./pages/farmer/MyPurchases.jsx";
 import BuyProduct from "./pages/farmer/BuyProduct.jsx";
@@ -45,6 +48,9 @@ function App() {
       <Route path="/buyer/login" element={<BuyerLogin />} />
       <Route path="/buyer/dashboard" element={<BuyerDashboard />} />
       <Route path="/buyer/crops" element={<BuyerCrops />} />
+      <Route path="/buyer/crop/:id" element={<BuySpecificCrop />} />
+      <Route path="/buyer/cart" element={<BuyerCart />} />
+      <Route path="/buyer/purchases" element={<BuyerPurchases />} />
       <Route path="/retailer/signup" element={<RetailerSignup />} />
       <Route path="/retailer/login" element={<RetailerLogin />} />
       <Route path="/retailer/dashboard" element={<RetailerDashboard />} />

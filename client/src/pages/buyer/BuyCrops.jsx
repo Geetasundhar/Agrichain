@@ -25,32 +25,12 @@ export default function BuyCrops() {
 
       const data = await res.json();
       if (data.status === "success") {
-        setCrops(data.crops);
+        // Only show crops that are marked as completed AND have qty > 0
+        setCrops(data.crops.filter(crop => crop.isCompleted === true && crop.quantityKg > 0));
       }
     } catch (err) {
       console.error("Fetch crops error:", err);
     }
-  };
-
-  /* 🛒 Add to Cart */
-  const addToCart = (crop) => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const exists = cart.find((item) => item._id === crop._id);
-    if (exists) {
-      alert("Already added to cart 🛒");
-      return;
-    }
-
-    cart.push({ ...crop, qty: 1 });
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Added to cart successfully ✅");
-  };
-
-  /* ⚡ Buy Now */
-  const buyNow = (crop) => {
-    localStorage.setItem("buy_now", JSON.stringify(crop));
-    navigate("/buyer/checkout");
   };
 
   return (
@@ -72,22 +52,22 @@ export default function BuyCrops() {
       </div>
 
       {/* 🌾 Crop Cards */}
-      <section className="px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 flex-1">
+      <section className="px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 flex-1 pb-10">
         {crops.map((crop) => (
           <div
             key={crop._id}
-            className="bg-white rounded-2xl shadow hover:shadow-xl transition p-6 flex flex-col"
+            onClick={() => navigate(`/buyer/crop/${crop._id}`)}
+            className="bg-white rounded-2xl shadow hover:shadow-xl transition p-6 flex flex-col cursor-pointer"
           >
             {/* 🖼 Crop Image */}
-           <img
-  src={crop.images?.[0]}
-  alt={crop.cropName}
-  className="w-full h-40 object-cover rounded-xl"
-/>
-
+            <img
+              src={crop.images?.[0]}
+              alt={crop.cropName}
+              className="w-full h-40 object-cover rounded-xl"
+            />
 
             {/* 📝 Crop Info */}
-            <h3 className="text-xl font-bold text-[#132a13]">
+            <h3 className="text-xl font-bold text-[#132a13] mt-4">
               {crop.cropName}
             </h3>
 
@@ -101,23 +81,6 @@ export default function BuyCrops() {
 
             {/* ⏱ Freshness */}
             <FreshnessBadge days={crop.ageInDays} />
-
-            {/* 🛒 Buttons */}
-            <div className="mt-auto pt-4 flex gap-3">
-              <button
-                onClick={() => addToCart(crop)}
-                className="w-1/2 bg-[#31572c] text-[#ecf39e] py-2 rounded-lg hover:bg-[#132a13]"
-              >
-                Add to Cart
-              </button>
-
-              <button
-                onClick={() => buyNow(crop)}
-                className="w-1/2 bg-[#132a13] text-white py-2 rounded-lg hover:opacity-90"
-              >
-                Buy Now
-              </button>
-            </div>
           </div>
         ))}
       </section>

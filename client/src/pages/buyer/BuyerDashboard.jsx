@@ -48,10 +48,15 @@ export default function BuyerDashboard() {
             </p>
           </div>
 
-          <img
-            src={buyer?.profile_image || "/profile.jpg"}
-            className="w-20 h-20 rounded-full border-4 border-[#ecf39e] mt-4 md:mt-0"
-          />
+          {buyer?.buyer_name ? (
+            <div className="w-20 h-20 rounded-full border-4 border-[#ecf39e] mt-4 md:mt-0 bg-[#31572c] text-[#ecf39e] flex items-center justify-center text-3xl font-bold uppercase shadow-lg">
+              {buyer.buyer_name.charAt(0)}
+            </div>
+          ) : (
+            <div className="w-20 h-20 rounded-full border-4 border-[#ecf39e] mt-4 md:mt-0 bg-gray-300 flex items-center justify-center text-gray-500">
+              ?
+            </div>
+          )}
         </div>
       </section>
 
@@ -77,14 +82,14 @@ export default function BuyerDashboard() {
       </section>
 
       {/* 🛒 Crops Preview */}
-      <section className="px-6 mt-14 flex-1">
+      {/* <section className="px-6 mt-14 flex-1">
         <h3 className="text-2xl font-bold text-[#132a13] mb-6">
           Available Crops
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Placeholder cards */}
-          {[1, 2, 3].map((_, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8"> */}
+      {/* Placeholder cards */}
+      {/* {[1, 2, 3].map((_, i) => (
             <div
               key={i}
               className="bg-white rounded-2xl shadow hover:shadow-lg transition p-6"
@@ -103,7 +108,7 @@ export default function BuyerDashboard() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       <Footer />
     </div>
