@@ -217,6 +217,7 @@ export const getAllCrops = async (req, res) => {
       image: c.images && c.images.length > 0 ? c.images[0] : null, // show first image
       farmerName: c.farmerId?.name || "Unknown Farmer",
       quality: Math.floor(Math.random() * 5) + 1, // ⭐ random rating
+      isCompleted: c.isCompleted,
     }));
 
     res.json(formatted);
@@ -318,7 +319,8 @@ export const getMyCrops = async (req, res) => {
       seedProduct: c.seedProduct || null,
       fertilizerProduct: c.fertilizerProduct || null,
       image: c.images?.[0] || null,
-      qrCode: c.qrCode
+      qrCode: c.qrCode,
+      isCompleted: c.isCompleted,
     }));
 
     res.status(200).json({
@@ -422,6 +424,10 @@ export const updateCrop = async (req, res) => {
       // push progress photo
       crop.progressPhotos = crop.progressPhotos || [];
       crop.progressPhotos.push({ imageData: newImage, capturedAt: new Date(), periodIndex: currentIdx });
+
+      if (crop.progressPhotos.length >= 4) {
+        crop.isCompleted = true;
+      }
     }
 
     await crop.save();
