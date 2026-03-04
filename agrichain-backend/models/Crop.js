@@ -9,7 +9,7 @@ const cropSchema = new mongoose.Schema(
     },
     cropName: { type: String, required: true },
     cropType: { type: String },
-    category: { type: String, enum: ["Vegetable", "Fruit", "Grain"]},
+    category: { type: String, enum: ["Vegetable", "Fruit", "Grain"] },
     pricePerKg: { type: Number, default: 0 },
     quantityKg: { type: Number, default: 0 },
     durationNumber: { type: Number, required: true },
@@ -38,6 +38,7 @@ const cropSchema = new mongoose.Schema(
       }
     ],
     qrCode: { type: String },
+    isCompleted: { type: Boolean, default: false },
   },
   { timestamps: true } // ⭐ createdAt used for freshness logic
 );

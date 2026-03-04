@@ -61,17 +61,16 @@ export default function AddProduct() {
         },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
       if (res.ok) {
-        alert("Product added: " + (data.product.productId || ""));
+        alert(t("addProduct.success") + (data.product.productId || ""));
         setFormData({ productType: "seed", productName: "", quantity: "", price: "", image: null });
         navigate("/retailer/products");
       } else {
-        alert(data.message || "Failed to add product");
+        alert(data.message || t("addProduct.failed"));
       }
     } catch (err) {
       console.error(err);
-      alert("Network error");
+      alert(t("form.networkError"));
     } finally {
       setLoading(false);
     }
@@ -83,13 +82,13 @@ export default function AddProduct() {
       <main className="flex-grow pt-32 px-6">
         <section className="text-center mb-8">
           <h2 className="text-3xl font-bold text-[#132a13]">
-            { "Add Product" || t("addProduct.title") }
+            {t("addProduct.title")}
           </h2>
         </section>
         <section className="max-w-xl mx-auto bg-white p-8 rounded-3xl shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             <label className="block">
-              <span className="text-[#132a13]">Type</span>
+              <span className="text-[#132a13]">{t("addProduct.type")}</span>
               <select
                 name="productType"
                 value={formData.productType}
@@ -97,15 +96,15 @@ export default function AddProduct() {
                 className="input w-full"
                 required
               >
-                <option value="seed">Seed</option>
-                <option value="fertilizer">Fertilizer</option>
+                <option value="seed">{t("buyProduct.seed")}</option>
+                <option value="fertilizer">{t("buyProduct.fertilizer")}</option>
               </select>
             </label>
             <input
               name="productName"
               value={formData.productName}
               onChange={handleChange}
-              placeholder="Product name"
+              placeholder={t("form.cropName")}
               className="input w/full"
               required
             />
@@ -114,7 +113,7 @@ export default function AddProduct() {
               type="number"
               value={formData.quantity}
               onChange={handleChange}
-              placeholder="Quantity"
+              placeholder={t("addProduct.quantity")}
               className="input w-full"
               required
             />
@@ -124,7 +123,7 @@ export default function AddProduct() {
               step="0.01"
               value={formData.price}
               onChange={handleChange}
-              placeholder="Price"
+              placeholder={t("form.price")}
               className="input w-full"
               required
             />
@@ -141,7 +140,7 @@ export default function AddProduct() {
               disabled={loading}
               className="bg-[#132a13] text-[#ecf39e] py-2 px-4 rounded-lg"
             >
-              {loading ? "Saving..." : "Add Product"}
+              {loading ? t("cropDisplay.loading") : t("addProduct.title")}
             </button>
           </form>
         </section>

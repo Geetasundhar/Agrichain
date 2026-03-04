@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function BuyProduct() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [type, setType] = useState("seed");
   const [products, setProducts] = useState([]);
@@ -64,7 +66,7 @@ export default function BuyProduct() {
         body: JSON.stringify({ productId: product.productId, quantity: qty }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Purchase failed");
+      if (!res.ok) throw new Error(data.message || t("buyProduct.purchaseFailed"));
 
       // prefer the server-saved purchase.productId when available
       const purchase = data.purchase || null;
@@ -103,33 +105,33 @@ export default function BuyProduct() {
       // After purchase navigate to My Purchases
       navigate("/farmer/my-purchases");
       // also open retailer orders in a new tab (helps retailer view update)
-      try { window.open(window.location.origin + "/retailer/orders", "_blank"); } catch (e) {}
+      try { window.open(window.location.origin + "/retailer/orders", "_blank"); } catch (e) { }
     } catch (err) {
       console.error(err);
-      alert(err.message || "Purchase failed");
+      alert(err.message || t("form.networkError"));
     }
   };
 
   const filtered = products.filter((p) => p.productType === type && (p.quantity || 0) > 0);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t("buyCrops.loading")}</div>;
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">
       <Navbar />
       <main className="flex-grow pt-32 px-6">
-        <h2 className="text-3xl font-bold mb-6">Buy Products</h2>
+        <h2 className="text-3xl font-bold mb-6">{t("farmerDashboard.buyInputs")}</h2>
 
         <div className="mb-6">
-          <label className="mr-2 font-semibold">Select Type:</label>
+          <label className="mr-2 font-semibold">{t("buyProduct.selectType")}:</label>
           <select value={type} onChange={(e) => setType(e.target.value)} className="p-2 border rounded">
-            <option value="seed">Seed</option>
-            <option value="fertilizer">Fertilizer</option>
+            <option value="seed">{t("buyProduct.seed")}</option>
+            <option value="fertilizer">{t("buyProduct.fertilizer")}</option>
           </select>
         </div>
 
         {filtered.length === 0 ? (
-          <p>No products found for selected type.</p>
+          <p>{t("buyProduct.noProducts")}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filtered.map((p) => (
@@ -138,19 +140,19 @@ export default function BuyProduct() {
                   {p.retailer?.shop_image ? (
                     <img src={p.retailer.shop_image} alt="shop" className="w-20 h-20 object-cover rounded" />
                   ) : (
-                    <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">No Image</div>
+                    <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">{t("cropDisplay.noPhoto")}</div>
                   )}
                   <div>
                     <h3 className="font-semibold">{p.productName}</h3>
-                    <p className="text-sm">Retailer: {p.retailer?.name || "-"}</p>
-                    <p className="text-sm">Organization: {p.retailer?.organization?.organizationName || "-"}</p>
+                    <p className="text-sm">{t("buyProduct.retailer")}: {p.retailer?.name || "-"}</p>
+                    <p className="text-sm">{t("buyProduct.organization")}: {p.retailer?.organization?.organizationName || "-"}</p>
                   </div>
                 </div>
 
                 <div className="mt-3 flex items-center justify-between">
                   <div>
-                    <p>Unit Price: <strong>{p.price || 0}</strong></p>
-                    <p>Available: {p.quantity || 0}</p>
+                    <p>{t("buyProduct.unitPrice")}: <strong>{p.price || 0}</strong></p>
+                    <p>{t("buyProduct.available")}: {p.quantity || 0}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button onClick={() => handleQuantityChange(p._id, -1)} className="px-3 py-1 bg-gray-200 rounded">-</button>
@@ -160,8 +162,8 @@ export default function BuyProduct() {
                 </div>
 
                 <div className="mt-3 flex items-center justify-between">
-                  <div>Total: <strong>{(p._selectedQty || 1) * (p.price || 0)}</strong></div>
-                  <button onClick={() => handleBuy(p)} className="px-4 py-2 bg-green-600 text-white rounded">Buy</button>
+                  <div>{t("buyProduct.total")}: <strong>{(p._selectedQty || 1) * (p.price || 0)}</strong></div>
+                  <button onClick={() => handleBuy(p)} className="px-4 py-2 bg-green-600 text-white rounded">{t("buyCrops.buyNow")}</button>
                 </div>
               </div>
             ))}
@@ -172,4 +174,3 @@ export default function BuyProduct() {
     </div>
   );
 }
-

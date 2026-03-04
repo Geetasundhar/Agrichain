@@ -80,4 +80,22 @@ export const loginBuyer = async (req, res) => {
   }
 };
 
+// 🔹 Get Buyer Profile
+export const getBuyerProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const buyer = await Buyer.findById(id).select("-password");
+    if (!buyer) {
+      return res.status(404).json({ status: "error", message: "Buyer not found" });
+    }
+
+    res.status(200).json({
+      status: "success",
+      buyer,
+    });
+  } catch (error) {
+    console.error("Get Profile Error:", error);
+    res.status(500).json({ status: "error", message: "Server error", error: error.message });
+  }
+};

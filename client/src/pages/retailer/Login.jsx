@@ -49,14 +49,14 @@ export default function Login() {
         // Store token and retailer info
         localStorage.setItem("token", data.token);
         localStorage.setItem("retailer", JSON.stringify(data.retailer));
-        alert("Login successful!");
+        alert(t("login.success"));
         navigate("/retailer/dashboard");
       } else {
-        alert(data.message || "Login failed");
+        alert(data.message || t("login.failed"));
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("An error occurred during login");
+      alert(t("form.networkError"));
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ export default function Login() {
       <main className="flex-grow flex items-center justify-center px-4 pt-32">
         <div className="bg-white w-full max-w-md rounded-3xl shadow-xl p-10">
           <h2 className="text-3xl font-bold text-center text-[#132a13] mb-8">
-            Retailer Login
+            {t("retailerLogin.title")}
           </h2>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -77,7 +77,7 @@ export default function Login() {
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder={t("login.email")}
               className="input"
               value={formData.email}
               onChange={handleChange}
@@ -87,7 +87,7 @@ export default function Login() {
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder={t("login.password")}
               className="input"
               value={formData.password}
               onChange={handleChange}
@@ -101,17 +101,17 @@ export default function Login() {
                          py-4 rounded-xl font-semibold
                          hover:bg-[#31572c] transition-all"
             >
-              {loading ? "Please wait..." : "Login"}
+              {loading ? t("login.loading") : t("login.button")}
             </button>
           </form>
 
           <p className="text-center text-sm mt-6 text-[#31572c]">
-            Don't have an account?{" "}
+            {t("login.noAccount")}{" "}
             <span
               onClick={() => navigate("/retailer/signup")}
               className="text-[#132a13] font-semibold cursor-pointer"
             >
-              Sign up here
+              {t("login.signup")}
             </span>
           </p>
         </div>

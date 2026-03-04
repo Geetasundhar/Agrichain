@@ -6,8 +6,13 @@ contract CropRegistry {
     struct Crop {
         uint256 cropId;
         string cropName;
-        uint256 quantity;
-        uint256 price;
+        string cropType;
+        string category;
+        uint256 pricePerKg;
+        uint256 quantityKg;
+        uint256 durationNumber;
+        string durationPeriod;
+        string soilType;
         address farmer;
         uint256 timestamp;
     }
@@ -15,17 +20,43 @@ contract CropRegistry {
     mapping(uint256 => Crop) public crops;
     uint256 public cropCount;
 
+    event CropRegistered(
+        uint256 cropId,
+        string cropName,
+        address farmer,
+        uint256 timestamp
+    );
+
     function registerCrop(
         string memory _cropName,
-        uint256 _quantity,
-        uint256 _price
+        string memory _cropType,
+        string memory _category,
+        uint256 _pricePerKg,
+        uint256 _quantityKg,
+        uint256 _durationNumber,
+        string memory _durationPeriod,
+        string memory _soilType
     ) public {
+
         cropCount++;
+
         crops[cropCount] = Crop(
             cropCount,
             _cropName,
-            _quantity,
-            _price,
+            _cropType,
+            _category,
+            _pricePerKg,
+            _quantityKg,
+            _durationNumber,
+            _durationPeriod,
+            _soilType,
+            msg.sender,
+            block.timestamp
+        );
+
+        emit CropRegistered(
+            cropCount,
+            _cropName,
             msg.sender,
             block.timestamp
         );

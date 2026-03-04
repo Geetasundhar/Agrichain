@@ -1,10 +1,11 @@
-import { MapContainer, TileLayer, Marker, Polyline, Polygon, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Polyline, Polygon, useMapEvent, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as turf from "@turf/turf";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useTranslation } from "react-i18next";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,39 +17,31 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-/* Auto zoom */
+/* Recenter map when location is fetched */
 function RecenterMap({ position }) {
   const map = useMap();
   useEffect(() => {
-    if (position) map.setView(position, 20, { animate: true });
-  }, [position]);
+    if (position) {
+      map.flyTo(position, 18, { duration: 1.5 });
+    }
+  }, [position, map]);
   return null;
 }
 
+
 export default function Geofencing() {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const [points, setPoints] = useState([]);
   const [farmName, setFarmName] = useState("");
   const [farmAddress, setFarmAddress] = useState("");
   const [areaInAcres, setAreaInAcres] = useState("");
-  const [distanceWalked, setDistanceWalked] = useState(0);
   const [loading, setLoading] = useState(false);
   const [checkingLand, setCheckingLand] = useState(true); // Check if farmer has land
 
-  const [userLocation, setUserLocation] = useState(null);
-  const [isTracking, setIsTracking] = useState(false);
-  const [watchId, setWatchId] = useState(null);
   const [polygonClosed, setPolygonClosed] = useState(false);
-  const [accuracy, setAccuracy] = useState(null);
-  const [gpsStatus, setGpsStatus] = useState("initializing");
+  const [userLocation, setUserLocation] = useState(null);
 
-  /* Mobile-optimized geolocation options */
-  const geoOptions = {
-    enableHighAccuracy: true,
-    timeout: 15000,
-    maximumAge: 0 // Always get fresh GPS data
-  };
 
   /* Check if farmer already has land */
   useEffect(() => {
@@ -84,97 +77,48 @@ export default function Geofencing() {
     checkFarmerLand();
   }, [navigate]);
 
-  /* Get initial location */
+  /* Get initial location once and center map */
   useEffect(() => {
-    if (checkingLand) return; // Don't get location while checking
-
     if (!navigator.geolocation) {
-      alert("Geolocation not supported on this device");
+      console.warn("Geolocation not supported");
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setUserLocation([pos.coords.latitude, pos.coords.longitude]);
-        setGpsStatus("acquired");
+        const loc = [pos.coords.latitude, pos.coords.longitude];
+        console.log("📍 User location fetched:", loc);
+        setUserLocation(loc);
       },
       (err) => {
-        console.error("Geolocation error:", err);
-        setGpsStatus("error");
-        alert(`Location Error: ${err.message}\n\nMake sure location is enabled and you're outdoors.`);
+        console.error("📍 Location error:", err.message);
       },
-      geoOptions
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
-  }, [checkingLand]);
+  }, []);
 
-  /* Start walking */
-  const startTracking = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation not available");
-      return;
-    }
-
-    setPoints([]);
-    setAreaInAcres("");
-    setDistanceWalked(0);
-    setPolygonClosed(false);
-    setGpsStatus("tracking");
-
-    const id = navigator.geolocation.watchPosition(
-      (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const accuracy = pos.coords.accuracy;
-        setAccuracy(accuracy.toFixed(1));
-        setGpsStatus("tracking");
-
-        // Update user location for map centering
-        const newLocation = [lat, lng];
-        setUserLocation(newLocation);
-      },
-      (err) => {
-        console.error("Geolocation error:", err);
-        setGpsStatus("error");
-        alert(`GPS Error: ${err.message}`);
-      },
-      geoOptions
-    );
-
-    setWatchId(id);
-    setIsTracking(true);
-  };
-
-  /* Track one point manually */
-  const trackOnePoint = () => {
-    if (!userLocation) {
-      alert("Waiting for GPS signal...");
-      return;
-    }
-
-    const newPoint = userLocation;
-
+  /* Add point from map click */
+  const addPoint = (newPoint) => {
     setPoints((prev) => {
       const updated = [...prev, newPoint];
-
-      // Calculate distance from previous point
-      if (prev.length > 0) {
-        const from = turf.point([prev[prev.length - 1][1], prev[prev.length - 1][0]]);
-        const to = turf.point([newPoint[1], newPoint[0]]);
-        const distance = turf.distance(from, to, { units: "meters" });
-        setDistanceWalked((d) => d + distance);
-      }
-
       return updated;
     });
   };
 
+  /* component to capture clicks on map */
+  function ClickHandler() {
+    useMapEvent("click", (e) => {
+      if (polygonClosed) return;
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+      addPoint([lat, lng]);
+    });
+    return null;
+  }
+
   /* Finish polygon */
   const finishPolygon = (finalPoints) => {
-  navigator.geolocation.clearWatch(watchId);
-  setIsTracking(false);
-
   if (!finalPoints || finalPoints.length < 3) {
-    alert("Walk full boundary first (minimum 3 points)");
+    alert("You need at least 3 points to compute area");
     return;
   }
 
@@ -191,8 +135,8 @@ export default function Geofencing() {
     const polygon = turf.polygon([coords]);
     const areaSqMeters = turf.area(polygon);
     const acres = areaSqMeters * 0.000247105;
-
-    setAreaInAcres(acres);
+    // round to two decimal places for display
+    setAreaInAcres(parseFloat(acres.toFixed(2)));
     setPolygonClosed(true);
 
   } catch (error) {
@@ -201,18 +145,6 @@ export default function Geofencing() {
   }
 };
 
-  /* Manual stop */
-  const stopTracking = () => {
-    if (watchId) navigator.geolocation.clearWatch(watchId);
-    setIsTracking(false);
-
-    if (points.length < 3) {
-      alert("Walk full boundary first");
-      return;
-    }
-
-    finishPolygon(points);
-  };
 
   /* Save land */
   const handleSubmit = async () => {
@@ -232,7 +164,7 @@ export default function Geofencing() {
     }
 
     if (!areaInAcres || parseFloat(areaInAcres) <= 0) {
-      alert("Please click 'Stop & Calculate' to calculate the land area first");
+      alert("Please click 'Finish & Calculate' to calculate the land area first");
       return;
     }
 
@@ -301,74 +233,46 @@ export default function Geofencing() {
         <div className="w-full md:max-w-6xl md:mx-auto bg-white rounded-2xl md:mt-10 mt-2 shadow-lg p-4 md:p-6">
 
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-[#132a13]">
-            Map Your Farm 🌍
+            {t("geofencing.title")}
           </h2>
 
-          {/* GPS Status Indicator */}
-          <div className="mb-3 p-2 rounded-lg text-sm font-semibold"
-            style={{
-              backgroundColor: gpsStatus === "acquired" ? "#d1fae5" : gpsStatus === "tracking" ? "#dbeafe" : "#fee2e2",
-              color: gpsStatus === "acquired" ? "#047857" : gpsStatus === "tracking" ? "#0369a1" : "#dc2626"
-            }}
-          >
-            🛰️ GPS Status: {gpsStatus === "acquired" ? "Ready" : gpsStatus === "tracking" ? "Tracking..." : "Initializing"}
-          </div>
 
           {/* Info Display - Mobile optimized */}
           <div className="mb-4 text-center font-semibold text-green-800 space-y-1 text-sm md:text-base">
-            <div>📏 Distance: {distanceWalked.toFixed(1)}m</div>
-            {accuracy && <div>📡 GPS Accuracy: ±{accuracy}m</div>}
-            <div>📍 Points: {points.length}</div>
+            <div> {t("geofencing.points")} {points.length}</div>
             {areaInAcres && <div className="text-base md:text-lg text-blue-700 font-bold">🏞️ Area: {areaInAcres} acres</div>}
           </div>
 
           {/* Inputs - Stack on mobile */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 md:mb-6">
             <input
-              placeholder="Farm Name"
+              placeholder={t("geofencing.farmName")}
               value={farmName}
               onChange={(e) => setFarmName(e.target.value)}
               className="border rounded-lg px-3 md:px-4 py-2 text-sm md:text-base"
             />
             <input
-              placeholder="Farm Address"
+              placeholder={t("geofencing.farmAddress")}
               value={farmAddress}
               onChange={(e) => setFarmAddress(e.target.value)}
               className="border rounded-lg px-3 md:px-4 py-2 text-sm md:text-base"
             />
             <input
-              placeholder="Area (Auto)"
+              placeholder={t("geofencing.areaAuto")}
               value={areaInAcres}
               readOnly
               className="border rounded-lg px-3 md:px-4 py-2 bg-gray-100 text-sm md:text-base"
             />
           </div>
 
-          {/* Buttons - Mobile optimized */}
-          <div className="flex justify-center gap-2 md:gap-4 mb-4 md:mb-6 flex-wrap">
-            {!isTracking ? (
-              <button
-                onClick={startTracking}
-                className="bg-green-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-green-800 transition text-sm md:text-base font-semibold active:scale-95"
-              >
-                Start 🚶
-              </button>
-            ) : (
-              <>
-                <button
-                  onClick={trackOnePoint}
-                  className="bg-blue-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-blue-700 transition text-sm md:text-base font-semibold active:scale-95"
-                >
-                  Point 📍
-                </button>
-                <button
-                  onClick={stopTracking}
-                  className="bg-red-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-red-700 transition text-sm md:text-base font-semibold active:scale-95"
-                >
-                  Stop 📐
-                </button>
-              </>
-            )}
+          {/* Click on the map to drop points, then finish */}
+          <div className="flex justify-center gap-2 mb-4 md:mb-6">
+            <button
+              onClick={() => finishPolygon(points)}
+              className="bg-red-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-red-700 transition text-sm md:text-base font-semibold active:scale-95"
+            >
+              {t("geofencing.stop")}
+            </button>
           </div>
 
           {/* MAP - Mobile optimized height */}
@@ -379,24 +283,25 @@ export default function Geofencing() {
             style={{ height: "300px", width: "100%" }}
             className="md:h-modal"
           >
+            <ClickHandler />
+            <RecenterMap position={userLocation} />
+
             <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" opacity={0.4} />
 
-            {userLocation && <Marker position={userLocation} title="Your Current Location" />}
             
             {/* Render markers for each captured point */}
             {points.map((point, idx) => (
               <Marker key={idx} position={point} title={`Point ${idx + 1}`}>
               </Marker>
             ))}
-            
+            {/* a little tooltip marker at cursor would require extra state; not added now */}            
             {/* Draw polyline connecting all points */}
             {points.length >= 2 && <Polyline positions={points} color="blue" weight={3} />}
             
             {/* Draw filled polygon when closed */}
             {polygonClosed && <Polygon positions={points} color="green" fillColor="lightgreen" fillOpacity={0.5} />}
 
-            <RecenterMap position={userLocation} />
           </MapContainer>
 
           <div className="text-center mt-4 md:mt-6">
@@ -405,7 +310,7 @@ export default function Geofencing() {
               disabled={loading}
               className="bg-[#132a13] text-[#ecf39e] px-6 md:px-8 py-2 md:py-3 rounded-xl font-semibold text-sm md:text-base active:scale-95 transition disabled:opacity-50"
             >
-              {loading ? "Saving..." : "Save Land"}
+              {loading ? t("geofencing.saving") : t("geofencing.saveLand")}
             </button>
           </div>
 

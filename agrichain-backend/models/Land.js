@@ -39,6 +39,37 @@ const landSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    soilType: {
+      type: String,
+      required: false,
+    },
+
+    blockchainLandId: {
+      type: Number,
+      required: false,
+      unique: false,
+    },
+
+    dataHash: {
+      type: String,
+      required: false,
+    },
+
+    transactionHash: {
+      type: String,
+      required: false,
+    },
+
+    blockNumber: {
+      type: Number,
+      required: false,
+    },
+
+    isRegisteredOnBlockchain: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

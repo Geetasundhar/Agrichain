@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
+import { useTranslation } from "react-i18next";
+
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function MyPurchases() {
+  const { t } = useTranslation();
   const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,14 +30,14 @@ export default function MyPurchases() {
     fetchPurchases();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t("buyCrops.loading")}</div>;
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">
       <Navbar />
       <main className="flex-grow pt-32 px-6">
-        <h2 className="text-3xl font-bold mb-6">My Purchases</h2>
+        <h2 className="text-3xl font-bold mb-6">{t("farmerDashboard.myPurchases")}</h2>
         {purchases.length === 0 ? (
-          <p>No purchases made yet.</p>
+          <p>{t("farmerPurchases.noPurchases")}</p>
         ) : (
           <ul className="space-y-4">
             {purchases.map((p) => {
@@ -45,19 +48,19 @@ export default function MyPurchases() {
                   {p.retailer?.shop_image ? (
                     <img src={p.retailer.shop_image} alt="shop" className="w-20 h-20 object-cover rounded" />
                   ) : (
-                    <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">No Image</div>
+                    <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">{t("cropDisplay.noPhoto")}</div>
                   )}
                   <div className="flex-1">
                     <div className="flex justify-between">
                       <h3 className="font-semibold">{p.product?.productName || "-"}</h3>
                       <div className="text-sm text-gray-600">{new Date(p.createdAt).toLocaleString()}</div>
                     </div>
-                    <p className="text-sm">Product ID: {productId}</p>
-                    <p className="text-sm">Type: {p.product?.productType || "-"}</p>
-                    <p className="text-sm">Retailer: {p.retailer?.name || "-"}</p>
-                    <p className="text-sm">Quantity: {p.quantity}</p>
-                    <p className="text-sm">Unit Price: {unitPrice}</p>
-                    <p className="text-sm font-semibold">Total Paid: {p.totalPrice || (unitPrice * p.quantity) || 0}</p>
+                    <p className="text-sm">{t("myPurchases.productId")}: {productId}</p>
+                    <p className="text-sm">{t("myPurchases.type")}: {p.product?.productType || "-"}</p>
+                    <p className="text-sm">{t("myPurchases.retailer")}: {p.retailer?.name || "-"}</p>
+                    <p className="text-sm">{t("myPurchases.quantity")}: {p.quantity}</p>
+                    <p className="text-sm">{t("myPurchases.unitPrice")}: {unitPrice}</p>
+                    <p className="text-sm font-semibold">{t("myPurchases.totalPaid")}: {p.totalPrice || (unitPrice * p.quantity) || 0}</p>
                   </div>
                 </li>
               );

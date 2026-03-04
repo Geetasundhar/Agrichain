@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
-import i18next from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
+import { useTranslation } from "react-i18next";
 import { jsPDF } from "jspdf";
 
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const StorageReport = () => {
+  const { t } = useTranslation();
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -16,33 +16,6 @@ const StorageReport = () => {
   const [currentData, setCurrentData] = useState([]);
   const [dates, setDates] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
-
-  /* ---------- i18n (INIT ONCE) ---------- */
-  useEffect(() => {
-    if (!i18next.isInitialized) {
-      i18next.use(LanguageDetector).init({
-        fallbackLng: "en",
-        resources: {
-          en: {
-            translation: {
-              title: "🏬 Storage Report",
-              desc: "Monitor crop storage, available stock, and warehouse conditions.",
-              footer: "© 2025 AgriChain. Empowering farmers with technology.",
-              selectDate: "Select Date"
-            }
-          },
-          ta: {
-            translation: {
-              title: "🏬 சேமிப்பு அறிக்கை",
-              desc: "பயிர் சேமிப்பு மற்றும் களஞ்சிய நிலைகளை கண்காணிக்கவும்.",
-              footer: "© 2025 அக்ரிச்செயின்.",
-              selectDate: "தேதியைத் தேர்ந்தெடுக்கவும்"
-            }
-          }
-        }
-      });
-    }
-  }, []);
 
   /* ---------- FETCH STORAGE DATA ---------- */
   useEffect(() => {
@@ -109,7 +82,7 @@ const StorageReport = () => {
         plugins: {
           title: {
             display: true,
-            text: `Storage Report (${selectedDate})`
+            text: `${t("storageReport.chartTitle")} (${selectedDate})`
           }
         }
       }
@@ -195,16 +168,16 @@ const StorageReport = () => {
 
       {/* ===== HEADER ===== */}
       <div className="sr-header">
-        <h2>{i18next.t("title")}</h2>
+        <h2>{t("storageReport.title")}</h2>
       </div>
 
       {/* ===== CONTENT ===== */}
       <div className="sr-container">
-        <p>{i18next.t("desc")}</p>
+        <p>{t("storageReport.desc")}</p>
 
         {dates.length > 0 && (
           <div className="sr-select">
-            <b>{i18next.t("selectDate")}:</b>{" "}
+            <b>{t("storageReport.selectDate")}:</b>{" "}
             <select value={selectedDate} onChange={handleDateChange}>
               {dates.map(d => (
                 <option key={d} value={d}>{d}</option>
@@ -218,10 +191,10 @@ const StorageReport = () => {
         </div>
 
         <div>
-          <button className="btn" onClick={() => setChartType("bar")}>Bar</button>
-          <button className="btn" onClick={() => setChartType("pie")}>Pie</button>
-          <button className="btn" onClick={() => setChartType("line")}>Line</button>
-          <button className="btn" onClick={downloadPDF}>Download PDF</button>
+          <button className="btn" onClick={() => setChartType("bar")}>{t("storageReport.bar")}</button>
+          <button className="btn" onClick={() => setChartType("pie")}>{t("storageReport.pie")}</button>
+          <button className="btn" onClick={() => setChartType("line")}>{t("storageReport.line")}</button>
+          <button className="btn" onClick={downloadPDF}>{t("storageReport.downloadPDF")}</button>
         </div>
       </div>
 

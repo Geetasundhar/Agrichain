@@ -90,8 +90,8 @@ export default function AddCrop() {
         console.log("Camera already running");
         return;
       }
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "environment" } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" }
       });
       streamRef.current = stream;
       if (videoRef.current) {
@@ -99,7 +99,7 @@ export default function AddCrop() {
       }
     } catch (err) {
       console.error("Camera error:", err);
-      alert("Unable to access camera. Please check permissions.");
+      alert(t("form.networkError"));
     }
   };
 
@@ -157,7 +157,7 @@ export default function AddCrop() {
       const data = await res.json();
 
       if (data.status === "success") {
-        alert("✅ Crop added successfully");
+        alert("✅ " + t("form.submit"));
         setQrCode(data.crop.qrCode);
         setFormData({
           name: "",
@@ -176,11 +176,11 @@ export default function AddCrop() {
         setCapturedImage(null);
         navigate("/farmer/my-crops")
       } else {
-        alert(data.message || "Something went wrong");
+        alert(data.message || t("form.networkError"));
       }
     } catch (err) {
       console.error(err);
-      alert("Error adding crop. Please try again.");
+      alert(t("form.networkError"));
     } finally {
       setLoading(false);
     }
@@ -216,7 +216,7 @@ export default function AddCrop() {
 
             {/* Seed Product Dropdown */}
             <div>
-              <label className="text-sm text-[#31572c] block mb-2">Seed Product <span className="text-red-600">*</span></label>
+              <label className="text-sm text-[#31572c] block mb-2">{t("updateCrop.seed")} <span className="text-red-600">*</span></label>
               <select
                 name="seedProductId"
                 value={formData.seedProductId}
@@ -224,7 +224,7 @@ export default function AddCrop() {
                 className="input"
                 required
               >
-                <option value="">-- Select Seed --</option>
+                <option value="">-- {t("updateCrop.select")} --</option>
                 {purchasedProducts.seed && purchasedProducts.seed.map((p) => (
                   <option key={p.productId} value={p.productId}>
                     {p.productName} ({p.quantity} units, ₹{p.price})
@@ -249,7 +249,7 @@ export default function AddCrop() {
 
             {/* Fertilizer Product Dropdown */}
             <div>
-              <label className="text-sm text-[#31572c] block mb-2">Fertilizer Product <span className="text-red-600">*</span></label>
+              <label className="text-sm text-[#31572c] block mb-2">{t("updateCrop.fertilizer")} <span className="text-red-600">*</span></label>
               <select
                 name="fertilizerProductId"
                 value={formData.fertilizerProductId}
@@ -257,7 +257,7 @@ export default function AddCrop() {
                 className="input"
                 required
               >
-                <option value="">-- Select Fertilizer --</option>
+                <option value="">-- {t("updateCrop.select")} --</option>
                 {purchasedProducts.fertilizer && purchasedProducts.fertilizer.map((p) => (
                   <option key={p.productId} value={p.productId}>
                     {p.productName} ({p.quantity} units, ₹{p.price})
@@ -315,7 +315,7 @@ export default function AddCrop() {
             {/* Duration Field */}
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="text-sm text-[#31572c] block mb-2">Duration Number</label>
+                <label className="text-sm text-[#31572c] block mb-2">{t("updateCrop.durationNumber")}</label>
                 <select
                   name="durationNumber"
                   value={formData.durationNumber}
@@ -323,14 +323,14 @@ export default function AddCrop() {
                   className="input"
                   required
                 >
-                  <option value="">Select</option>
+                  <option value="">{t("updateCrop.select")}</option>
                   {Array.from({ length: 12 }, (_, i) => i + 1).map(num => (
                     <option key={num} value={num}>{num}</option>
                   ))}
                 </select>
               </div>
               <div className="flex-1">
-                <label className="text-sm text-[#31572c] block mb-2">Duration Period</label>
+                <label className="text-sm text-[#31572c] block mb-2">{t("updateCrop.durationPeriod")}</label>
                 <select
                   name="durationPeriod"
                   value={formData.durationPeriod}
@@ -338,9 +338,9 @@ export default function AddCrop() {
                   className="input"
                   required
                 >
-                  <option value="week">Week</option>
-                  <option value="month">Month</option>
-                  <option value="year">Year</option>
+                  <option value="week">{t("updateCrop.week")}</option>
+                  <option value="month">{t("updateCrop.month")}</option>
+                  <option value="year">{t("updateCrop.year")}</option>
                 </select>
               </div>
             </div>
@@ -352,21 +352,21 @@ export default function AddCrop() {
               className="input"
               required
             >
-              <option value="">Select Soil Type</option>
-              <option value="clayey">Clayey</option>
-              <option value="sandy">Sandy</option>
-              <option value="loamy">Loamy</option>
-              <option value="silty">Silty</option>
-              <option value="peaty">Peaty</option>
+              <option value="">{t("updateCrop.selectSoil")}</option>
+              <option value="clayey">{t("updateCrop.clayey")}</option>
+              <option value="sandy">{t("updateCrop.sandy")}</option>
+              <option value="loamy">{t("updateCrop.loamy")}</option>
+              <option value="silty">{t("updateCrop.silty")}</option>
+              <option value="peaty">{t("updateCrop.peaty")}</option>
             </select>
 
             <div>
-              <label className="text-sm text-[#31572c]">Capture Image</label>
+              <label className="text-sm text-[#31572c]">{t("updateCrop.captureImage")}</label>
               <video ref={videoRef} autoPlay playsInline muted className="w-full h-44 rounded-xl mb-3 bg-black" />
 
               <div className="flex gap-3 mb-3">
-                <button type="button" onClick={startCamera} className="bg-[#31572c] text-white px-4 py-2 rounded-xl">Open Camera</button>
-                <button type="button" onClick={capturePhoto} className="bg-[#132a13] text-[#ecf39e] px-4 py-2 rounded-xl">Capture</button>
+                <button type="button" onClick={startCamera} className="bg-[#31572c] text-white px-4 py-2 rounded-xl">{t("cropDisplay.openCamera")}</button>
+                <button type="button" onClick={capturePhoto} className="bg-[#132a13] text-[#ecf39e] px-4 py-2 rounded-xl">{t("cropDisplay.capture")}</button>
               </div>
 
               <canvas ref={canvasRef} className="hidden" />
@@ -400,7 +400,7 @@ export default function AddCrop() {
                 download="crop_qr.png"
                 className="block mt-4 text-[#132a13] font-semibold"
               >
-                ⬇️ Download QR
+                {t("cropDisplay.downloadQR")}
               </a>
             </div>
           )}

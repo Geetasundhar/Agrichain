@@ -32,7 +32,7 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t("buyCrops.loading")}</div>;
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">
@@ -40,21 +40,21 @@ export default function Products() {
       <main className="flex-grow pt-32 px-6">
         <section className="text-center mb-8">
           <h2 className="text-3xl font-bold text-[#132a13]">
-            {"My Products" || t("myProducts.title")}
+            {t("myProducts.title")}
           </h2>
         </section>
         <section className="max-w-4xl mx-auto">
           {products.length === 0 ? (
-            <p>No products available. Add some from dashboard.</p>
+            <p>{t("myProducts.noProducts")}</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {products.map((p) => (
                 <div key={p._id} className="bg-white p-4 rounded-xl shadow">
                   <h3 className="font-semibold">{p.productName}</h3>
-                  <p>Type: {p.productType}</p>
-                  <p>Qty: {p.quantity}</p>
-                  <p>Price: {p.price}</p>
-                  <p>ID: {p.productId}</p>
+                  <p>{t("myProducts.type")}: {p.productType}</p>
+                  <p>{t("myProducts.quantity")}: {p.quantity}</p>
+                  <p>{t("myProducts.unitPrice")}: {p.price}</p>
+                  <p>{t("myProducts.productId")}: {p.productId}</p>
                   {p.image && <img src={p.image} alt="" className="mt-2 h-20 w-20 object-cover" />}
                 </div>
               ))}

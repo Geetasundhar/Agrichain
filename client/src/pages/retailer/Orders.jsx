@@ -29,7 +29,7 @@ export default function Orders() {
     fetchOrders();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t("buyCrops.loading")}</div>;
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col">
@@ -37,21 +37,21 @@ export default function Orders() {
       <main className="flex-grow pt-32 px-6">
         <section className="text-center mb-8">
           <h2 className="text-3xl font-bold text-[#132a13]">
-            {t("orders.title") || "Purchase Orders"}
+            {t("retailerDashboard.viewOrders")}
           </h2>
         </section>
         <section className="max-w-4xl mx-auto">
           {orders.length === 0 ? (
-            <p>No orders yet.</p>
+            <p>{t("orders.noOrders")}</p>
           ) : (
             <ul className="space-y-4">
               {orders.map((o) => (
                 <li key={o._id} className="bg-white p-4 rounded-xl shadow">
-                  <p>Product: {o.product?.productName}</p>
-                  <p>Type: {o.product?.productType}</p>
-                  <p>Quantity: {o.quantity}</p>
-                  <p>Farmer: {o.farmer?.name || o.farmer || "-"}</p>
-                  <p>Date: {new Date(o.createdAt).toLocaleString()}</p>
+                  <p>{t("orders.product")}: {o.product?.productName}</p>
+                  <p>{t("orders.type")}: {o.product?.productType}</p>
+                  <p>{t("orders.quantity")}: {o.quantity}</p>
+                  <p>{t("farmer")}: {o.farmer?.name || o.farmer || "-"}</p>
+                  <p>{t("storageReport.selectDate")}: {new Date(o.createdAt).toLocaleString()}</p>
                 </li>
               ))}
             </ul>
