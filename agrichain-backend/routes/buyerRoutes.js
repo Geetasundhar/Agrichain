@@ -1,6 +1,6 @@
 const express = require("express");
 const { signupBuyer, loginBuyer, getBuyerProfile } = require("../controllers/buyerController.js");
-const { getAllCropsForBuyer, buyCrop, getSingleCropForBuyer, getBuyerPurchases } = require("../controllers/buyerCropController.js");
+const { getAllCropsForBuyer, buyCrop, getSingleCropForBuyer, getBuyerPurchases, getAllPreOrderableCrops, placePreOrder, getBuyerPreOrders } = require("../controllers/buyerCropController.js");
 const { authMiddleware } = require("../middleware/auth.js");
 
 
@@ -19,6 +19,11 @@ router.get("/crops/:id", authMiddleware, getSingleCropForBuyer);
 router.get("/my-purchases", authMiddleware, getBuyerPurchases);
 
 router.post("/buy-crop", authMiddleware, buyCrop);
+
+// Pre-Order routes
+router.get("/preorder-crops", authMiddleware, getAllPreOrderableCrops);
+router.post("/place-preorder", authMiddleware, placePreOrder);
+router.get("/my-preorders", authMiddleware, getBuyerPreOrders);
 
 
 module.exports = router;
