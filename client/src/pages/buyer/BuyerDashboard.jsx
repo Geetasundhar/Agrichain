@@ -62,20 +62,29 @@ export default function BuyerDashboard() {
 
       {/* ⚡ Quick Actions */}
       <section className="px-6 mt-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <ActionCard
             title="Buy Crops"
             desc="Explore available crops"
+            icon="🛒"
             onClick={() => navigate("/buyer/crops")}
+          />
+          <ActionCard
+            title="Pre-Order Crops"
+            desc="Reserve growing crops early"
+            icon="🌱"
+            onClick={() => navigate("/buyer/preorder-crops")}
           />
           <ActionCard
             title="My Cart"
             desc="Saved crops for purchase"
+            icon="🛍️"
             onClick={() => navigate("/buyer/cart")}
           />
           <ActionCard
             title="My Orders"
             desc="Track your orders"
+            icon="📋"
             onClick={() => navigate("/buyer/orders")}
           />
         </div>
@@ -116,15 +125,18 @@ export default function BuyerDashboard() {
 }
 
 /* 🔹 Reusable Card */
-function ActionCard({ title, desc, onClick }) {
+function ActionCard({ title, desc, icon, highlight, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-2xl p-8 shadow hover:shadow-xl
-                 cursor-pointer transition-all hover:-translate-y-1"
+      className={`rounded-2xl p-8 shadow hover:shadow-xl cursor-pointer transition-all hover:-translate-y-1 ${highlight
+        ? "bg-yellow-50 border-2 border-yellow-300 hover:bg-yellow-100"
+        : "bg-white"
+        }`}
     >
-      <h3 className="text-xl font-bold text-[#132a13] mb-2">{title}</h3>
-      <p className="text-[#31572c] text-sm">{desc}</p>
+      {icon && <span className="text-3xl mb-3 block">{icon}</span>}
+      <h3 className={`text-xl font-bold mb-2 ${highlight ? "text-yellow-700" : "text-[#132a13]"}`}>{title}</h3>
+      <p className={`text-sm ${highlight ? "text-yellow-600" : "text-[#31572c]"}`}>{desc}</p>
     </div>
   );
 }
