@@ -85,7 +85,13 @@ export default function BuyerDashboard() {
             title="My Orders"
             desc="Track your orders"
             icon="📋"
-            onClick={() => navigate("/buyer/orders")}
+            onClick={() => navigate("/buyer/purchases")}
+          />
+          <ActionCard
+            title="My Preorders"
+            desc="Preordered crops"
+            icon="🛒"
+            onClick={() => navigate("/buyer/my-preorders")}
           />
         </div>
       </section>

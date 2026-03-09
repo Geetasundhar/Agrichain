@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -13,8 +13,27 @@ export default function PreOrderSpecificCrop() {
     const [loading, setLoading] = useState(true);
     const [quantityToBuy, setQuantityToBuy] = useState(1);
     const [submitting, setSubmitting] = useState(false);
+    const [feedbacks, setFeedbacks] = useState([]);
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState("");
+    const [photo, setPhoto] = useState(null);
+    const [submittingFeedback, setSubmittingFeedback] = useState(false);
+
+    // Camera Refs
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
+    const streamRef = useRef(null);
 
     const token = localStorage.getItem("token");
+
+    // Cleanup camera on unmount
+    useEffect(() => {
+        return () => {
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach((t) => t.stop());
+            }
+        };
+    }, []);
 
     useEffect(() => {
         fetchCropDetails();
@@ -28,6 +47,7 @@ export default function PreOrderSpecificCrop() {
             const data = await res.json();
             if (data.status === "success") {
                 setCrop(data.crop);
+                setFeedbacks(data.feedbacks || []);
             }
         } catch (err) {
             console.error("Fetch crop details error:", err);
@@ -73,6 +93,89 @@ export default function PreOrderSpecificCrop() {
             alert(err.message || "Failed to place pre-order");
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    const startCamera = async () => {
+        try {
+            if (streamRef.current) {
+                return;
+            }
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" }
+            });
+            streamRef.current = stream;
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+            }
+        } catch (err) {
+            console.error("Camera error:", err);
+            alert("Could not access camera");
+        }
+    };
+
+    const stopCamera = () => {
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach((t) => t.stop());
+            streamRef.current = null;
+        }
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
+        }
+    };
+
+    const capturePhoto = () => {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+        if (!video || !canvas) return;
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0);
+        const imageData = canvas.toDataURL("image/jpeg");
+        setPhoto(imageData);
+        stopCamera();
+    };
+
+    const retakePhoto = () => {
+        setPhoto(null);
+        startCamera();
+    };
+
+    const submitFeedback = async (e) => {
+        e.preventDefault();
+        if (!comment.trim()) {
+            alert("Comment is required");
+            return;
+        }
+
+        setSubmittingFeedback(true);
+        try {
+            const res = await fetch(`${API}/buyer/crops/${id}/feedback`, {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                    authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ rating, comment, photo }),
+            });
+            const data = await res.json();
+            if (data.status === "success") {
+                alert("Feedback submitted successfully!");
+                setComment("");
+                setPhoto(null);
+                setRating(5);
+                stopCamera();
+                fetchCropDetails(); // Refresh feedbacks
+            } else {
+                alert(data.message || "Failed to submit feedback");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("An error occurred adding feedback");
+        } finally {
+            setSubmittingFeedback(false);
         }
     };
 
@@ -187,6 +290,7 @@ export default function PreOrderSpecificCrop() {
                                         <p className="text-sm text-gray-500">Grown by</p>
                                         <p className="font-bold text-[#132a13] text-lg">{crop.farmerId?.name || "Unknown Farmer"}</p>
                                         <p className="text-sm text-gray-600">📞 {crop.farmerId?.phone || "N/A"} • ✉️ {crop.farmerId?.email || "N/A"}</p>
+                                        <p className="text-sm text-blue-700 font-semibold mt-1">📍 Local Farm: {crop.farmAddress || "Address not provided"}</p>
                                     </div>
                                 </div>
 
@@ -297,6 +401,127 @@ export default function PreOrderSpecificCrop() {
                         </div>
                     </div>
                 )}
+                {/* 4. Feedback Section */}
+                <div className="bg-white rounded-3xl shadow p-8 mb-8">
+                    <h2 className="text-2xl font-bold text-[#132a13] mb-6 flex items-center gap-2">
+                        ⭐ Farm & Crop Feedback
+                    </h2>
+
+                    {/* Feedback Form */}
+                    <div className="bg-[#f8fad9] p-6 rounded-2xl mb-8 border border-gray-200">
+                        <h3 className="text-lg font-bold text-[#31572c] mb-4">Leave Feedback</h3>
+                        <form onSubmit={submitFeedback} className="flex flex-col gap-4">
+                            <div className="flex items-center gap-4">
+                                <label className="font-bold text-gray-700">Rating:</label>
+                                <select
+                                    value={rating}
+                                    onChange={(e) => setRating(Number(e.target.value))}
+                                    className="p-2 border rounded-xl"
+                                >
+                                    <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                                    <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                                    <option value="3">⭐⭐⭐ (3/5)</option>
+                                    <option value="2">⭐⭐ (2/5)</option>
+                                    <option value="1">⭐ (1/5)</option>
+                                </select>
+                            </div>
+
+                            <textarea
+                                placeholder="Describe your experience with this crop and farmer (e.g. visited the farm, crop quality, etc)..."
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                className="w-full p-4 border border-gray-300 rounded-xl resize-none h-24"
+                                required
+                            />
+
+                            <div className="flex flex-col gap-4">
+                                <label className="font-bold text-gray-700">Attach real farm/crop photo (Optional):</label>
+
+                                {!photo ? (
+                                    <div className="flex flex-col gap-3">
+                                        <div className="relative bg-black rounded-xl overflow-hidden shadow-inner h-60 w-full max-w-sm">
+                                            <video
+                                                ref={videoRef}
+                                                autoPlay
+                                                playsInline
+                                                muted
+                                                className="w-full h-full object-cover"
+                                            />
+                                            {!streamRef.current && (
+                                                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                                                    Camera is off
+                                                </div>
+                                            )}
+                                        </div>
+                                        <canvas ref={canvasRef} className="hidden" />
+
+                                        <div className="flex gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={startCamera}
+                                                className="px-4 py-2 bg-[#31572c] text-white rounded-xl shadow hover:bg-[#132a13] transition"
+                                            >
+                                                📷 Open Camera
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={capturePhoto}
+                                                className="px-4 py-2 bg-yellow-500 text-white rounded-xl shadow hover:bg-yellow-600 transition"
+                                            >
+                                                📸 Capture
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col gap-3">
+                                        <img src={photo} alt="Captured Feedback Photo" className="h-60 w-full max-w-sm object-cover rounded-xl shadow-md border" />
+                                        <button
+                                            type="button"
+                                            onClick={retakePhoto}
+                                            className="w-max px-4 py-2 bg-red-500 text-white rounded-xl shadow hover:bg-red-600 transition"
+                                        >
+                                            🔄 Retake Photo
+                                        </button>
+                                    </div>
+                                )}
+
+                                <button
+                                    type="submit"
+                                    disabled={submittingFeedback}
+                                    className="mt-4 w-full sm:w-auto px-8 py-3 bg-[#31572c] text-[#ecf39e] font-bold rounded-xl hover:bg-[#132a13] transition disabled:opacity-50"
+                                >
+                                    {submittingFeedback ? "Submitting..." : "Submit Feedback"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* Pre-existing feedbacks */}
+                    {feedbacks.length === 0 ? (
+                        <p className="text-gray-500 italic">No feedback yet. Be the first to verify and review this crop!</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {feedbacks.map((fb) => (
+                                <div key={fb._id} className="p-5 border border-gray-100 bg-gray-50 rounded-2xl flex flex-col md:flex-row gap-4 shadow-sm">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className="w-8 h-8 bg-[#132a13] text-white rounded-full flex items-center justify-center font-bold text-sm">
+                                                {fb.buyer?.buyer_name ? fb.buyer.buyer_name.charAt(0).toUpperCase() : "B"}
+                                            </div>
+                                            <span className="font-bold text-gray-800">{fb.buyer?.buyer_name || "Anonymous"}</span>
+                                            <span className="text-yellow-500 text-sm">{"⭐".repeat(fb.rating)}</span>
+                                            <span className="text-xs text-gray-400 ml-auto">{dayjs(fb.createdAt).format("MMM D, YYYY")}</span>
+                                        </div>
+                                        <p className="text-gray-700">{fb.comment}</p>
+                                    </div>
+                                    {fb.photo && (
+                                        <img src={fb.photo} alt="Feedback" className="w-24 h-24 object-cover rounded-xl border" />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </main>
 
             <Footer />

@@ -122,7 +122,7 @@ export default function MyCrops() {
               {t("myCrops.addCrop")}
             </div>
           </div>
-          {crops.map((crop) => (
+          {crops.filter(crop => crop.quantity > 0).map((crop) => (
             <div
               key={crop._id}
               className="group bg-white rounded-3xl shadow-md
