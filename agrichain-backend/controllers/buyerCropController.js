@@ -2,6 +2,8 @@ import Crop from "../models/Crop.js";
 import Farmer from "../models/User.js";
 import BuyerPurchase from "../models/BuyerPurchase.js";
 import PreOrder from "../models/PreOrder.js";
+import Land from "../models/Land.js";
+import Feedback from "../models/Feedback.js";
 
 /**
  * 🛒 Get all crops for buyer
@@ -153,9 +155,27 @@ export const getSingleCropForBuyer = async (req, res) => {
       });
     }
 
+    // 🔹 Fetch Farmland Address
+    let farmAddress = "Unknown Address";
+    if (crop.farmerId) {
+      const land = await Land.findOne({ farmer: crop.farmerId._id });
+      if (land) {
+        farmAddress = land.farmAddress;
+      }
+    }
+
+    // 🔹 Fetch Feedbacks
+    const feedbacks = await Feedback.find({ crop: id })
+      .populate("buyer", "buyer_name")
+      .sort({ createdAt: -1 });
+
     res.status(200).json({
       status: "success",
-      crop,
+      crop: {
+        ...crop.toObject(),
+        farmAddress,
+      },
+      feedbacks,
     });
 
   } catch (err) {
@@ -300,5 +320,43 @@ export const getBuyerPreOrders = async (req, res) => {
   } catch (error) {
     console.error("Get Buyer Pre-Orders Error:", error);
     res.status(500).json({ status: "error", message: "Failed to fetch pre-orders" });
+  }
+};
+
+/**
+ * 🌟 Add feedback for a crop
+ */
+export const addFeedback = async (req, res) => {
+  try {
+    const buyerId = req.user.id;
+    const { id: cropId } = req.params;
+    const { rating, comment, photo } = req.body;
+
+    if (!rating || !comment) {
+      return res.status(400).json({ status: "error", message: "Rating and comment are required" });
+    }
+
+    const crop = await Crop.findById(cropId);
+    if (!crop) {
+      return res.status(404).json({ status: "error", message: "Crop not found" });
+    }
+
+    const feedback = await Feedback.create({
+      buyer: buyerId,
+      farmer: crop.farmerId,
+      crop: cropId,
+      rating,
+      comment,
+      photo,
+    });
+
+    res.status(201).json({
+      status: "success",
+      message: "Feedback submitted successfully!",
+      feedback,
+    });
+  } catch (err) {
+    console.error("Add Feedback Error:", err);
+    res.status(500).json({ status: "error", message: "Server error" });
   }
 };
