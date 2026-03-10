@@ -14,8 +14,8 @@ export default function Navbar() {
     { key: "nav.farmer", path: "/farmer/login" },
     { key: "nav.buyer", path: "/buyer/login" },
     { key: "nav.retailer", path: null, onClick: () => setShowRetailerModal(true) },
-    { key: "nav.admin", path: "/admin" },
-    { key: "nav.transporter", path: "/transporter" },
+    { key: "nav.admin", path: "/admin/dashboard" },
+    // { key: "nav.transporter", path: "/transporter" },
    // { key: "nav.insurance", path: "/insurance" },
   ];
 

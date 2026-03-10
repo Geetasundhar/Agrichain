@@ -30,6 +30,10 @@ import RetailerDashboard from "./pages/retailer/Dashboard";
 import AddProduct from "./pages/retailer/AddProduct";
 import Products from "./pages/retailer/Products";
 import Orders from "./pages/retailer/Orders";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminFarmers from "./pages/admin/AdminFarmers";
+import AdminBuyers from "./pages/admin/AdminBuyers";
+import AdminRetailers from "./pages/admin/AdminRetailers";
 
 function App() {
   return (
@@ -63,6 +67,11 @@ function App() {
       <Route path="/retailer/add-product" element={<AddProduct />} />
       <Route path="/retailer/products" element={<Products />} />
       <Route path="/retailer/orders" element={<Orders />} />
+      {/* Admin routes */}
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/farmers" element={<AdminFarmers />} />
+      <Route path="/admin/buyers" element={<AdminBuyers />} />
+      <Route path="/admin/retailers" element={<AdminRetailers />} />
       {/* reports page can be added later */}
       <Route path="/farmer/geofencing" element={<GeoFencing />} />
     </Routes>

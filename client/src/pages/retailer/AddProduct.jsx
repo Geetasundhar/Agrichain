@@ -61,6 +61,7 @@ export default function AddProduct() {
         },
         body: JSON.stringify(payload),
       });
+      const data = await res.json();
       if (res.ok) {
         alert(t("addProduct.success") + (data.product.productId || ""));
         setFormData({ productType: "seed", productName: "", quantity: "", price: "", image: null });
