@@ -387,6 +387,30 @@
     "title": "🏬 Storage Report",
     "desc": "Monitor crop storage, available stock, and warehouse conditions.",
     "footer": "© 2025 AgriChain. Empowering farmers with technology.",
-    "selectDate": "Select Date"
+    "selectDate": "Select Date",
+    "bar": "Bar",
+    "pie": "Pie",
+    "line": "Line",
+    "downloadPDF": "Download PDF"
+  },
+  "farmerSales": {
+    "title": "My Sales History",
+    "noSales": "No sales recorded yet. Your crops are waiting for buyers!",
+    "buyerName": "Buyer",
+    "businessName": "Business",
+    "contact": "Contact",
+    "cropName": "Crop",
+    "quantitySold": "Quantity Sold",
+    "totalPrice": "Total Received",
+    "date": "Date"
+  },
+  "retailerReport": {
+    "title": "Inventory Report",
+    "desc": "Monitor your seed and fertilizer stock levels.",
+    "chartTitle": "Current Product Inventory",
+    "bar": "Bar",
+    "pie": "Pie",
+    "line": "Line",
+    "downloadPDF": "Download PDF"
   }
 }

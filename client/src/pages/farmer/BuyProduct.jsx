@@ -138,7 +138,7 @@ export default function BuyProduct() {
               <div key={p._id} className="bg-white p-4 rounded-xl shadow">
                 <div className="flex items-center gap-4">
                   {p.retailer?.shop_image ? (
-                    <img src={p.retailer.shop_image} alt="shop" className="w-20 h-20 object-cover rounded" />
+                    <img src={p.image} alt="shop" className="w-20 h-20 object-cover rounded" />
                   ) : (
                     <div className="w-20 h-20 bg-gray-200 rounded flex items-center justify-center">{t("cropDisplay.noPhoto")}</div>
                   )}

@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 
 import FarmerSignup from "./pages/farmer/Signup";
+import Sales from "./pages/farmer/Sales";
 import FarmerLogin from "./pages/farmer/Login";
 import FarmerDashboard from "./pages/farmer/FarmerDashboard";
 import AddCrop from "./pages/farmer/AddCrop";
@@ -30,6 +31,7 @@ import RetailerDashboard from "./pages/retailer/Dashboard";
 import AddProduct from "./pages/retailer/AddProduct";
 import Products from "./pages/retailer/Products";
 import Orders from "./pages/retailer/Orders";
+import RetailerReport from "./pages/retailer/Report";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminFarmers from "./pages/admin/AdminFarmers";
 import AdminBuyers from "./pages/admin/AdminBuyers";
@@ -40,6 +42,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/farmer/login" element={<FarmerLogin />} />
+      <Route path="/farmer/sales" element={<Sales />} />
       <Route path="/farmer/signup" element={<FarmerSignup />} />
       <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
       <Route path="/farmer/add-crop" element={<AddCrop />} />
@@ -67,6 +70,7 @@ function App() {
       <Route path="/retailer/add-product" element={<AddProduct />} />
       <Route path="/retailer/products" element={<Products />} />
       <Route path="/retailer/orders" element={<Orders />} />
+      <Route path="/retailer/reports" element={<RetailerReport />} />
       {/* Admin routes */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/farmers" element={<AdminFarmers />} />

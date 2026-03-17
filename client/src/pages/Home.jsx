@@ -221,15 +221,15 @@ export default function Home() {
             {t("getStarted")}
           </button>
 
-          <button
+          {/* <button
             onClick={() => navigate("/login")}
             className="border-2 border-[#ecf39e] text-[#ecf39e]
                        px-10 py-4 rounded-xl font-semibold
                        hover:bg-[#ecf39e] hover:text-[#132a13]
                        transition-all duration-300"
           >
-            {t("login")}
-          </button>
+            {t("buyerLogin.login")}
+          </button> */}
         </div>
       </div>
 

@@ -149,12 +149,20 @@ const FarmerProfile = () => {
             {/* LEFT PROFILE CARD */}
             <div className="bg-white rounded-[28px] shadow-xl p-8 text-center border border-[#ecf39e]">
               <div className="relative inline-block">
-                <img
-                  src={display.photo}
-                  alt="Profile"
-                  className="w-32 h-32 mx-auto rounded-full object-cover
-                           ring-4 ring-[#ecf39e] shadow-md"
-                />
+                {(!display.photo || display.photo === "/images/farmer-profile.jpg") ? (
+                  <div className="w-32 h-32 mx-auto rounded-full 
+                           ring-4 ring-[#ecf39e] shadow-md bg-[#ecf39e] text-[#132a13] 
+                           flex items-center justify-center font-bold text-5xl">
+                    {display.name ? display.name.charAt(0).toUpperCase() : "F"}
+                  </div>
+                ) : (
+                  <img
+                    src={display.photo}
+                    alt="Profile"
+                    className="w-32 h-32 mx-auto rounded-full object-cover
+                             ring-4 ring-[#ecf39e] shadow-md"
+                  />
+                )}
               </div>
 
               <p className="font-bold mt-5 text-xl text-[#132a13]">
@@ -165,7 +173,7 @@ const FarmerProfile = () => {
                 <p><span className="font-semibold">Email:</span> {display.email}</p>
                 <p><span className="font-semibold">Phone:</span> {display.phone}</p>
                 <p><span className="font-semibold">Age:</span> {display.age}</p>
-                <p><span className="font-semibold">Land:</span> {display.land}</p>
+                {/* <p><span className="font-semibold">Land:</span> {display.land}</p> */}
               </div>
             </div>
 
@@ -197,7 +205,7 @@ const FarmerProfile = () => {
               </div>
 
               {/* Full-width Inputs */}
-              {["location", "land", "crops"].map((field, idx) => (
+              {/* {["location", "land", "crops"].map((field, idx) => (
                 <input
                   key={idx}
                   disabled={!editMode}
@@ -213,7 +221,7 @@ const FarmerProfile = () => {
                     }
                 `}
                 />
-              ))}
+              ))} */}
 
               {/* Photo Upload */}
               {editMode && (

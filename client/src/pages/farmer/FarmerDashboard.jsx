@@ -5,14 +5,24 @@ import { useTranslation } from "react-i18next";
 
 const FarmerDashboard = () => {
   const [farmerName, setFarmerName] = useState("Farmer");
-  const [photo, setPhoto] = useState("/images/farmer-profile.jpg");
+  const [photo, setPhoto] = useState(null); // use null so we can check easily
+
+  const [totalCropsCount, setTotalCropsCount] = useState(0);
+  const [totalSalesAmount, setTotalSalesAmount] = useState(0);
 
   const { t } = useTranslation();
 
+  const formatCurrency = (amount) => {
+    if (amount >= 100000) {
+      return `₹${(amount / 100000).toFixed(1)}L`;
+    }
+    return `₹${amount.toLocaleString()}`;
+  };
+
   const stats = () => [
-    { label: t("farmerDashboard.totalCrops"), value: "12", icon: "fas fa-seedling" },
-    { label: t("farmerDashboard.totalSales"), value: "₹1.4L", icon: "fas fa-rupee-sign" },
-    { label: t("farmerDashboard.insuranceClaims"), value: "3", icon: "fas fa-shield-alt" },
+    { label: t("farmerDashboard.totalCrops"), value: totalCropsCount.toString(), icon: "fas fa-seedling" },
+    { label: t("farmerDashboard.totalSales"), value: formatCurrency(totalSalesAmount), icon: "fas fa-rupee-sign" },
+    // { label: t("farmerDashboard.insuranceClaims"), value: "3", icon: "fas fa-shield-alt" },
   ];
 
   const cards = () => [
@@ -32,14 +42,14 @@ const FarmerDashboard = () => {
       title: t("farmerDashboard.sales"),
       desc: t("farmerDashboard.salesDesc"),
       icon: "fas fa-store",
-      link: "/sales",
+      link: "/farmer/sales",
     },
-    {
-      title: t("farmerDashboard.insurance"),
-      desc: t("farmerDashboard.insuranceDesc"),
-      icon: "fas fa-file-contract",
-      link: "/farmer/insurance",
-    },
+    // {
+    //   title: t("farmerDashboard.insurance"),
+    //   desc: t("farmerDashboard.insuranceDesc"),
+    //   icon: "fas fa-file-contract",
+    //   link: "/farmer/insurance",
+    // },
     {
       title: t("farmerDashboard.reports"),
       desc: t("farmerDashboard.reportsDesc"),
@@ -60,23 +70,42 @@ const FarmerDashboard = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await fetch("http://localhost:5000/farmer/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const [profileRes, cropsRes, salesRes] = await Promise.all([
+          fetch("http://localhost:5000/farmer/profile", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("http://localhost:5000/farmer/my-crops", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("http://localhost:5000/farmer/sales", { headers: { Authorization: `Bearer ${token}` } })
+        ]);
 
-        if (!res.ok) return;
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          if (profileData.name) setFarmerName(profileData.name);
+          if (profileData.photo) {
+            setPhoto(
+              profileData.photo.startsWith("data:")
+                ? profileData.photo
+                : `data:image/jpeg;base64,${profileData.photo}`
+            );
+          } else {
+             setPhoto(null);
+          }
+        }
 
-        const data = await res.json();
-        if (data.name) setFarmerName(data.name);
-        if (data.photo) {
-          setPhoto(
-            data.photo.startsWith("data:")
-              ? data.photo
-              : `data:image/jpeg;base64,${data.photo}`
-          );
+        if (cropsRes.ok) {
+           const cropsData = await cropsRes.json();
+           if (cropsData.crops) {
+               setTotalCropsCount(cropsData.crops.length);
+           }
+        }
+
+        if (salesRes.ok) {
+            const salesData = await salesRes.json();
+            if (salesData.sales) {
+                const total = salesData.sales.reduce((sum, sale) => sum + (sale.totalPrice || 0), 0);
+                setTotalSalesAmount(total);
+            }
         }
       } catch (err) {
-        console.error(err);
+        console.error("Dashboard Error:", err);
       }
     };
 
@@ -106,27 +135,32 @@ const FarmerDashboard = () => {
           <div
             onClick={() => (window.location.href = "/farmer/profile")}
             className="w-20 h-20 sm:w-16 sm:h-16 rounded-full
-                     border-2 border-[#ecf39e]
+                     border-2 border-[#ecf39e] bg-[#ecf39e] text-[#132a13]
                      overflow-hidden cursor-pointer
-                     hover:scale-110 transition"
+                     flex items-center justify-center font-bold text-3xl
+                     hover:scale-110 transition shrink-0"
           >
-            <img
-              src={photo}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+            {photo ? (
+                <img
+                  src={photo}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+            ) : (
+                <span>{farmerName ? farmerName.charAt(0).toUpperCase() : "F"}</span>
+            )}
           </div>
         </div>
       </div>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8 sm:-mt-10">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="flex flex-col sm:flex-row justify-center gap-5 sm:gap-8 max-w-4xl mx-auto">
           {stats().map((s, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl shadow-md p-5 sm:p-6
+              className="bg-white rounded-3xl shadow-md p-6 sm:p-8
                        hover:shadow-xl hover:-translate-y-1
-                       transition-all duration-300"
+                       transition-all duration-300 flex-1"
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 sm:p-4 bg-[#ecf39e]

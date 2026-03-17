@@ -6,47 +6,39 @@ import { jsPDF } from "jspdf";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
-const StorageReport = () => {
+const API = import.meta.env.VITE_API_BASE_URL;
+
+const Report = () => {
   const { t } = useTranslation();
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
   const [chartType, setChartType] = useState("bar");
-  const [allData, setAllData] = useState([]);
   const [currentData, setCurrentData] = useState([]);
-  const [dates, setDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
 
-  /* ---------- FETCH STORAGE DATA ---------- */
+  /* ---------- FETCH RETAILER PRODUCTS DATA ---------- */
   useEffect(() => {
-    fetchStorageData();
+    fetchInventoryData();
   }, []);
 
-  const fetchStorageData = async () => {
+  const fetchInventoryData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/farmer/storage-report", {
+      const res = await fetch(`${API}/retailer/products`, {
         headers: { Authorization: "Bearer " + token }
       });
 
       const json = await res.json();
-      if (json.status !== "success" || !json.data?.length) return;
+      if (!json.products) return;
 
-      // 🔥 Normalize date safely
-      const normalized = json.data.map(item => ({
-        ...item,
-        date: item.date
-          ? item.date
-          : new Date(item.createdAt || Date.now()).toISOString().split("T")[0]
+      // Map the products to chart ready labels and numbers
+      const normalized = json.products.map(item => ({
+        productName: item.productName || item.productId || "Unknown",
+        quantity: item.quantity || 0,
+        type: item.productType || "-"
       }));
 
-      setAllData(normalized);
-
-      const uniqueDates = [...new Set(normalized.map(i => i.date))];
-      setDates(uniqueDates);
-      setSelectedDate(uniqueDates[0]);
-
-      setCurrentData(normalized.filter(i => i.date === uniqueDates[0]));
+      setCurrentData(normalized);
     } catch (err) {
       console.error(err);
     }
@@ -54,37 +46,24 @@ const StorageReport = () => {
 
   /* ---------- CHART ---------- */
   useEffect(() => {
-    if (!chartRef.current || currentData.length === 0) return;
+    if (!chartRef.current) return;
+    if (chartInstance.current) {
+        chartInstance.current.destroy();
+    }
 
-    const labels = currentData.map(i => i.crop);
-    const quantities = currentData.map(i => i.quantity);
-
-    if (chartInstance.current) chartInstance.current.destroy();
+    const labels = currentData.length > 0 ? currentData.map(i => i.productName) : ["No Data"];
+    const quantities = currentData.length > 0 ? currentData.map(i => i.quantity) : [0];
 
     const backgroundColors = [
-      "rgba(255, 99, 132, 0.7)",
-      "rgba(54, 162, 235, 0.7)",
-      "rgba(255, 206, 86, 0.7)",
-      "rgba(75, 192, 192, 0.7)",
-      "rgba(153, 102, 255, 0.7)",
-      "rgba(255, 159, 64, 0.7)",
-      "rgba(199, 199, 199, 0.7)",
-      "rgba(83, 102, 255, 0.7)",
-      "rgba(40, 159, 64, 0.7)",
-      "rgba(210, 199, 99, 0.7)"
+      "rgba(255, 99, 132, 0.7)", "rgba(54, 162, 235, 0.7)", "rgba(255, 206, 86, 0.7)",
+      "rgba(75, 192, 192, 0.7)", "rgba(153, 102, 255, 0.7)", "rgba(255, 159, 64, 0.7)",
+      "rgba(199, 199, 199, 0.7)", "rgba(83, 102, 255, 0.7)", "rgba(40, 159, 64, 0.7)", "rgba(210, 199, 99, 0.7)"
     ];
 
     const borderColors = [
-      "rgba(255, 99, 132, 1)",
-      "rgba(54, 162, 235, 1)",
-      "rgba(255, 206, 86, 1)",
-      "rgba(75, 192, 192, 1)",
-      "rgba(153, 102, 255, 1)",
-      "rgba(255, 159, 64, 1)",
-      "rgba(199, 199, 199, 1)",
-      "rgba(83, 102, 255, 1)",
-      "rgba(40, 159, 64, 1)",
-      "rgba(210, 199, 99, 1)"
+      "rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)", "rgba(255, 206, 86, 1)",
+      "rgba(75, 192, 192, 1)", "rgba(153, 102, 255, 1)", "rgba(255, 159, 64, 1)",
+      "rgba(199, 199, 199, 1)", "rgba(83, 102, 255, 1)", "rgba(40, 159, 64, 1)", "rgba(210, 199, 99, 1)"
     ];
 
     const applyBgColors = quantities.map((_, i) => backgroundColors[i % backgroundColors.length]);
@@ -108,7 +87,7 @@ const StorageReport = () => {
         labels,
         datasets: [
           {
-            label: "Stored Quantity (kg)",
+            label: "Inventory Quantity",
             data: quantities,
             backgroundColor: applyBgColors,
             borderColor: applyBorderColors,
@@ -123,7 +102,7 @@ const StorageReport = () => {
         plugins: {
           title: {
             display: true,
-            text: `${t("storageReport.chartTitle") || "Storage Report"} (${selectedDate})`
+            text: t("retailerReport.chartTitle") || "Current Product Inventory"
           },
           customCanvasBackgroundColor: {
             color: '#ffffff',
@@ -132,38 +111,33 @@ const StorageReport = () => {
       },
       plugins: [bgPlugin]
     });
-  }, [chartType, currentData, selectedDate, t]);
+  }, [chartType, currentData, t]);
 
   /* ---------- HANDLERS ---------- */
-  const handleDateChange = e => {
-    const date = e.target.value;
-    setSelectedDate(date);
-    setCurrentData(allData.filter(i => i.date === date));
-  };
-
   const downloadPDF = async () => {
     const doc = new jsPDF();
+    const today = new Date().toLocaleDateString();
     doc.setFontSize(18);
-    doc.text(`AgriChain Storage Report - ${selectedDate}`, 14, 20);
+    doc.text(`AgriChain Retailer Inventory - ${today}`, 14, 20);
 
     doc.setFontSize(12);
     let y = 35;
-    doc.text("Detailed Storage Information:", 14, y);
+    doc.text("Detailed Inventory Information:", 14, y);
     y += 10;
     
     currentData.forEach((i, idx) => {
-      doc.text(`${idx + 1}. Crop: ${i.crop}  |  Quantity: ${i.quantity} kg`, 14, y);
+      doc.text(`${idx + 1}. Product: ${i.productName} (${i.type}) | Quantity: ${i.quantity}`, 14, y);
       y += 8;
     });
 
-    // We will render to an offscreen canvas to capture all 3 chart types
+    // Render offscreen canvas to capture all 3 chart types
     const hiddenCanvas = document.createElement("canvas");
     hiddenCanvas.width = 800;
     hiddenCanvas.height = 400;
     hiddenCanvas.style.display = 'none';
     document.body.appendChild(hiddenCanvas);
 
-    const labels = currentData.map(i => i.crop);
+    const labels = currentData.map(i => i.productName);
     const quantities = currentData.map(i => i.quantity);
     
     const backgroundColors = [
@@ -206,7 +180,7 @@ const StorageReport = () => {
         data: {
           labels,
           datasets: [{
-            label: "Stored Quantity (kg)",
+            label: "Inventory Quantity",
             data: quantities,
             backgroundColor: applyBgColors,
             borderColor: applyBorderColors,
@@ -218,7 +192,7 @@ const StorageReport = () => {
           responsive: false,
           animation: false,
           plugins: {
-            title: { display: true, text: `${type.toUpperCase()} CHART (${selectedDate})` },
+            title: { display: true, text: `${type.toUpperCase()} CHART` },
             customCanvasBackgroundColor: { color: '#ffffff' }
           }
         },
@@ -234,7 +208,7 @@ const StorageReport = () => {
 
     document.body.removeChild(hiddenCanvas);
 
-    doc.save(`Storage_Report_${selectedDate}.pdf`);
+    doc.save(`Retailer_Inventory_Report.pdf`);
   };
 
   return (
@@ -248,20 +222,13 @@ const StorageReport = () => {
           color: #ecf39e;
           padding: 1.2rem;
           text-align: center;
+          margin-top: 60px; /* Space for fixed navbar */
         }
         .sr-container {
           padding: 2rem 1rem;
           background: #f2f6f4;
           min-height: 100vh;
           text-align: center;
-        }
-        .sr-select {
-          margin-top: 15px;
-        }
-        select {
-          padding: 8px 14px;
-          border-radius: 8px;
-          border: 1px solid #31572c;
         }
         .chart-box {
           max-width: 900px;
@@ -295,33 +262,22 @@ const StorageReport = () => {
 
       {/* ===== HEADER ===== */}
       <div className="sr-header">
-        <h2>{t("storageReport.title")}</h2>
+        <h2>{t("retailerReport.title") || "Inventory Report"}</h2>
       </div>
 
       {/* ===== CONTENT ===== */}
       <div className="sr-container">
-        <p>{t("storageReport.desc")}</p>
-
-        {dates.length > 0 && (
-          <div className="sr-select">
-            <b>{t("storageReport.selectDate")}:</b>{" "}
-            <select value={selectedDate} onChange={handleDateChange}>
-              {dates.map(d => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
-          </div>
-        )}
+        <p>{t("retailerReport.desc") || "Monitor your seed and fertilizer stock levels."}</p>
 
         <div className="chart-box">
           <canvas ref={chartRef}></canvas>
         </div>
 
         <div>
-          <button className="btn" onClick={() => setChartType("bar")}>{t("storageReport.bar")}</button>
-          <button className="btn" onClick={() => setChartType("pie")}>{t("storageReport.pie")}</button>
-          <button className="btn" onClick={() => setChartType("line")}>{t("storageReport.line")}</button>
-          <button className="btn" onClick={downloadPDF}>{t("storageReport.downloadPDF")}</button>
+          <button className="btn" onClick={() => setChartType("bar")}>{t("retailerReport.bar") || "Bar"}</button>
+          <button className="btn" onClick={() => setChartType("pie")}>{t("retailerReport.pie") || "Pie"}</button>
+          <button className="btn" onClick={() => setChartType("line")}>{t("retailerReport.line") || "Line"}</button>
+          <button className="btn" onClick={downloadPDF}>{t("retailerReport.downloadPDF") || "Download PDF"}</button>
         </div>
       </div>
 
@@ -330,4 +286,4 @@ const StorageReport = () => {
   );
 };
 
-export default StorageReport;
+export default Report;
