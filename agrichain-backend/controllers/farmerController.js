@@ -4,6 +4,8 @@ import QRCode from "qrcode"; // npm install qrcode
 import Land from "../models/Land.js";
 import Product from "../models/Product.js";
 import Purchase from "../models/Purchase.js";
+import BuyerPurchase from "../models/BuyerPurchase.js";
+import Buyer from "../models/buyeruser.js";
 
 // ➤ Add crop (with QR code generation)
 export const addCrop = async (req, res) => {
@@ -476,6 +478,31 @@ export const deleteCrop = async (req, res) => {
 
   } catch (err) {
     console.error("Delete Crop Error:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Server error"
+    });
+  }
+};
+
+// ➤ Get farmer sales (purchases made by buyers)
+export const getFarmerSales = async (req, res) => {
+  try {
+    const farmerId = req.user.id;
+
+    // By explicitly passing the model to populate, we avoid MissingSchemaError
+    // in case 'BuyerUser' reference doesn't match 'Buyer' model registration.
+    const sales = await BuyerPurchase.find({ farmer: farmerId })
+      .populate({ path: "buyer", model: Buyer, select: "buyer_name business_name phone email profile_image" })
+      .populate("crop", "cropName cropType images pricePerKg")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: "success",
+      sales
+    });
+  } catch (err) {
+    console.error("Get Farmer Sales Error:", err);
     res.status(500).json({
       status: "error",
       message: "Server error"

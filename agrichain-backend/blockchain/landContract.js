@@ -19,14 +19,14 @@ const provider = new ethers.providers.JsonRpcProvider(
 );
 
 // Private key from Ganache (FIRST ACCOUNT)
-const privateKey = "0xf7476399765920aec0c400989b7f1a3edc94b7c312b38bd2055a92ac8c255ce4";
+const privateKey = "0x502880edce194972a986fcce18464211e601826fe225b799f4e7be5e4b09d6d3";
 
 // Signer (wallet)
 const wallet = new ethers.Wallet(privateKey, provider);
 
 // CONTRACT ADDRESS - UPDATE AFTER DEPLOYMENT
 // This is a placeholder, replace with the actual deployed contract address
-const contractAddress = "0xD11336805d9C85be2c60B0C28e083D28fDA17BBB"; // Replace after deployment
+const contractAddress = "0xb934a44290159119BB25015E5EbeE7Fc5135Ccfd"; // Replace after deployment
 
 const landContract = new ethers.Contract(
   contractAddress,
