@@ -35,6 +35,8 @@ export default function AddCrop() {
   const canvasRef = useRef(null);
   const streamRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [locationError, setLocationError] = useState(null);
 
   useEffect(() => {
     return () => {
@@ -42,6 +44,27 @@ export default function AddCrop() {
         streamRef.current.getTracks().forEach((t) => t.stop());
       }
     };
+  }, []);
+
+  // Capture user location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+          setLocationError("Location access is required to verify your farm boundary.");
+        },
+        { enableHighAccuracy: true }
+      );
+    } else {
+      setLocationError("Geolocation is not supported by this browser.");
+    }
   }, []);
 
   // Load purchased products for dropdowns
@@ -124,6 +147,11 @@ export default function AddCrop() {
       return;
     }
 
+    if (!location) {
+      alert(locationError || "Location access is required to verify your farm boundary. Please enable location services.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -142,7 +170,9 @@ export default function AddCrop() {
         fertilizerProductId: formData.fertilizerProductId,
         seedQuantityUsed: formData.seedQuantityUsed ? Number(formData.seedQuantityUsed) : undefined,
         fertilizerQuantityUsed: formData.fertilizerQuantityUsed ? Number(formData.fertilizerQuantityUsed) : undefined,
-        image: imageBase64
+        image: imageBase64,
+        latitude: location.latitude,
+        longitude: location.longitude,
       };
 
       const res = await fetch(`${API}/farmer/add-crop`, {

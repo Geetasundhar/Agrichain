@@ -37,6 +37,8 @@ import AdminFarmers from "./pages/admin/AdminFarmers";
 import AdminBuyers from "./pages/admin/AdminBuyers";
 import AdminRetailers from "./pages/admin/AdminRetailers";
 
+import CropInfo from "./pages/public/CropInfo";
+
 function App() {
   return (
     <Routes>
@@ -78,6 +80,7 @@ function App() {
       <Route path="/admin/retailers" element={<AdminRetailers />} />
       {/* reports page can be added later */}
       <Route path="/farmer/geofencing" element={<GeoFencing />} />
+      <Route path="/crop-info/:id" element={<CropInfo />} />
     </Routes>
   );
 }

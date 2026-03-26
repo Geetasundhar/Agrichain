@@ -9,6 +9,7 @@ const FarmerDashboard = () => {
 
   const [totalCropsCount, setTotalCropsCount] = useState(0);
   const [totalSalesAmount, setTotalSalesAmount] = useState(0);
+  const [points, setPoints] = useState(0);
 
   const { t } = useTranslation();
 
@@ -22,7 +23,7 @@ const FarmerDashboard = () => {
   const stats = () => [
     { label: t("farmerDashboard.totalCrops"), value: totalCropsCount.toString(), icon: "fas fa-seedling" },
     { label: t("farmerDashboard.totalSales"), value: formatCurrency(totalSalesAmount), icon: "fas fa-rupee-sign" },
-    // { label: t("farmerDashboard.insuranceClaims"), value: "3", icon: "fas fa-shield-alt" },
+    { label: t("farmerDashboard.points") || "Points", value: points.toString(), icon: "fas fa-star text-yellow-500" },
   ];
 
   const cards = () => [
@@ -79,6 +80,7 @@ const FarmerDashboard = () => {
         if (profileRes.ok) {
           const profileData = await profileRes.json();
           if (profileData.name) setFarmerName(profileData.name);
+          if (profileData.points !== undefined) setPoints(profileData.points);
           if (profileData.photo) {
             setPhoto(
               profileData.photo.startsWith("data:")

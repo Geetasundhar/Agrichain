@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Polyline, Polygon, useMapEvent, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Polyline, Polygon, useMapEvent, useMap, CircleMarker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -289,6 +289,16 @@ export default function Geofencing() {
             <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" opacity={0.4} />
 
+            {/* Current User Location */}
+            {userLocation && (
+              <CircleMarker 
+                center={userLocation} 
+                radius={8} 
+                pathOptions={{ color: 'white', weight: 2, fillColor: '#3388ff', fillOpacity: 1 }}
+              >
+                <Popup>{t("geofencing.yourLocation") || "Your Current Location"}</Popup>
+              </CircleMarker>
+            )}
             
             {/* Render markers for each captured point */}
             {points.map((point, idx) => (
