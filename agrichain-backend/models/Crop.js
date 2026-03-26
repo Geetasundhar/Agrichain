@@ -39,6 +39,16 @@ const cropSchema = new mongoose.Schema(
     ],
     qrCode: { type: String },
     isCompleted: { type: Boolean, default: false },
+
+    // Tracking reminders and penalties
+    sentReminders: [
+      {
+        periodIndex: Number,
+        type: { type: String, enum: ["1_DAY_BEFORE", "ON_DEADLINE", "MISSED"] },
+        sentAt: { type: Date, default: Date.now }
+      }
+    ],
+    penalizedPeriods: [{ type: Number }], // array of period indices (0, 1, 2, 3) where penalty was applied
   },
   { timestamps: true } // ⭐ createdAt used for freshness logic
 );

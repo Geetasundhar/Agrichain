@@ -6,6 +6,7 @@ import Product from "../models/Product.js";
 import Purchase from "../models/Purchase.js";
 import BuyerPurchase from "../models/BuyerPurchase.js";
 import Buyer from "../models/buyeruser.js";
+import Feedback from "../models/Feedback.js";
 
 // ➤ Add crop (with QR code generation)
 export const addCrop = async (req, res) => {
@@ -45,7 +46,13 @@ export const addCrop = async (req, res) => {
         message: "Crop name, type, duration, soil type, seed product, fertilizer product, and image are required",
       });
     }
-    console.log(seedProductId);
+
+    if (!latitude || !longitude) {
+      return res.status(400).json({
+        status: "error",
+        message: "Location (latitude and longitude) is required to verify farm boundary.",
+      });
+    }
 
     // 👨‍🌾 Check farmer exists
     const farmer = await Farmer.findById(farmerId);
@@ -56,6 +63,26 @@ export const addCrop = async (req, res) => {
       });
     }
 
+    // 📍 Geofencing Validation: Check if the farmer is adding the crop from inside their registered land
+    const containingLand = await Land.findOne({
+      farmer: farmerId,
+      location: {
+        $geoIntersects: {
+          $geometry: {
+            type: "Point",
+            coordinates: [parseFloat(longitude), parseFloat(latitude)]
+          }
+        }
+      }
+    });
+
+    if (!containingLand) {
+      return res.status(403).json({
+        status: "error",
+        message: "You can only add crops from your registered land boundaries. Note: You must first register a Land with Polygon boundaries on the map.",
+      });
+    }
+
     // ✅ verify seed/fertilizer product ids if provided and validate quantities
     let seedProductRef, fertProductRef;
     if (seedProductId) {
@@ -63,37 +90,51 @@ export const addCrop = async (req, res) => {
       if (!product) {
         return res.status(400).json({ status: "error", message: "Invalid seed product id" });
       }
-      // confirm farmer purchased this product
-      const purchase = await Purchase.findOne({ product: product._id, farmer: farmerId });
-      if (!purchase) {
+      
+      const purchases = await Purchase.find({ product: product._id, farmer: farmerId });
+      if (!purchases || purchases.length === 0) {
         return res.status(403).json({ status: "error", message: "You have not bought the seed with this product id" });
       }
-      // validate quantity
+      
+      let availSeed = 0;
+      for (const p of purchases) {
+        availSeed += (p.remainingQuantity !== undefined ? p.remainingQuantity : p.quantity);
+      }
+      
       const seedQtyToUse = Number(seedQuantityUsed) || 0;
       if (seedQtyToUse <= 0) {
         return res.status(400).json({ status: "error", message: "Seed quantity must be greater than 0" });
       }
-      if (seedQtyToUse > purchase.quantity) {
-        return res.status(400).json({ status: "error", message: `You have only ${purchase.quantity} units of this seed. Cannot use ${seedQtyToUse}` });
+      
+      if (seedQtyToUse > availSeed) {
+        return res.status(400).json({ status: "error", message: `You have only ${availSeed} units of this seed remaining. Cannot use ${seedQtyToUse}` });
       }
       seedProductRef = product._id;
     }
+
     if (fertilizerProductId) {
       const product = await Product.findOne({ productId: fertilizerProductId });
       if (!product) {
         return res.status(400).json({ status: "error", message: "Invalid fertilizer product id" });
       }
-      const purchase = await Purchase.findOne({ product: product._id, farmer: farmerId });
-      if (!purchase) {
+
+      const purchases = await Purchase.find({ product: product._id, farmer: farmerId });
+      if (!purchases || purchases.length === 0) {
         return res.status(403).json({ status: "error", message: "You have not bought the fertilizer with this product id" });
       }
-      // validate quantity
+
+      let availFert = 0;
+      for (const p of purchases) {
+        availFert += (p.remainingQuantity !== undefined ? p.remainingQuantity : p.quantity);
+      }
+
       const fertQtyToUse = Number(fertilizerQuantityUsed) || 0;
       if (fertQtyToUse <= 0) {
         return res.status(400).json({ status: "error", message: "Fertilizer quantity must be greater than 0" });
       }
-      if (fertQtyToUse > purchase.quantity) {
-        return res.status(400).json({ status: "error", message: `You have only ${purchase.quantity} units of this fertilizer. Cannot use ${fertQtyToUse}` });
+      
+      if (fertQtyToUse > availFert) {
+        return res.status(400).json({ status: "error", message: `You have only ${availFert} units of this fertilizer remaining. Cannot use ${fertQtyToUse}` });
       }
       fertProductRef = product._id;
     }
@@ -115,54 +156,45 @@ export const addCrop = async (req, res) => {
       fertilizerQuantityUsed: Number(fertilizerQuantityUsed) || 0,
     });
 
-    // 📉 Decrement purchase quantities and remove zero-quantity purchases
+    // 📉 Decrement purchase quantities sequentially across valid purchases
     if (seedProductId) {
-      const seedQtyToUse = Number(seedQuantityUsed) || 0;
+      let remainingToDeduct = Number(seedQuantityUsed) || 0;
       const seedProduct = await Product.findOne({ productId: seedProductId });
-      const seedPurchase = await Purchase.findOne({ product: seedProduct._id, farmer: farmerId });
-      if (seedPurchase) {
-        seedPurchase.quantity -= seedQtyToUse;
-        if (seedPurchase.quantity <= 0) {
-          await Purchase.deleteOne({ _id: seedPurchase._id });
-        } else {
-          await seedPurchase.save();
+      const seedPurchases = await Purchase.find({ product: seedProduct._id, farmer: farmerId });
+      
+      for (let p of seedPurchases) {
+        if (remainingToDeduct <= 0) break;
+        if (p.remainingQuantity === undefined) p.remainingQuantity = p.quantity;
+        if (p.remainingQuantity > 0) {
+          const deduct = Math.min(p.remainingQuantity, remainingToDeduct);
+          p.remainingQuantity -= deduct;
+          remainingToDeduct -= deduct;
+          await p.save();
         }
       }
     }
+
     if (fertilizerProductId) {
-      const fertQtyToUse = Number(fertilizerQuantityUsed) || 0;
+      let remainingToDeduct = Number(fertilizerQuantityUsed) || 0;
       const fertProduct = await Product.findOne({ productId: fertilizerProductId });
-      const fertPurchase = await Purchase.findOne({ product: fertProduct._id, farmer: farmerId });
-      if (fertPurchase) {
-        fertPurchase.quantity -= fertQtyToUse;
-        if (fertPurchase.quantity <= 0) {
-          await Purchase.deleteOne({ _id: fertPurchase._id });
-        } else {
-          await fertPurchase.save();
+      const fertPurchases = await Purchase.find({ product: fertProduct._id, farmer: farmerId });
+
+      for (let p of fertPurchases) {
+        if (remainingToDeduct <= 0) break;
+        if (p.remainingQuantity === undefined) p.remainingQuantity = p.quantity;
+        if (p.remainingQuantity > 0) {
+          const deduct = Math.min(p.remainingQuantity, remainingToDeduct);
+          p.remainingQuantity -= deduct;
+          remainingToDeduct -= deduct;
+          await p.save();
         }
       }
     }
 
     // 📦 QR Details
-    const qrDetails = [
-      `🌾 FARMER DETAILS`,
-      `---------------------------`,
-      `Name     : ${farmer.name}`,
-      `Phone    : ${farmer.phone}`,
-      `Email    : ${farmer.email}`,
-      ``,
-      `🌱 CROP DETAILS`,
-      `---------------------------`,
-      `Crop Name  : ${name}`,
-      `Crop Type  : ${type}`,
-      `Quantity   : ${quantity || 0} kg`,
-      `Price/kg   : ₹${price || 0}`,
-      `Duration   : ${durationNumber} ${durationPeriod}`,
-      `Soil Type  : ${soilType}`,
-      `Added On   : ${new Date().toLocaleDateString()}`,
-    ].join("\n");
-
-    const qrCodeBase64 = await QRCode.toDataURL(qrDetails);
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const qrUrl = `${frontendUrl}/crop-info/${newCrop._id}`;
+    const qrCodeBase64 = await QRCode.toDataURL(qrUrl);
 
     newCrop.qrCode = qrCodeBase64;
     await newCrop.save();
@@ -247,7 +279,16 @@ export const getAllCrops = async (req, res) => {
 
 export const getCropById = async (req, res) => {
   try {
-    const crop = await Crop.findById(req.params.id);
+    const crop = await Crop.findById(req.params.id)
+      .populate("farmerId", "name phone email")
+      .populate({
+        path: "seedProduct",
+        populate: { path: "retailer", select: "business_name retailer_name phone email address verified_licenses" }
+      })
+      .populate({
+        path: "fertilizerProduct",
+        populate: { path: "retailer", select: "business_name retailer_name phone email address verified_licenses" }
+      });
 
     if (!crop) {
       return res.status(404).json({
@@ -256,9 +297,14 @@ export const getCropById = async (req, res) => {
       });
     }
 
+    const land = await Land.findOne({ farmer: crop.farmerId._id });
+    const feedbacks = await Feedback.find({ crop: req.params.id }).populate("buyer", "buyer_name profile_image");
+
     res.status(200).json({
       status: "success",
-      crop
+      crop,
+      land,
+      feedbacks
     });
 
   } catch (err) {
@@ -430,6 +476,13 @@ export const updateCrop = async (req, res) => {
 
       if (crop.progressPhotos.length >= 4) {
         crop.isCompleted = true;
+      }
+
+      // 🏆 Reward points for successful upload!
+      const farmer = await Farmer.findById(farmerId);
+      if (farmer) {
+        farmer.points = (farmer.points || 0) + 10;
+        await farmer.save();
       }
     }
 

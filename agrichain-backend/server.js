@@ -18,7 +18,7 @@ const app = express();
 
 // 🔹 Middleware
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "*",
   credentials: true,
 }));
 
@@ -30,6 +30,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // 🔹 Connect DB
 connectDB();
+
+// 🔹 Initialize Cron Jobs
+const { startCron } = require("./cron/cropReminderCron");
+startCron();
 
 // 🔹 Routes
 app.use("/auth", authRoutes);

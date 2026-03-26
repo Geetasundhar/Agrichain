@@ -20,6 +20,7 @@ const purchaseSchema = new mongoose.Schema(
       required: true,
     },
     quantity: { type: Number, required: true },
+    remainingQuantity: { type: Number, default: 0 },
     totalPrice: { type: Number },
   },
   { timestamps: true }

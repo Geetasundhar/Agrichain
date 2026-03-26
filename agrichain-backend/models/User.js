@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema(
     isFarmLocationAdded: {
       type: Boolean,
       default: false
+    },
+
+    // Gamification points (farmers earn by updating crops, lose by missing deadlines)
+    points: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }

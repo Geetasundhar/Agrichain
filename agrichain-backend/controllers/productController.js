@@ -136,6 +136,7 @@ exports.buyProduct = async (req, res) => {
       retailer: product.retailer,
       farmer: farmerId,
       quantity,
+      remainingQuantity: quantity,
       totalPrice: quantity * (product.price || 0),
     });
 
@@ -165,7 +166,7 @@ exports.getMyPurchases = async (req, res) => {
     if (!farmer) {
       return res.status(403).json({ message: "Only farmers can view their purchases" });
     }
-    const purchases = await Purchase.find({ farmer: farmerId })
+    const purchases = await Purchase.find({ farmer: farmerId, remainingQuantity: { $gt: 0 } })
       .populate("product", "productId productName productType price")
       .populate({
         path: "retailer",
@@ -173,7 +174,14 @@ exports.getMyPurchases = async (req, res) => {
         populate: { path: "organization", select: "organizationName" },
       })
       .sort({ createdAt: -1 });
-    res.status(200).json({ purchases });
+
+    const formattedPurchases = purchases.map(p => ({
+       ...p.toObject(),
+       quantity: p.remainingQuantity !== undefined ? p.remainingQuantity : p.quantity,
+       originalQuantity: p.quantity,
+    }));
+
+    res.status(200).json({ purchases: formattedPurchases });
   } catch (err) {
     console.error("Get My Purchases Error:", err);
     res.status(500).json({ message: "Server error" });
@@ -184,7 +192,7 @@ exports.getMyPurchases = async (req, res) => {
 exports.getPurchasedProductsByType = async (req, res) => {
   try {
     const farmerId = req.user.id;
-    const purchases = await Purchase.find({ farmer: farmerId })
+    const purchases = await Purchase.find({ farmer: farmerId, remainingQuantity: { $gt: 0 } })
       .populate("product", "productId productName productType quantity price");
     
     // group by product type and include remaining quantity
@@ -194,7 +202,8 @@ exports.getPurchasedProductsByType = async (req, res) => {
         byType[p.product.productType] && byType[p.product.productType].push({
           productId: p.productId,
           productName: p.product.productName,
-          quantity: p.quantity, // purchased quantity
+          quantity: p.remainingQuantity, // Return only the usable remaining quantity
+          originalQuantity: p.quantity,
           price: p.product.price,
         });
       }
