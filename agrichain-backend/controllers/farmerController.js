@@ -280,7 +280,7 @@ export const getAllCrops = async (req, res) => {
 export const getCropById = async (req, res) => {
   try {
     const crop = await Crop.findById(req.params.id)
-      .populate("farmerId", "name phone email")
+      .populate("farmerId", "name phone email points")
       .populate({
         path: "seedProduct",
         populate: { path: "retailer", select: "business_name retailer_name phone email address verified_licenses" }
