@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 
 export default function CropInfo() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isVerified, setIsVerified] = useState(null); // null = unknown, true = verified, false = not verified
 
   useEffect(() => {
     const fetchCropDetails = async () => {
@@ -17,6 +20,27 @@ export default function CropInfo() {
         const result = await res.json();
         if (result.status === "success" && result.crop) {
           setData(result);
+
+          // Check farmer points to determine verification status
+          const farmerPoints = result.crop.farmerId?.points ?? 0;
+          const verified = farmerPoints >= 0;
+          setIsVerified(verified);
+
+          // Redirect to correct URL based on verification status
+          const currentPath = location.pathname;
+          const basePath = `/crop-info/${id}`;
+          const targetPath = verified ? `${basePath}/verified` : `${basePath}/not-verified`;
+
+          if (!currentPath.endsWith("/verified") && !currentPath.endsWith("/not-verified")) {
+            // First visit (base URL) — redirect to correct status URL
+            navigate(targetPath, { replace: true });
+          } else if (verified && currentPath.endsWith("/not-verified")) {
+            // Farmer now has positive points, redirect to verified
+            navigate(`${basePath}/verified`, { replace: true });
+          } else if (!verified && currentPath.endsWith("/verified")) {
+            // Farmer now has negative points, redirect to not-verified
+            navigate(`${basePath}/not-verified`, { replace: true });
+          }
         } else {
           setError(result.message || "Failed to fetch crop details");
         }
@@ -42,11 +66,75 @@ export default function CropInfo() {
     return <div className="min-h-screen flex items-center justify-center bg-[#f8fad9] text-xl font-bold text-[#132a13]">Crop not found</div>;
   }
 
+  // ❌ If farmer has negative points, show "Not Verified" page
+  if (isVerified === false) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-2xl p-10 md:p-16 max-w-xl w-full text-center border-2 border-red-200">
+          {/* Warning Icon */}
+          <div className="w-28 h-28 mx-auto mb-8 bg-red-100 rounded-full flex items-center justify-center shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+
+          <h1 className="text-3xl md:text-4xl font-extrabold text-red-700 mb-4">
+            ⚠️ Not Verified on Blockchain
+          </h1>
+
+          <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+            This farmer’s crop data is currently <span className="font-bold text-red-600">unavailable</span> because it has <span className="font-bold text-red-600">not been verified on the blockchain network</span>.
+          </p>
+
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-5 mb-8">
+            <p className="text-sm text-red-700 font-semibold">
+              🔒 The farmer must complete blockchain validation steps such as updating crop records, submitting proof, and achieving consensus verification before the data becomes accessible.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Farmer</p>
+              <p className="font-bold text-gray-800 text-lg">{data.crop.farmerId?.name || "Unknown"}</p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Crop</p>
+              <p className="font-bold text-gray-800 text-lg capitalize">{data.crop.cropName}</p>
+            </div>
+            {/* <div className="bg-red-50 rounded-xl p-4 border border-red-200">
+              <p className="text-xs text-red-500 font-bold uppercase tracking-wider mb-1">Trust Points</p>
+              <p className="font-extrabold text-red-600 text-2xl">{data.crop.farmerId?.points ?? 0}</p>
+            </div> */}
+          </div>
+
+          <p className="mt-8 text-sm text-gray-400 font-medium">
+            Please check back later once the farmer’s data is successfully verified and recorded on the blockchain.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ Farmer has positive/zero points — show full crop info
   const { crop, land, feedbacks = [] } = data;
 
   return (
     <div className="min-h-screen bg-[#f8fad9] flex flex-col font-sans">
       <main className="flex-grow py-12 px-4 md:px-8 max-w-6xl mx-auto w-full">
+
+        {/* Verified Badge */}
+        <div className="bg-green-100 border border-green-300 rounded-2xl p-4 mb-6 flex items-center gap-3 shadow-sm">
+          <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <p className="font-extrabold text-green-800 text-lg">✅ Blockchain Verified Farmer</p>
+            <p className="text-sm text-green-700 font-medium">This farmer’s crop data is verified and securely recorded on the blockchain.</p>
+          </div>
+        </div>
+
         {/* 1. Crop Main Section */}
         <div className="bg-white rounded-3xl shadow-xl p-6 md:p-10 mb-8 border border-green-100">
           <div className="flex flex-col md:flex-row gap-8">

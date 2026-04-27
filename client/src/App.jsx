@@ -81,6 +81,8 @@ function App() {
       {/* reports page can be added later */}
       <Route path="/farmer/geofencing" element={<GeoFencing />} />
       <Route path="/crop-info/:id" element={<CropInfo />} />
+      <Route path="/crop-info/:id/verified" element={<CropInfo />} />
+      <Route path="/crop-info/:id/not-verified" element={<CropInfo />} />
     </Routes>
   );
 }
