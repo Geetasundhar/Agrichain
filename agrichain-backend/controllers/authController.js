@@ -5,29 +5,30 @@ const jwt = require("jsonwebtoken");
 // Signup Controller
 exports.signup = async (req, res) => {
   try {
+    console.log("🔍 Raw req.body:", req.body);
+    console.log("🔍 req.body keys:", Object.keys(req.body));
+
     const {
       name,
       age,
       gender,
       phone,
       email,
-      farm_name,
-      farm_address,
-      farm_size,
-      crop_type,
-      username,
       password,
     } = req.body;
 
+    console.log("📋 Extracted - name:", name, "email:", email, "password:", password);
+
     // Check for required fields
-    if (!name || !email || !password || !username) {
+    if (!name || !email || !password) {
+      console.log("❌ Missing fields - name:", name, "email:", email, "password:", password);
       return res.status(400).json({ message: "Please fill all required fields" });
     }
 
-    // Check if email or username already exists
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "Email or username already registered" });
+      return res.status(400).json({ message: "Email already registered" });
     }
 
     // Hash password
@@ -41,19 +42,14 @@ exports.signup = async (req, res) => {
       gender,
       phone,
       email,
-      farm_name,
-      farm_address,
-      farm_size,
-      crop_type,
-      username,
       password: hashedPassword,
     });
 
     await newUser.save();
 
     // Generate JWT
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+    const token = jwt.sign({ id: newUser._id, email: newUser.email }, process.env.JWT_SECRET || "your_jwt_secret", {
+      expiresIn: "5h",
     });
 
     res.status(201).json({
@@ -63,6 +59,13 @@ exports.signup = async (req, res) => {
     });
   } catch (err) {
     console.error("Signup Error:", err);
+    
+    // Handle duplicate key errors
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(400).json({ message: `${field} already exists` });
+    }
+    
     res.status(500).json({ message: "Server error during signup" });
   }
 };
@@ -93,7 +96,6 @@ exports.login = async (req, res) => {
       message: "Login successful",
       userId: user._id,
       token,
-      username: user.username,
     });
   } catch (err) {
     console.error("Login Error:", err);
